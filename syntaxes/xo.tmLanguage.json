@@ -1,0 +1,210 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "Xo",
+  "patterns": [
+    {
+      "include": "#nestedtermsexternal"
+    },
+    {
+      "include": "#nestedterms"
+    },
+    {
+      "include": "#terms"
+    },
+    {
+      "include": "#punctuations"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    },
+    {
+      "include": "#codes"
+    },
+    {
+      "include": "#comments"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.number-sign.xo",
+          "match": "\\# .+"
+        }
+      ]
+    },
+    "codes": {
+      "patterns": [
+        {
+          "name": "constant.character.escape.language.xo",
+          "match": "\\#\\w+"
+        }
+      ]
+    },
+    "nestedtermsexternal": {
+      "patterns": [
+        {
+          "name": "entity.language.xo",
+          "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*) ",
+          "beginCaptures": {
+            "1": {
+              "name": "string.quoted.double.xo"
+            }
+          },
+          "end": "[,\n]",
+          "patterns": [
+            {
+              "include": "#terms"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#codes"
+            },
+            {
+              "include": "#comments"
+            }
+          ]
+        }
+      ]
+    },
+    "nestedterms": {
+      "patterns": [
+        {
+          "name": "term.language.xo",
+          "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)(\\()",
+          "beginCaptures": {
+            "1": {
+              "name": "string.quoted.double.xo"
+            },
+            "2": {
+              "name": "string.quoted.double.xo"
+            }
+          },
+          "end": "\\)",
+          "endCaptures": {
+            "0": {
+              "name": "string.quoted.double.xo"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#comments"
+            },
+            {
+              "include": "#terms"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#codes"
+            }
+          ]
+        }
+      ]
+    },
+    "terms": {
+      "patterns": [
+        {
+          "name": "term.language.xo",
+          "match": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)"
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.integer.xo",
+          "match": "\\d+"
+        },
+        {
+          "name": "constant.numeric.decimal.xo",
+          "match": "\\d+\\.\\d+"
+        }
+      ]
+    },
+    "punctuations": {
+      "patterns": [
+        {
+          "name": "punctuation.separator.parameter.xo",
+          "match": ","
+        }
+      ]
+    },
+    "strings": {
+      "name": "template.xo",
+      "begin": "\\<",
+      "beginCaptures": {
+        "0": {
+          "name": "entity.name.type.xo"
+        }
+      },
+      "end": "\\>",
+      "endCaptures": {
+        "0": {
+          "name": "entity.name.type.xo"
+        }
+      },
+      "patterns": [
+        {
+          "include": "#codes"
+        },
+        {
+          "name": "entity.name.type.xo",
+          "match": "\\\\."
+        },
+        {
+          "name": "punctuation.term.xo",
+          "begin": "\\{",
+          "beginCaptures": {
+            "0": {
+              "name": "entity.name.type.xo"
+            }
+          },
+          "end": "\\}",
+          "endCaptures": {
+            "0": {
+              "name": "entity.name.type.xo"
+            }
+          },
+          "patterns": [
+            {
+              "include": "#nestedterms"
+            },
+            {
+              "include": "#terms"
+            },
+            {
+              "include": "#numbers"
+            },
+            {
+              "include": "#strings"
+            },
+            {
+              "include": "#punctuations"
+            },
+            {
+              "include": "#codes"
+            }
+          ]
+        },
+        {
+          "name": "entity.name.type.xo",
+          "match": "[^\\\\{>]+"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.xo"
+}
