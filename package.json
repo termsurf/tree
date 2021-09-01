@@ -1,7 +1,7 @@
 {
-  "name": "xo-code",
-  "displayName": "xo-code",
-  "description": "Xo Syntax Highlighter",
+  "name": "code",
+  "displayName": "code",
+  "description": "Link Script Syntax Highlighter",
   "version": "0.0.1",
   "engines": {
     "vscode": "^1.59.0"
@@ -17,15 +17,15 @@
       }
     },
     "languages": [{
-      "id": "xo",
-      "aliases": ["Xo", "xo"],
-      "extensions": [".xo"],
+      "id": "link",
+      "aliases": ["Link", "link"],
+      "extensions": [".link"],
       "configuration": "./language-configuration.json"
     }],
     "grammars": [{
-      "language": "xo",
-      "scopeName": "source.xo",
-      "path": "./syntaxes/xo.tmLanguage.json"
+      "language": "link",
+      "scopeName": "source.link",
+      "path": "./syntaxes/link.tmLanguage.json"
     }]
   }
 }

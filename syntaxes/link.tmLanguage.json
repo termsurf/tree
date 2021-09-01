@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
-  "name": "Xo",
+  "name": "Link",
   "patterns": [
     {
       "include": "#nestedtermsexternal"
@@ -31,7 +31,7 @@
     "comments": {
       "patterns": [
         {
-          "name": "comment.line.number-sign.xo",
+          "name": "comment.line.number-sign.link",
           "match": "\\# .+"
         }
       ]
@@ -39,7 +39,7 @@
     "codes": {
       "patterns": [
         {
-          "name": "constant.character.escape.language.xo",
+          "name": "constant.character.escape.language.link",
           "match": "\\#\\w+"
         }
       ]
@@ -47,11 +47,11 @@
     "nestedtermsexternal": {
       "patterns": [
         {
-          "name": "entity.language.xo",
+          "name": "entity.language.link",
           "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*) ",
           "beginCaptures": {
             "1": {
-              "name": "string.quoted.double.xo"
+              "name": "string.quoted.double.link"
             }
           },
           "end": "[,\n]",
@@ -78,20 +78,20 @@
     "nestedterms": {
       "patterns": [
         {
-          "name": "term.language.xo",
+          "name": "term.language.link",
           "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)(\\()",
           "beginCaptures": {
             "1": {
-              "name": "string.quoted.double.xo"
+              "name": "string.quoted.double.link"
             },
             "2": {
-              "name": "string.quoted.double.xo"
+              "name": "string.quoted.double.link"
             }
           },
           "end": "\\)",
           "endCaptures": {
             "0": {
-              "name": "string.quoted.double.xo"
+              "name": "string.quoted.double.link"
             }
           },
           "patterns": [
@@ -117,7 +117,7 @@
     "terms": {
       "patterns": [
         {
-          "name": "term.language.xo",
+          "name": "term.language.link",
           "match": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)"
         }
       ]
@@ -125,11 +125,11 @@
     "numbers": {
       "patterns": [
         {
-          "name": "constant.numeric.integer.xo",
+          "name": "constant.numeric.integer.link",
           "match": "\\d+"
         },
         {
-          "name": "constant.numeric.decimal.xo",
+          "name": "constant.numeric.decimal.link",
           "match": "\\d+\\.\\d+"
         }
       ]
@@ -137,23 +137,23 @@
     "punctuations": {
       "patterns": [
         {
-          "name": "punctuation.separator.parameter.xo",
+          "name": "punctuation.separator.parameter.link",
           "match": ","
         }
       ]
     },
     "strings": {
-      "name": "template.xo",
+      "name": "template.link",
       "begin": "\\<",
       "beginCaptures": {
         "0": {
-          "name": "entity.name.type.xo"
+          "name": "entity.name.type.link"
         }
       },
       "end": "\\>",
       "endCaptures": {
         "0": {
-          "name": "entity.name.type.xo"
+          "name": "entity.name.type.link"
         }
       },
       "patterns": [
@@ -161,21 +161,21 @@
           "include": "#codes"
         },
         {
-          "name": "entity.name.type.xo",
+          "name": "entity.name.type.link",
           "match": "\\\\."
         },
         {
-          "name": "punctuation.term.xo",
+          "name": "punctuation.term.link",
           "begin": "\\{",
           "beginCaptures": {
             "0": {
-              "name": "entity.name.type.xo"
+              "name": "entity.name.type.link"
             }
           },
           "end": "\\}",
           "endCaptures": {
             "0": {
-              "name": "entity.name.type.xo"
+              "name": "entity.name.type.link"
             }
           },
           "patterns": [
@@ -200,11 +200,11 @@
           ]
         },
         {
-          "name": "entity.name.type.xo",
+          "name": "entity.name.type.link",
           "match": "[^\\\\{>]+"
         }
       ]
     }
   },
-  "scopeName": "source.xo"
+  "scopeName": "source.link"
 }
