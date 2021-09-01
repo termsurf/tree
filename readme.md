@@ -28,19 +28,19 @@
 
 The Link Script syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Link Script language, refer to the [tree](https://github.com/link-script/tree) repo, or the [base](https://github.com/link-script/base) and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
 
-<img src="https://github.com/link-script/xo-code/blob/work/snap.png?raw=true" width="600" />
+<img src="https://github.com/link-script/code/blob/work/snap.png?raw=true" width="600" />
 
 ---
 
-<img src="https://github.com/link-script/xo-code/blob/work/snap5.png?raw=true" width="600" />
+<img src="https://github.com/link-script/code/blob/work/snap5.png?raw=true" width="600" />
 
 ---
 
-<img src="https://github.com/link-script/xo-code/blob/work/snap2.png?raw=true" width="600" />
+<img src="https://github.com/link-script/code/blob/work/snap2.png?raw=true" width="600" />
 
 ---
 
-<img src="https://github.com/link-script/xo-code/blob/work/snap7.png?raw=true" width="600" />
+<img src="https://github.com/link-script/code/blob/work/snap7.png?raw=true" width="600" />
 
 ### Installation
 
