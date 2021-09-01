@@ -7,9 +7,9 @@
 <br/>
 <br/>
 
-<h3 align='center'>xo-code</h3>
+<h3 align='center'>code</h3>
 <p align='center'>
-  Xo Syntax Highlighter
+  Link Script Syntax Highlighter
 </p>
 
 <p align='center'>
@@ -26,21 +26,21 @@
 
 ### Summary
 
-The Xo syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Xo language, refer to the [start](https://github.com/mountbuild/start) repo, or the [stone](https://github.com/mountbuild/stone) and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
+The Link Script syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Link Script language, refer to the [tree](https://github.com/link-script/tree) repo, or the [base](https://github.com/link-script/base) and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
 
-<img src="https://github.com/mountbuild/xo-code/blob/build/snap.png?raw=true" width="600" />
-
----
-
-<img src="https://github.com/mountbuild/xo-code/blob/build/snap5.png?raw=true" width="600" />
+<img src="https://github.com/link-script/xo-code/blob/work/snap.png?raw=true" width="600" />
 
 ---
 
-<img src="https://github.com/mountbuild/xo-code/blob/build/snap2.png?raw=true" width="600" />
+<img src="https://github.com/link-script/xo-code/blob/work/snap5.png?raw=true" width="600" />
 
 ---
 
-<img src="https://github.com/mountbuild/xo-code/blob/build/snap7.png?raw=true" width="600" />
+<img src="https://github.com/link-script/xo-code/blob/work/snap2.png?raw=true" width="600" />
+
+---
+
+<img src="https://github.com/link-script/xo-code/blob/work/snap7.png?raw=true" width="600" />
 
 ### Installation
 
@@ -72,4 +72,4 @@ limitations under the License.
 
 ### Mount
 
-The xo-code extension is being developed by the folks at [Mount](https://mount.build), a California-based project for helping humanity master information and computation. Mount started off in the winter of 2008 as a spark of an idea, to forming a company 10 years later in the winter of 2018, to a seed of a project just beginning its development phases. Mount funds xo-code's development. It is entirely bootstrapped by working full time and running [Etsy](https://etsy.com/shop/mountbuild) and [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also find us on [Facebook](https://www.facebook.com/mountbuild), [Twitter](https://twitter.com/mountbuild), and [LinkedIn](https://www.linkedin.com/company/mountbuild). Check out our other GitHub projects as well!
+The xo-code extension is being developed by the folks at [Mount](https://mount.build), a California-based project for helping humanity master information and computation. Mount started off in the winter of 2008 as a spark of an idea, to forming a company 10 years later in the winter of 2018, to a seed of a project just beginning its development phases. Mount funds xo-code's development. It is entirely bootstrapped by working full time and running [Etsy](https://etsy.com/shop/link-script) and [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also find us on [Facebook](https://www.facebook.com/link-script), [Twitter](https://twitter.com/link-script), and [LinkedIn](https://www.linkedin.com/company/link-script). Check out our other GitHub projects as well!
