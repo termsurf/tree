@@ -7,7 +7,7 @@
 <br/>
 <br/>
 
-<h3 align='center'>code</h3>
+<h3 align='center'>code-link</h3>
 <p align='center'>
   Link Script Syntax Highlighter
 </p>
