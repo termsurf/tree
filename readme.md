@@ -25,7 +25,7 @@
 
 ### Summary
 
-The Link Script syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Link Script language, refer to the [tree](https://github.com/link-script/tree) repo, or the [base](https://github.com/link-script/base) and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
+The Link Text syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Link Text language, refer to [base](https://github.com/drumworkteam/base) or some of our other repos and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
 
 <img src="https://github.com/link-script/code/blob/work/snap.png?raw=true" width="600" />
 
