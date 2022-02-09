@@ -27,6 +27,8 @@
 
 The Link Text syntax highlighter For VSCode. It's not perfect yet but it gets the job done. If you are new to the Link Text language, refer to [base](https://github.com/drumworkteam/base) or some of our other repos and explore around the source code. It's far from complete but a labor of love. Making a little progress all the time.
 
+[Install for VSCode!](https://marketplace.visualstudio.com/items?itemName=drumworkteam.link)
+
 <img src="https://github.com/link-script/code/blob/work/snap.png?raw=true" width="600" />
 
 ---

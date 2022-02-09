@@ -1,8 +1,14 @@
 {
-  "name": "code",
-  "displayName": "code",
-  "description": "Link Script Syntax Highlighter",
-  "version": "0.0.1",
+  "name": "link",
+  "displayName": "link",
+  "description": "Link Text Syntax Highlighter",
+  "version": "1.0.0",
+  "license" : "Apache 2.0",
+  "publisher": "drumworkteam",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/drumworkteam/link.git"
+  },
   "engines": {
     "vscode": "^1.59.0"
   },
