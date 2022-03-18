@@ -82,14 +82,20 @@ And now for some pictures of the code, since we can't get GitHub to offer syntax
 
 Now we will go into the actual specification of the syntax. The Link specification language is a minimal modeling language that is transformable into code. It has the following syntax.
 
-#### Terms
+#### Term
 
-The first thing to cover are _terms_. They are composed of _words_, separated by dashes, into what are called _keys_. A word is composed of lowercase ascii letters or numbers. So the following are all keys of a term.
+The first thing to cover are _terms_. They are composed of _words_, separated by dashes. A word is composed of lowercase ascii letters or numbers. A term can't start with a number. So the following are all keys of a term.
 
 ```link
 xo
 hello-world
 foo-bar-baz
+```
+
+The following is an invalid term.
+
+```link
+1xo
 ```
 
 You can nest them arbitrarily into trees. These are all trees.
@@ -130,18 +136,18 @@ The same as:
 add a, subtract b, c
 ```
 
-#### Numbers
+#### Size
 
-You can use numbers in the system too:
+You can use numbers ("sizes") in the system too:
 
 ```link
 add 1, 2
 add 1, subtract -2, 3.14
 ```
 
-#### Templates
+#### Text
 
-A more complex structure is the _template_. They are composed of a weaving of _text_ and _terms_. A string is a contiguous sequence of arbitrary unicode (utf-8).
+A more complex structure is the _text_. They are composed of a weaving of _cords_ (strings) and _terms_. A string/cord is a contiguous sequence of arbitrary unicode (utf-8).
 
 A simple template composed only of a string is:
 
@@ -177,7 +183,7 @@ Note though, you can still use the angle bracket symbols in regular text without
 i <am \<brackets\> included in the actual string>
 ```
 
-#### Codes
+#### Code
 
 You can write specific code points, or _codes_, by prefixing the number sign / hash symbol along with a letter representing the code type, followed by the code.
 
@@ -195,9 +201,9 @@ i <am the symbol #x2665>
 
 This makes it so you can reference obscure symbols by their numerical value, or write bits and things like that. Note though, these just get compiled down to the following, so the code handler would need to resolve them properly in the proper context.
 
-#### Selectors
+#### Nest
 
-Selectors are like drilling down into terms. They look like paths, but they are really drilling down into terms, if you think of it that way.
+A nest is a selector, which is a digging down into terms. They look like paths, but they are really diving down into terms, if you think of it that way.
 
 ```link
 get foo/bar
@@ -215,9 +221,23 @@ The interpolations can be nested as well, and chained. Here is a complex example
 get foo/bar[x][o/children[~i]/name]/value
 ```
 
-#### Paths
+The `~` tilde is by convention used for lookup by key (index in array, key in map), while without the tilde is just a dynamically resolved property value if you think of it that way.
 
-Because paths are so common in programming, they don't need to be treated as strings but can be written directly.
+There is also room to write `*` so we can dereference like in other language paradigms.
+
+```
+get *foo/bar
+```
+
+Finally, we have the `?` which is theoretically optionally grabbing a value if it exists.
+
+```
+get foo/bar?/baz
+```
+
+#### Line
+
+A line is a path, like a file path. Because paths are so common in programming, they don't need to be treated as strings but can be written directly. The special `@` symbol is for referencing relative to some "scope" or context, which you would handle in your interpreter of Link Text.
 
 ```link
 load @some/path
