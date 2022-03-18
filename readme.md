@@ -80,7 +80,7 @@ And now for some pictures of the code, since we can't get GitHub to offer syntax
 
 ### Specification
 
-Now we will go into the actual specification of the syntax. The Link specification language is a minimal modeling language that is transformable into code. It has the following syntax.
+Now we will go into the actual specification of the syntax. The Link specification language is a minimal modeling language that is transformable into code. The file extension to be used is `.link`, as in `file.link`. It has the following syntax.
 
 #### Term
 
