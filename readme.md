@@ -18,7 +18,7 @@
 
 ### Summary
 
-The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=drumworkteam.link). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
+Link Text is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
 
 ### Example
 
@@ -78,11 +78,7 @@ And now for some pictures of the code, since we can't get GitHub to offer syntax
 
 ### Guide
 
-Now we will go into the actual specification of the syntax. The Link specification language is a minimal modeling language that is transformable into code.
-
-Link Text is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
-
-It has the following syntax.
+Now we will go into the actual specification of the syntax. The Link specification language is a minimal modeling language that is transformable into code. It has the following syntax.
 
 #### Terms
 
@@ -234,6 +230,8 @@ That is, they are just special strings. You can interpolate on them like strings
 That is all there is to it! It is a simple way of defining trees of text, allowing for template variables inside text, and for basic primitives. It is then up to you to figure out what you want to do with it. Take a look at the [base](https://github.com/drumworkteam/base) project for the work we are doing to build a programming language environment on top of Link Text.
 
 ### Syntax Highlighter Installation
+
+The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=drumworkteam.link). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
 
 You can install the [VSCode syntax highlighter](https://marketplace.visualstudio.com/items?itemName=drumworkteam.link) from source by placing the unzipped folder into `$HOME/.vscode/extensions`, then restarting VSCode. Or just download it from the package install tool in VSCode.
 
