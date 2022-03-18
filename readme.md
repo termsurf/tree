@@ -20,6 +20,8 @@
 
 Link Text is a little more than a markup language, tending toward a programming language. In fact, it can be used for a programming language. It is a way to model information and computation in an easy to read and write format, suitable for hierarchical note taking and other means of capturing data down into structured form.
 
+It emerged out of the desire to have one way of writing things (notes, code, data models, etc.), that was not too verbose and was easy to learn with very few rules. Writing in all lowercase without having to use the shift key streamlines your typing so you can stream out your knowledge the most quickly. Existing markup languages like XML, JSON, and YAML are too static and don't let you define things in as concise a way as possible. It is indentation-based, and the typical style of a DSL is to write it in a somewhat repetitive way to give the quick visual cues as to the meaning of things. Hence the terms like `make` or `text` repeated often. But the way you use it is entirely up to you, those are just style conventions.
+
 ### Example
 
 First, some images of different usages of Link Text. Here are a few examples from existing code. The first is how you might define a "deck" (a "package" of Link code). The second is the first part of the Tao Te Ching captured in a tree, and the later we show how you might write a simple fibonacci function. These examples are DSLs designed for a specific purposes. As you will see in the syntax section, the Link language is independent of a DSL and simply defines some simple idioms for defining trees of text.
