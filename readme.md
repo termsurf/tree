@@ -13,7 +13,7 @@
 
 <h3 align='center'>link</h3>
 <p align='center'>
-  Link Text
+  A Data Modeling Language
 </p>
 
 <br/>
