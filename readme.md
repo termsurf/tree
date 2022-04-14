@@ -8,7 +8,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/drumworkteam/link/blob/make/view/make.svg?raw=true' height='256'>
+  <img src='https://github.com/drumworkteam/link/blob/make/view/link.svg?raw=true' height='256'>
 </p>
 
 <h3 align='center'>link</h3>
