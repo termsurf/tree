@@ -136,12 +136,19 @@ The same as:
 add a, subtract b, c
 ```
 
-#### Size
+#### Mark
 
-You can use numbers ("sizes") in the system too:
+You can use numbers ("marks") in the system too:
 
 ```link
 add 1, 2
+```
+
+#### Comb
+
+A comb is a decimal number.
+
+```link
 add 1, subtract -2, 3.14
 ```
 
