@@ -68,19 +68,15 @@ head <道德经>
 
 And now for some pictures of the code, since we can't get GitHub to offer syntax highlighting for a while.
 
-<img src="https://github.com/drumworkteam/link/blob/make/view/snap.png?raw=true" width="600" />
+<img src="https://github.com/drumworkteam/link/blob/make/view/tree.png?raw=true" />
 
 ---
 
-<img src="https://github.com/drumworkteam/link/blob/make/view/snap5.png?raw=true" width="600" />
+<img src="https://github.com/drumworkteam/link/blob/make/view/mine.png?raw=true" />
 
 ---
 
-<img src="https://github.com/drumworkteam/link/blob/make/view/snap2.png?raw=true" width="600" />
-
----
-
-<img src="https://github.com/drumworkteam/link/blob/make/view/snap7.png?raw=true" width="600" />
+<img src="https://github.com/drumworkteam/link/blob/make/view/lace.png?raw=true" />
 
 ### Specification
 
