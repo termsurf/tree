@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/teamtreesurf/link-text/blob/make/view/link.svg?raw=true' height='256'>
+  <img src='https://github.com/teamtreesurf/link/blob/make/view/link.svg?raw=true' height='256'>
 </p>
 
-<h3 align='center'>link-text</h3>
+<h3 align='center'>link</h3>
 <p align='center'>
   A Data Modeling Language
 </p>
@@ -67,15 +67,15 @@ head <道德经>
 
 And now for some pictures of the code, since we can't get GitHub to offer syntax highlighting for a while.
 
-<img src="https://github.com/teamtreesurf/link-text/blob/make/view/tree.png?raw=true" />
+<img src="https://github.com/teamtreesurf/link/blob/make/view/tree.png?raw=true" />
 
 ---
 
-<img src="https://github.com/teamtreesurf/link-text/blob/make/view/mine.png?raw=true" />
+<img src="https://github.com/teamtreesurf/link/blob/make/view/mine.png?raw=true" />
 
 ---
 
-<img src="https://github.com/teamtreesurf/link-text/blob/make/view/lace.png?raw=true" />
+<img src="https://github.com/teamtreesurf/link/blob/make/view/lace.png?raw=true" />
 
 ### Specification
 
