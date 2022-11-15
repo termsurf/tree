@@ -32,7 +32,7 @@ First, some images of different usages of Link Text. Here are a few examples fro
 A package definition:
 
 ```link
-deck @drumwork/base
+deck @treesurf/base
   head <Link Text Compiler>
   make <Link Text>
   make <Computation>
@@ -83,12 +83,13 @@ Now we will go into the actual specification of the syntax. The Link specificati
 
 #### Term
 
-The first thing to cover are _terms_. They are composed of _words_, separated by dashes. A word is composed of lowercase ascii letters or numbers. A term can't start with a number. So the following are all keys of a term.
+The first thing to cover are _terms_. They are composed of _words_, separated by dashes. A word is composed of lowercase ascii letters or numbers. A term can't start with a number. So the following are all words of a term.
 
 ```link
 xo
 hello-world
 foo-bar-baz
+abc123
 ```
 
 The following is an invalid term.
@@ -251,11 +252,11 @@ load ./relative/path.png
 load /an-absolute/other/path.js
 ```
 
-That is, they are just special strings. You can interpolate on them like strings as well with square brackets.
+That is, they are just special strings. You can interpolate on them like strings as well with curly brackets.
 
 ### Conclusion
 
-That is all there is to it! It is a simple way of defining trees of text, allowing for template variables inside text, and for basic primitives. It is then up to you to figure out what you want to do with it. Take a look at the [base](https://github.com/teamtreesurf/base) project for the work we are doing to build a programming language environment on top of Link Text. A primitive Link Text parser is [here](https://github.com/lancejpollard/link-parser.js), which converts it into a simple tree.
+That is all there is to it! It is a simple way of defining trees of text, allowing for template variables inside text, and for basic primitives. It is then up to you to figure out what you want to do with it. Take a look at the [`base.link`](https://github.com/teamtreesurf/base) project for the work we are doing to build a programming language environment on top of Link Text. A primitive Link Text parser is [here](https://github.com/lancejpollard/link-parser.js), which converts it into a simple tree.
 
 ### Syntax Highlighter Installation
 
@@ -265,7 +266,7 @@ You can install the [VSCode syntax highlighter](https://marketplace.visualstudio
 
 ### License
 
-Copyright 2021-2022 <a href='https://drum.work'>TreeSurf</a>
+Copyright 2021-2022 <a href='https://tree.surf'>TreeSurf</a>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
