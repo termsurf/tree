@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/teamtreesurf/link/blob/make/view/link.svg?raw=true' height='256'>
+  <img src='https://github.com/teamtreesurf/link/blob/make/view/clover.png?raw=true' height='256'>
 </p>
 
 <h3 align='center'>link</h3>
@@ -260,9 +260,9 @@ That is all there is to it! It is a simple way of defining trees of text, allowi
 
 ### Syntax Highlighter Installation
 
-The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link-text). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
+The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
 
-You can install the [VSCode syntax highlighter](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link-text) from source by placing the unzipped folder into `$HOME/.vscode/extensions`, then restarting VSCode. Or just download it from the package install tool in VSCode.
+You can install the [VSCode syntax highlighter](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link) from source by placing the unzipped folder into `$HOME/.vscode/extensions`, then restarting VSCode. Or just download it from the package install tool in VSCode.
 
 ### Development
 

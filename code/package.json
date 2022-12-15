@@ -1,13 +1,14 @@
 {
-  "name": "link",
+  "name": "link-text",
+  "icon": "view/clover.png",
   "displayName": "link",
   "description": "Link Text Syntax Highlighter",
   "version": "1.0.0",
   "license" : "Apache 2.0",
-  "publisher": "drumworkteam",
+  "publisher": "teamtreesurf",
   "repository": {
     "type": "git",
-    "url": "https://github.com/drumworkteam/link.git"
+    "url": "https://github.com/teamtreesurf/link.git"
   },
   "engines": {
     "vscode": "^1.59.0"
@@ -16,10 +17,22 @@
     "Programming Languages"
   ],
   "contributes": {
+    "iconThemes": [
+      {
+        "id": "link",
+        "label": "Link",
+        "path": "./view/view.json"
+      }
+    ],
     "configurationDefaults": {
       "[link]": {
         "editor.wordWrap": "on",
-        "editor.quickSuggestions": false
+        "editor.quickSuggestions": {
+          "other": false,
+          "comments": false,
+          "strings": false
+        },
+        "editor.wordSeparators": " ()<>{},?"
       }
     },
     "languages": [{

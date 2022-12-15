@@ -1,0 +1,10 @@
+{
+	"iconDefinitions": {
+		"_file_dark": {
+			"iconPath": "./clover.svg"
+		}
+	},
+	"fileExtensions": {
+		"link": "_file_dark"
+	}
+}
