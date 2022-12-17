@@ -127,7 +127,7 @@
               "name": "variable.other.link"
             },
             "2": {
-              "name": "entity.name.tag.link"
+              "name": "string.quoted.single.link"
             }
           }
         }
@@ -154,17 +154,16 @@
       ]
     },
     "strings": {
-      "name": "template.link",
       "begin": "\\<",
       "beginCaptures": {
         "0": {
-          "name": "support.type.property-name.link"
+          "name": "entity.name.tag.link"
         }
       },
       "end": "\\>",
       "endCaptures": {
         "0": {
-          "name": "support.type.property-name.link"
+          "name": "entity.name.tag.link"
         }
       },
       "patterns": [
@@ -172,17 +171,16 @@
           "include": "#codes"
         },
         {
-          "name": "punctuation.term.link",
           "begin": "\\{+",
           "beginCaptures": {
             "0": {
-              "name": "string.quoted.single.link"
+              "name": "support.type.property-name.link.link"
             }
           },
           "end": "\\}+",
           "endCaptures": {
             "0": {
-              "name": "string.quoted.single.link"
+              "name": "support.type.property-name.link.link"
             }
           },
           "patterns": [
@@ -204,7 +202,7 @@
           ]
         },
         {
-          "name": "support.type.property-name.link",
+          "name": "entity.name.tag.link",
           "match": "[^\\\\{>]+"
         }
       ]
