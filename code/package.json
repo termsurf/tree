@@ -16,6 +16,8 @@
   "categories": [
     "Programming Languages"
   ],
+  "activationEvents": [],
+  "main": "./client/out/extension",
   "contributes": {
     "iconThemes": [
       {
@@ -32,6 +34,7 @@
           "comments": false,
           "strings": false
         },
+        "editor.tabCompletion": "on",
         "editor.wordSeparators": " ()<>{},?/",
         "editor.bracketPairColorization.enabled": false
       }
@@ -47,5 +50,14 @@
       "scopeName": "source.link",
       "path": "./syntaxes/link.tmLanguage.json"
     }]
-  }
+  },
+  "scripts": {
+    "compile": "tsc -b",
+		"watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+  },
+	"devDependencies": {
+		"@types/node": "^16.11.7",
+		"typescript": "^4.8.4"
+	}
 }
