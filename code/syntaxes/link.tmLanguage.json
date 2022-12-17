@@ -47,9 +47,18 @@
     "nestedtermsexternal": {
       "patterns": [
         {
-          "name": "constant.language.link",
           "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*) ",
+          "beginCaptures": {
+            "1": {
+              "name": "constant.language.link"
+            }
+          },
           "end": "[,\n]",
+          "endCaptures": {
+            "0": {
+              "name": "variable.other.link"
+            }
+          },
           "patterns": [
             {
               "include": "#terms"
@@ -112,8 +121,15 @@
     "terms": {
       "patterns": [
         {
-          "name": "entity.name.tag.link",
-          "match": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)"
+          "match": "(/)?([a-z][a-z0-9]*(?:-[a-z0-9]+)*)",
+          "captures": {
+            "1": {
+              "name": "variable.other.link"
+            },
+            "2": {
+              "name": "entity.name.tag.link"
+            }
+          }
         }
       ]
     },
@@ -133,7 +149,7 @@
       "patterns": [
         {
           "name": "punctuation.separator.parameter.link",
-          "match": ","
+          "match": "[,/\\?\\*]"
         }
       ]
     },
@@ -181,9 +197,6 @@
             },
             {
               "include": "#strings"
-            },
-            {
-              "include": "#punctuations"
             },
             {
               "include": "#codes"
