@@ -3,7 +3,7 @@
   "icon": "view/clover.png",
   "displayName": "link",
   "description": "Link Text Syntax Highlighter",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license" : "Apache 2.0",
   "publisher": "teamtreesurf",
   "repository": {
@@ -32,7 +32,8 @@
           "comments": false,
           "strings": false
         },
-        "editor.wordSeparators": " ()<>{},?"
+        "editor.wordSeparators": " ()<>{},?",
+        "editor.bracketPairColorization.enabled": false
       }
     },
     "languages": [{

@@ -47,13 +47,8 @@
     "nestedtermsexternal": {
       "patterns": [
         {
-          "name": "entity.language.link",
+          "name": "constant.language.link",
           "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*) ",
-          "beginCaptures": {
-            "1": {
-              "name": "string.quoted.double.link"
-            }
-          },
           "end": "[,\n]",
           "patterns": [
             {
@@ -78,20 +73,20 @@
     "nestedterms": {
       "patterns": [
         {
-          "name": "term.language.link",
+          "name": "constant.language.link",
           "begin": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)(\\()",
           "beginCaptures": {
             "1": {
-              "name": "string.quoted.double.link"
+              "name": "constant.language.link"
             },
             "2": {
-              "name": "string.quoted.double.link"
+              "name": "punctuation.separator.parameter.link"
             }
           },
           "end": "\\)",
           "endCaptures": {
             "0": {
-              "name": "string.quoted.double.link"
+              "name": "punctuation.separator.parameter.link"
             }
           },
           "patterns": [
@@ -117,7 +112,7 @@
     "terms": {
       "patterns": [
         {
-          "name": "term.language.link",
+          "name": "entity.name.tag.link",
           "match": "([a-z][a-z0-9]*(?:-[a-z0-9]+)*)"
         }
       ]
@@ -125,11 +120,11 @@
     "numbers": {
       "patterns": [
         {
-          "name": "constant.numeric.integer.link",
+          "name": "entity.name.function.link",
           "match": "\\d+"
         },
         {
-          "name": "constant.numeric.decimal.link",
+          "name": "entity.name.function.link",
           "match": "\\d+\\.\\d+"
         }
       ]
@@ -147,13 +142,13 @@
       "begin": "\\<",
       "beginCaptures": {
         "0": {
-          "name": "entity.name.type.link"
+          "name": "support.type.property-name.link"
         }
       },
       "end": "\\>",
       "endCaptures": {
         "0": {
-          "name": "entity.name.type.link"
+          "name": "support.type.property-name.link"
         }
       },
       "patterns": [
@@ -161,21 +156,17 @@
           "include": "#codes"
         },
         {
-          "name": "entity.name.type.link",
-          "match": "\\\\."
-        },
-        {
           "name": "punctuation.term.link",
-          "begin": "\\{",
+          "begin": "\\{+",
           "beginCaptures": {
             "0": {
-              "name": "entity.name.type.link"
+              "name": "string.quoted.single.link"
             }
           },
-          "end": "\\}",
+          "end": "\\}+",
           "endCaptures": {
             "0": {
-              "name": "entity.name.type.link"
+              "name": "string.quoted.single.link"
             }
           },
           "patterns": [
@@ -200,7 +191,7 @@
           ]
         },
         {
-          "name": "entity.name.type.link",
+          "name": "support.type.property-name.link",
           "match": "[^\\\\{>]+"
         }
       ]
