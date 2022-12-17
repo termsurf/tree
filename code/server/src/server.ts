@@ -3,7 +3,6 @@ import {
 	TextDocuments,
 	ProposedFeatures,
 	InitializeParams,
-	DidChangeConfigurationNotification,
 	CompletionItem,
 	CompletionItemKind,
 	TextDocumentPositionParams,
@@ -12,6 +11,7 @@ import {
 } from 'vscode-languageserver/node';
 
 import * as fs from 'fs';
+import * as url from 'url';
 
 import {
 	TextDocument
@@ -24,25 +24,13 @@ const connection = createConnection(ProposedFeatures.all);
 // Create a simple text document manager.
 const documents: TextDocuments<TextDocument> = new TextDocuments(TextDocument);
 
-let hasConfigurationCapability = false;
 let hasWorkspaceFolderCapability = false;
-let hasDiagnosticRelatedInformationCapability = false;
 
 connection.onInitialize((params: InitializeParams) => {
 	const capabilities = params.capabilities;
 
-	// Does the client support the `workspace/configuration` request?
-	// If not, we fall back using global settings.
-	hasConfigurationCapability = !!(
-		capabilities.workspace && !!capabilities.workspace.configuration
-	);
 	hasWorkspaceFolderCapability = !!(
 		capabilities.workspace && !!capabilities.workspace.workspaceFolders
-	);
-	hasDiagnosticRelatedInformationCapability = !!(
-		capabilities.textDocument &&
-		capabilities.textDocument.publishDiagnostics &&
-		capabilities.textDocument.publishDiagnostics.relatedInformation
 	);
 
 	const result: InitializeResult = {
@@ -50,7 +38,8 @@ connection.onInitialize((params: InitializeParams) => {
 			textDocumentSync: TextDocumentSyncKind.Incremental,
 			// Tell the client that this server supports code completion.
 			completionProvider: {
-				resolveProvider: true
+				resolveProvider: true,
+        triggerCharacters: ['-'],
 			}
 		}
 	};
@@ -63,34 +52,19 @@ connection.onInitialize((params: InitializeParams) => {
 		};
 	}
 
+  documents.all().forEach(captureKeywords);
+
 	return result;
-});
-
-connection.onInitialized(() => {
-	if (hasConfigurationCapability) {
-		// Register for all configuration changes.
-		connection.client.register(DidChangeConfigurationNotification.type, undefined);
-	}
-
-	if (hasWorkspaceFolderCapability) {
-		connection.workspace.onDidChangeWorkspaceFolders(_event => {
-			connection.console.log('Workspace folder change event received.');
-		});
-	}
 });
 
 // Cache the settings of all open documents
 const documentKeywords: Map<string, Array<string>> = new Map();
 
 async function getDocumentKeywords(resource: string): Promise<Array<string>> {
-	if (!hasConfigurationCapability) {
-		return Promise.resolve([]);
-	}
-
 	let result = documentKeywords.get(resource);
 
   if (!result) {
-    result = parseKeywords(await fs.promises.readFile(resource, 'utf-8'));
+    result = parseKeywords(await fs.promises.readFile(url.fileURLToPath(resource), 'utf-8'));
 		documentKeywords.set(resource, result);
 	}
 
@@ -98,9 +72,13 @@ async function getDocumentKeywords(resource: string): Promise<Array<string>> {
 }
 
 function parseKeywords(string: string): Array<string> {
-  return string.trim().split(/[\n\s]+/)
+  return Object.keys(string.trim().split(/[\n\s]+/)
     .map(x => x.replace(/[^a-z\-]/g, ''))
-    .filter(x => x);
+    .filter(x => x)
+    .reduce((m, x) => {
+      m[x] = true;
+      return m;
+    }, {} as Record<string, boolean>));
 }
 
 // Only keep settings for open documents
@@ -120,7 +98,7 @@ async function captureKeywords(textDocument: TextDocument): Promise<void> {
 
 connection.onDidChangeWatchedFiles(_change => {
 	// Monitored files have change in VSCode
-	connection.console.log('We received an file change event');
+	// connection.console.log('We received an file change event');
 });
 
 // This handler provides the initial list of the completion items.
@@ -136,6 +114,12 @@ connection.onCompletion(
       data: i + 1
     }));
 	}
+);
+
+connection.onCompletionResolve(
+  (item: CompletionItem): CompletionItem => {
+    return item;
+  }
 );
 
 // Make the text document manager listen on the connection

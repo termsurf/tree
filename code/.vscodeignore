@@ -1,0 +1,10 @@
+.vscode/**
+**/*.ts
+**/*.map
+.gitignore
+**/tsconfig.json
+contributing.md
+.travis.yml
+client/node_modules/**
+server/node_modules/**
+node_modules/**

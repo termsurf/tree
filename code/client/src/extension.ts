@@ -1,5 +1,5 @@
 import * as path from 'path';
-import { ExtensionContext } from 'vscode';
+import { ExtensionContext, window } from 'vscode';
 
 import {
 	LanguageClient,
@@ -15,6 +15,9 @@ export function activate(context: ExtensionContext) {
 	const serverModule = context.asAbsolutePath(
 		path.join('server', 'out', 'server.js')
 	);
+
+  // const logger = window.createOutputChannel('Link');
+  // logger.show(true);
 
 	// If the extension is launched in debug mode then the debug server options are used
 	// Otherwise the run options are used
@@ -34,10 +37,12 @@ export function activate(context: ExtensionContext) {
 	// Create the language client and start the client.
 	client = new LanguageClient(
 		'linkServer',
-		'Link Language Server',
+		'Link',
 		serverOptions,
 		clientOptions
 	);
+
+  // logger.appendLine('hello2');
 
 	// Start the client. This will also launch the server
 	client.start();

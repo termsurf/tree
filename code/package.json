@@ -3,8 +3,8 @@
   "icon": "view/clover.png",
   "displayName": "link",
   "description": "Link Text Syntax Highlighter",
-  "version": "1.0.9",
-  "license" : "Apache 2.0",
+  "version": "1.0.10",
+  "license": "Apache 2.0",
   "publisher": "teamtreesurf",
   "repository": {
     "type": "git",
@@ -16,7 +16,10 @@
   "categories": [
     "Programming Languages"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:link",
+    "workspaceContains:**/*.link"
+  ],
   "main": "./client/out/extension",
   "contributes": {
     "iconThemes": [
@@ -30,34 +33,50 @@
       "[link]": {
         "editor.wordWrap": "on",
         "editor.quickSuggestions": {
-          "other": false,
-          "comments": false,
-          "strings": false
+          "other": "on",
+          "comments": "on",
+          "strings": "on"
         },
         "editor.tabCompletion": "on",
         "editor.wordSeparators": " ()<>{},?/",
         "editor.bracketPairColorization.enabled": false
       }
     },
-    "languages": [{
-      "id": "link",
-      "aliases": ["Link", "link"],
-      "extensions": [".link"],
-      "configuration": "./language-configuration.json"
-    }],
-    "grammars": [{
-      "language": "link",
-      "scopeName": "source.link",
-      "path": "./syntaxes/link.tmLanguage.json"
-    }]
+    "languages": [
+      {
+        "id": "link",
+        "aliases": [
+          "Link",
+          "link"
+        ],
+        "extensions": [
+          ".link"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "link",
+        "scopeName": "source.link",
+        "path": "./syntaxes/link.tmLanguage.json"
+      }
+    ]
   },
   "scripts": {
     "compile": "tsc -b",
-		"watch": "tsc -b -w",
-    "postinstall": "cd client && npm install && cd ../server && npm install && cd .."
+    "watch": "tsc -b -w",
+    "postinstall": "cd client && npm install && cd ../server && npm install && cd ..",
+    "vscode:prepublish": "npm run esbuild-base:client -- --minify && npm run esbuild-base:server -- --minify",
+    "esbuild-base:client": "esbuild ./client/src/extension.ts --bundle --outfile=client/out/extension.js --external:vscode --format=cjs --platform=node",
+    "esbuild-base:server": "esbuild ./server/src/server.ts --bundle --outfile=server/out/server.js --external:vscode --format=cjs --platform=node",
+    "esbuild": "npm run esbuild-base:client -- --sourcemap && npm run esbuild-base:server -- --sourcemap",
+    "esbuild-watch:client": "npm run esbuild-base:client -- --sourcemap --watch",
+    "esbuild-watch:server": "npm run esbuild-base:server -- --sourcemap --watch"
   },
-	"devDependencies": {
-		"@types/node": "^16.11.7",
-		"typescript": "^4.8.4"
-	}
+  "devDependencies": {
+    "@types/node": "^16.11.7",
+    "esbuild": "^0.16.8",
+    "typescript": "^4.8.4"
+  }
 }
