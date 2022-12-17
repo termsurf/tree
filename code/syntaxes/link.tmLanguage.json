@@ -68,6 +68,12 @@
           },
           "patterns": [
             {
+              "include": "#nestedtermsexternal"
+            },
+            {
+              "include": "#nestedterms"
+            },
+            {
               "include": "#terms"
             },
             {
