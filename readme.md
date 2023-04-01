@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/teamtreesurf/link/blob/make/view/link.svg?raw=true' height='256'>
+  <img src='https://github.com/tunebond/link/blob/make/view/link.svg?raw=true' height='256'>
 </p>
 
 <h3 align='center'>link</h3>
@@ -32,7 +32,7 @@ First, some images of different usages of Link Text. Here are a few examples fro
 A package definition:
 
 ```link
-deck @treesurf/base
+deck @tunebond/base
   head <Link Text Compiler>
   make <Link Text>
   make <Computation>
@@ -67,15 +67,15 @@ head <道德经>
 
 And now for some pictures of the code, since we can't get GitHub to offer syntax highlighting for a while.
 
-<img src="https://github.com/teamtreesurf/link/blob/make/view/tree.png?raw=true" />
+<img src="https://github.com/tunebond/link/blob/make/view/tree.png?raw=true" />
 
 ---
 
-<img src="https://github.com/teamtreesurf/link/blob/make/view/mine.png?raw=true" />
+<img src="https://github.com/tunebond/link/blob/make/view/mine.png?raw=true" />
 
 ---
 
-<img src="https://github.com/teamtreesurf/link/blob/make/view/lace.png?raw=true" />
+<img src="https://github.com/tunebond/link/blob/make/view/lace.png?raw=true" />
 
 ### Specification
 
@@ -256,13 +256,13 @@ That is, they are just special strings. You can interpolate on them like strings
 
 ### Conclusion
 
-That is all there is to it! It is a simple way of defining trees of text, allowing for template variables inside text, and for basic primitives. It is then up to you to figure out what you want to do with it. Take a look at the [`base.link`](https://github.com/teamtreesurf/base) project for the work we are doing to build a programming language environment on top of Link Text. A primitive Link Text parser is [here](https://github.com/lancejpollard/link-parser.js), which converts it into a simple tree.
+That is all there is to it! It is a simple way of defining trees of text, allowing for template variables inside text, and for basic primitives. It is then up to you to figure out what you want to do with it. Take a look at the [`base.link`](https://github.com/tunebond/base) project for the work we are doing to build a programming language environment on top of Link Text. A primitive Link Text parser is [here](https://github.com/lancejpollard/link-parser.js), which converts it into a simple tree.
 
 ### Syntax Highlighter Installation
 
-The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link-text). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
+The Link Text has a [syntax highlighter For VSCode](https://marketplace.visualstudio.com/items?itemName=tunebond.link-text). It's not perfect yet but it gets the job done. If you are new to the Link Text language, here we will give a brief overview of the syntax. Explore some of our other repos to get a deeper understanding of the types of things you can do with Link Text. It's far from complete but a labor of love. Making a little progress all the time.
 
-You can install the [VSCode syntax highlighter](https://marketplace.visualstudio.com/items?itemName=teamtreesurf.link-text) from source by placing the unzipped folder into `$HOME/.vscode/extensions`, then restarting VSCode. Or just download it from the package install tool in VSCode.
+You can install the [VSCode syntax highlighter](https://marketplace.visualstudio.com/items?itemName=tunebond.link-text) from source by placing the unzipped folder into `$HOME/.vscode/extensions`, then restarting VSCode. Or just download it from the package install tool in VSCode.
 
 ### Development
 
@@ -272,7 +272,7 @@ Inside the editor, press `F5`. This will compile and run the extension in a new 
 
 ### License
 
-Copyright 2021-2023 <a href='https://tree.surf'>TreeSurf</a>
+Copyright 2021-2023 <a href='https://tune.bond'>TuneBond</a>
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -286,6 +286,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
-### TreeSurf
+### TuneBond
 
-This is being developed by the folks at [TreeSurf](https://tree.surf), a California-based project for helping humanity master information and computation. TreeSurf started off in the winter of 2008 as a spark of an idea, to forming a company 10 years later in the winter of 2018, to a seed of a project just beginning its development phases. It is entirely bootstrapped by working full time and running [Etsy](https://etsy.com/shop/teamtreesurf) and [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also find us on [Facebook](https://www.facebook.com/teamtreesurf), [Twitter](https://twitter.com/teamtreesurf), and [LinkedIn](https://www.linkedin.com/company/teamtreesurf). Check out our other GitHub projects as well!
+This is being developed by the folks at [TuneBond](https://tune.bond), a California-based project for helping humanity master information and computation. TuneBond started off in the winter of 2008 as a spark of an idea, to forming a company 10 years later in the winter of 2018, to a seed of a project just beginning its development phases. It is entirely bootstrapped by working full time and running [Etsy](https://etsy.com/shop/tunebond) and [Amazon](https://www.amazon.com/s?rh=p_27%3AMount+Build) shops. Also find us on [Facebook](https://www.facebook.com/tunebond), [Twitter](https://twitter.com/tunebond), and [LinkedIn](https://www.linkedin.com/company/tunebond). Check out our other GitHub projects as well!
