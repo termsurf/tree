@@ -1,0 +1,7 @@
+
+some thing[another(a/b/c, 1, foo bar baz)]
+
+---
+
+some
+  thing[another(a/b/c, 1, foo(bar(baz)))]

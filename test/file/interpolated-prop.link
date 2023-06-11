@@ -1,0 +1,16 @@
+
+take {name}
+  like index
+    like t
+    like p
+
+---
+
+take
+  {name}
+  like
+    index
+    like
+      t
+    like
+      p

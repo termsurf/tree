@@ -1,0 +1,43 @@
+import { Fold, FoldCallCast } from '../fold/index.js';
+import { TextCallLink } from '../text/index.js';
+import { Link, LinkCallCast, LinkCull, LinkHint, LinkNick, LinkTree } from './form.js';
+export * from '../fold/index.js';
+export * from '../text/index.js';
+export * from './form.js';
+type LinkWall = {
+    line: Array<number>;
+    list: Array<Link>;
+    tree: LinkTree | LinkNick | LinkCull;
+};
+type LinkCallLinkHold = {
+    wall: Array<LinkWall>;
+    slot: number;
+    tree: LinkTree;
+};
+type LinkCallLink = FoldCallCast & {
+    hold: LinkCallLinkHold;
+    seed: Fold;
+};
+export declare function readFoldTree(link: FoldCallCast): LinkCallCast;
+export declare function readFallHook(link: LinkCallLink): void;
+export declare function readFallCull(link: LinkCallLink): void;
+export declare function readFallNest(link: LinkCallLink): void;
+export declare function readFallNick(link: LinkCallLink): void;
+export declare function readFallTerm(link: LinkCallLink): void;
+export declare function readFallTermLine(link: LinkCallLink): void;
+export declare function readFallText(link: LinkCallLink): void;
+export declare function readComb(link: LinkCallLink): void;
+export declare function readCode(link: LinkCallLink): void;
+export declare function readRiseHook(link: LinkCallLink): void;
+export declare function readRiseCull(link: LinkCallLink): void;
+export declare function readRiseNest(link: LinkCallLink): void;
+export declare function readRiseNick(link: LinkCallLink): void;
+export declare function readRiseTerm(link: LinkCallLink): void;
+export declare function readRiseTermLine(link: LinkCallLink): void;
+export declare function readRiseText(link: LinkCallLink): void;
+export declare function readSideSize(link: LinkCallLink): void;
+export declare function readText(link: LinkCallLink): void;
+export declare function readTermSlot(link: LinkCallLink): void;
+export declare function readSize(link: LinkCallLink): void;
+export declare const LINK_HINT_TEXT: Record<LinkHint, string>;
+export default function makeLinkTree(link: TextCallLink): LinkCallCast;

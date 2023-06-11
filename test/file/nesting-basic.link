@@ -1,0 +1,22 @@
+a b c d e f g a sd f
+  x y z w y
+    abc
+
+---
+
+a
+  b
+    c
+      d
+        e
+          f
+            g
+              a
+                sd
+                  f
+  x
+    y
+      z
+        w
+          y
+    abc

@@ -1,0 +1,10 @@
+
+bear ./mark
+  {{something}}-strange here
+
+---
+
+bear
+  <./mark>
+  {{something}}-strange
+    here

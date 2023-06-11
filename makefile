@@ -1,8 +1,8 @@
 
-build:
-	cd code && vsce package
-.PHONY: build
+make:
+	cd tool && vsce package
+.PHONY: make
 
-publish:
-	cd code && vsce publish
-.PHONY: publish
+host:
+	cd tool && vsce publish
+.PHONY: host

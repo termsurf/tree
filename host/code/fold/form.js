@@ -1,0 +1,30 @@
+export var FoldName;
+(function (FoldName) {
+    FoldName["FallHook"] = "fold-fall-hook";
+    FoldName["FallCull"] = "fold-fall-cull";
+    FoldName["FallLine"] = "fold-fall-line";
+    FoldName["FallCard"] = "fold-fall-card";
+    FoldName["FallNest"] = "fold-fall-nest";
+    FoldName["FallNick"] = "fold-fall-nick";
+    FoldName["FallTerm"] = "fold-fall-term";
+    FoldName["FallTermLine"] = "fold-fall-term-line";
+    FoldName["FallText"] = "fold-fall-text";
+    FoldName["Note"] = "fold-note";
+    FoldName["Comb"] = "fold-comb";
+    FoldName["Code"] = "fold-code";
+    FoldName["RiseHook"] = "fold-rise-hook";
+    FoldName["RiseCull"] = "fold-rise-cull";
+    FoldName["RiseLine"] = "fold-rise-line";
+    FoldName["RiseCard"] = "fold-rise-card";
+    FoldName["RiseNest"] = "fold-rise-nest";
+    FoldName["RiseNick"] = "fold-rise-nick";
+    FoldName["RiseTerm"] = "fold-rise-term";
+    FoldName["RiseTermLine"] = "fold-rise-term-line";
+    FoldName["RiseText"] = "fold-rise-text";
+    FoldName["SideSize"] = "fold-side-size";
+    FoldName["Text"] = "fold-text";
+    FoldName["TermSlot"] = "fold-term-slot";
+    FoldName["TermSlotLink"] = "fold-term-slot-link";
+    FoldName["Size"] = "fold-size";
+})(FoldName || (FoldName = {}));
+//# sourceMappingURL=form.js.map

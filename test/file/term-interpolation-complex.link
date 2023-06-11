@@ -1,0 +1,16 @@
+
+form text
+  link a-{x y}-z foo
+
+  link b{hello}, 123
+
+---
+
+form
+  text
+  link
+    a-{x(y)}-z
+      foo
+  link
+    b{hello}
+    123
