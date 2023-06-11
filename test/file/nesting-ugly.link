@@ -1,0 +1,16 @@
+
+task x
+  call name{{
+    something random{
+      <here>
+    }
+      another there
+  }}, bind foo, text {
+    bar
+  }
+
+foo hello{{
+  world
+    bar
+      baz(bing, boop)
+}}

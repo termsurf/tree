@@ -345,6 +345,19 @@ environment on top of Link Text. A primitive Link Text parser is
 [here](https://github.com/lancejpollard/link-parser.js), which converts
 it into a simple tree.
 
+## Implementation Details
+
+Since this an _indentation-based_ language, it is context sensitive and
+a little more complex to parse. As such we divide it into 3 phases:
+
+1. **`mark`**: This phase marks each token with a type in a somewhat
+   straightforward way, taking into consideration some basic context
+   such as whether it is part of `text` or a `term`.
+2. **`fold`**: This phase takes the `mark` tokens and converts them into
+   a set of _instructions_ for folding them into a tree.
+3. **`link`**: This phase takes the `fold` instructions and converts
+   them into the "link tree".
+
 ## Syntax Highlighter Installation
 
 The Link Text has a

@@ -68,10 +68,6 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       case Form.Text:
         break
       case Form.Term:
-        break
-      case Form.TermLine:
-        break
-      case Form.Term:
         switch (seed.form) {
           case TextName.RiseNick:
             foldList.push({
@@ -80,6 +76,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             })
             formList.push(Form.Nick)
             slot++
+            break
+          case TextName.TermSlot:
             break
           default:
             break
@@ -128,6 +126,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           }
           case TextName.RiseNick:
             lineHost = false
+            foldList.push(fold(FoldName.RiseTerm))
             formList.push(Form.Term)
             break
           case TextName.RiseNest:
