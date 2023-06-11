@@ -6,8 +6,7 @@ import { haveLink, haveLinkForm } from '../../code/have.js';
 export * from '../fold/index.js';
 export * from '../text/index.js';
 export * from './form.js';
-export function readFoldTree(link) {
-    // console.log(prettifyJSON(link.foldList))
+function readFoldTree(link) {
     const hold = {
         wall: [],
         slot: 0,
@@ -177,44 +176,44 @@ export function readFoldTree(link) {
         linkTree: hold.tree,
     };
 }
-export function readFallHook(link) {
+function readFallHook(link) {
     const wall = link.hold.wall[link.hold.wall.length - 1];
     const list = wall?.list;
     list?.pop();
 }
-export function readFallCull(link) {
+function readFallCull(link) {
     const { wall } = link.hold;
     wall.pop();
 }
-export function readFallNest(link) {
+function readFallNest(link) {
     const wall = link.hold.wall[link.hold.wall.length - 1];
     const list = wall?.list;
     list?.pop();
     wall?.line.pop();
 }
-export function readFallNick(link) {
+function readFallNick(link) {
     const { wall } = link.hold;
     wall.pop();
 }
-export function readFallTerm(link) {
+function readFallTerm(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list;
     list?.pop();
 }
-export function readFallTermLine(link) {
+function readFallTermLine(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list;
     list?.pop();
 }
-export function readFallText(link) {
+function readFallText(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list;
     list?.pop();
 }
-export function readComb(link) {
+function readComb(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -236,7 +235,7 @@ export function readComb(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readCode(link) {
+function readCode(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -259,7 +258,7 @@ export function readCode(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseHook(link) {
+function readRiseHook(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -310,7 +309,7 @@ export function readRiseHook(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseCull(link) {
+function readRiseCull(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -338,7 +337,7 @@ export function readRiseCull(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseNest(link) {
+function readRiseNest(link) {
     const wall = link.hold.wall[link.hold.wall.length - 1];
     if (!wall) {
         return;
@@ -408,7 +407,7 @@ export function readRiseNest(link) {
         // throw new Error()
     }
 }
-export function readRiseNick(link) {
+function readRiseNick(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -457,7 +456,7 @@ export function readRiseNick(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseTerm(link) {
+function readRiseTerm(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -466,9 +465,9 @@ export function readRiseTerm(link) {
         case LinkName.Line: {
             const term = {
                 dive: false,
-                // guard: false,
+                soak: false,
                 base: ride,
-                // query: false,
+                cull: false,
                 list: [],
                 form: LinkName.Term,
             };
@@ -479,9 +478,9 @@ export function readRiseTerm(link) {
         case LinkName.Nick: {
             const term = {
                 dive: false,
-                // guard: false,
+                soak: false,
                 base: ride,
-                // query: false,
+                cull: false,
                 list: [],
                 form: LinkName.Term,
             };
@@ -492,9 +491,9 @@ export function readRiseTerm(link) {
         case LinkName.Tree: {
             const term = {
                 dive: false,
-                // guard: false,
+                soak: false,
                 base: ride,
-                // query: false,
+                cull: false,
                 list: [],
                 form: LinkName.Term,
             };
@@ -512,7 +511,7 @@ export function readRiseTerm(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseTermLine(link) {
+function readRiseTermLine(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -553,7 +552,7 @@ export function readRiseTermLine(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readRiseText(link) {
+function readRiseText(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -573,7 +572,7 @@ export function readRiseText(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readSideSize(link) {
+function readSideSize(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -595,7 +594,7 @@ export function readSideSize(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readText(link) {
+function readText(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -628,7 +627,7 @@ export function readText(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readTermSlot(link) {
+function readTermSlot(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -639,10 +638,10 @@ export function readTermSlot(link) {
             const oldTerm = ride;
             if (link.seed.form === FoldName.TermSlot) {
                 oldTerm.dive = link.seed.dive;
-                // oldTerm.guard = link.seed.guard
+                oldTerm.soak = link.seed.soak;
                 oldTerm.form = LinkName.Term;
                 oldTerm.base = base;
-                // oldTerm.query = link.seed.query
+                oldTerm.cull = link.seed.cull;
                 oldTerm.list.push({
                     rank: link.seed.rank,
                     form: LinkName.TextLine,
@@ -664,7 +663,7 @@ export function readTermSlot(link) {
             throw haltNotImplemented(ride.form, link.link);
     }
 }
-export function readSize(link) {
+function readSize(link) {
     const { wall } = link.hold;
     const context = wall[wall.length - 1];
     const list = context?.list ?? [];
@@ -697,4 +696,5 @@ export const LINK_HINT_TEXT = {
 export default function makeLinkTree(link) {
     return readFoldTree(makeFoldList(makeTextList(link)));
 }
+export * from './show.js';
 //# sourceMappingURL=index.js.map

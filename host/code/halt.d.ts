@@ -94,4 +94,10 @@ export declare function getCursorRangeForTextWhitespaceToken(call: FoldCallCast,
         line: number;
     };
 };
+export declare function generateInvalidCompilerStateError(hint?: string, path?: string): {
+    code: string;
+    file: string | undefined;
+    hint: string;
+    note: string;
+};
 export {};

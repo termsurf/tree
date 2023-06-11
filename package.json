@@ -1,5 +1,5 @@
 {
-  "name": "@tunebond/love-code",
+  "name": "@tunebond/link",
   "type": "module",
   "version": "0.1.1",
   "license": "MIT",
@@ -30,6 +30,7 @@
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "eslint-plugin-sort-exports": "^0.8.0",
     "prettier": "^2.8.1",
+    "strip-ansi": "^7.1.0",
     "ts-node": "^10.9.1",
     "tsc-alias": "^1.8.2",
     "tsx": "^3.12.7",
@@ -38,6 +39,8 @@
   "dependencies": {
     "@lancejpollard/configured-quadratic-residue-prng.js": "^1.0.0",
     "@tunebond/halt": "^0.1.6",
-    "@tunebond/have": "^0.1.2"
+    "@tunebond/halt-text": "^0.1.3",
+    "@tunebond/have": "^0.1.2",
+    "@tunebond/tint": "^0.0.1"
   }
 }

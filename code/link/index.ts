@@ -45,9 +45,7 @@ type LinkCallLink = FoldCallCast & {
   seed: Fold
 }
 
-export function readFoldTree(link: FoldCallCast): LinkCallCast {
-  // console.log(prettifyJSON(link.foldList))
-
+function readFoldTree(link: FoldCallCast): LinkCallCast {
   const hold: LinkCallLinkHold = {
     wall: [],
     slot: 0,
@@ -226,51 +224,51 @@ export function readFoldTree(link: FoldCallCast): LinkCallCast {
   }
 }
 
-export function readFallHook(link: LinkCallLink): void {
+function readFallHook(link: LinkCallLink): void {
   const wall = link.hold.wall[link.hold.wall.length - 1]
   const list = wall?.list
   list?.pop()
 }
 
-export function readFallCull(link: LinkCallLink): void {
+function readFallCull(link: LinkCallLink): void {
   const { wall } = link.hold
   wall.pop()
 }
 
-export function readFallNest(link: LinkCallLink): void {
+function readFallNest(link: LinkCallLink): void {
   const wall = link.hold.wall[link.hold.wall.length - 1]
   const list = wall?.list
   list?.pop()
   wall?.line.pop()
 }
 
-export function readFallNick(link: LinkCallLink): void {
+function readFallNick(link: LinkCallLink): void {
   const { wall } = link.hold
   wall.pop()
 }
 
-export function readFallTerm(link: LinkCallLink): void {
+function readFallTerm(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
   list?.pop()
 }
 
-export function readFallTermLine(link: LinkCallLink): void {
+function readFallTermLine(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
   list?.pop()
 }
 
-export function readFallText(link: LinkCallLink): void {
+function readFallText(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
   list?.pop()
 }
 
-export function readComb(link: LinkCallLink): void {
+function readComb(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -295,7 +293,7 @@ export function readComb(link: LinkCallLink): void {
   }
 }
 
-export function readCode(link: LinkCallLink): void {
+function readCode(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -321,7 +319,7 @@ export function readCode(link: LinkCallLink): void {
   }
 }
 
-export function readRiseHook(link: LinkCallLink): void {
+function readRiseHook(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -374,7 +372,7 @@ export function readRiseHook(link: LinkCallLink): void {
   }
 }
 
-export function readRiseCull(link: LinkCallLink): void {
+function readRiseCull(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -407,7 +405,7 @@ export function readRiseCull(link: LinkCallLink): void {
   }
 }
 
-export function readRiseNest(link: LinkCallLink): void {
+function readRiseNest(link: LinkCallLink): void {
   const wall = link.hold.wall[link.hold.wall.length - 1]
 
   if (!wall) {
@@ -474,7 +472,7 @@ export function readRiseNest(link: LinkCallLink): void {
   }
 }
 
-export function readRiseNick(link: LinkCallLink): void {
+function readRiseNick(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -535,7 +533,7 @@ export function readRiseNick(link: LinkCallLink): void {
   }
 }
 
-export function readRiseTerm(link: LinkCallLink): void {
+function readRiseTerm(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -545,9 +543,9 @@ export function readRiseTerm(link: LinkCallLink): void {
     case LinkName.Line: {
       const term: LinkTerm = {
         dive: false,
-        // guard: false,
+        soak: false,
         base: ride,
-        // query: false,
+        cull: false,
         list: [],
         form: LinkName.Term,
       }
@@ -560,9 +558,9 @@ export function readRiseTerm(link: LinkCallLink): void {
     case LinkName.Nick: {
       const term: LinkTerm = {
         dive: false,
-        // guard: false,
+        soak: false,
         base: ride,
-        // query: false,
+        cull: false,
         list: [],
         form: LinkName.Term,
       }
@@ -575,9 +573,9 @@ export function readRiseTerm(link: LinkCallLink): void {
     case LinkName.Tree: {
       const term: LinkTerm = {
         dive: false,
-        // guard: false,
+        soak: false,
         base: ride,
-        // query: false,
+        cull: false,
         list: [],
         form: LinkName.Term,
       }
@@ -597,7 +595,7 @@ export function readRiseTerm(link: LinkCallLink): void {
   }
 }
 
-export function readRiseTermLine(link: LinkCallLink): void {
+function readRiseTermLine(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -649,7 +647,7 @@ export function readRiseTermLine(link: LinkCallLink): void {
   }
 }
 
-export function readRiseText(link: LinkCallLink): void {
+function readRiseText(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -672,7 +670,7 @@ export function readRiseText(link: LinkCallLink): void {
   }
 }
 
-export function readSideSize(link: LinkCallLink): void {
+function readSideSize(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -697,7 +695,7 @@ export function readSideSize(link: LinkCallLink): void {
   }
 }
 
-export function readText(link: LinkCallLink): void {
+function readText(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -734,7 +732,7 @@ export function readText(link: LinkCallLink): void {
   }
 }
 
-export function readTermSlot(link: LinkCallLink): void {
+function readTermSlot(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -747,10 +745,10 @@ export function readTermSlot(link: LinkCallLink): void {
 
       if (link.seed.form === FoldName.TermSlot) {
         oldTerm.dive = link.seed.dive
-        // oldTerm.guard = link.seed.guard
+        oldTerm.soak = link.seed.soak
         oldTerm.form = LinkName.Term
         oldTerm.base = base
-        // oldTerm.query = link.seed.query
+        oldTerm.cull = link.seed.cull
 
         oldTerm.list.push({
           rank: link.seed.rank,
@@ -775,7 +773,7 @@ export function readTermSlot(link: LinkCallLink): void {
   }
 }
 
-export function readSize(link: LinkCallLink): void {
+function readSize(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -812,3 +810,5 @@ export const LINK_HINT_TEXT: Record<LinkHint, string> = {
 export default function makeLinkTree(link: TextCallLink): LinkCallCast {
   return readFoldTree(makeFoldList(makeTextList(link)))
 }
+
+export * from './show.js'

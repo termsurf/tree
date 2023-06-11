@@ -1,4 +1,6 @@
 import Halt, { Link } from '@tunebond/halt'
+import { TONE } from '@tunebond/halt-text'
+import tint from '@tunebond/tint'
 import { Text, TextCallCast, TextName, TextRank } from './text'
 import { haveMesh, haveText } from '@tunebond/have'
 import { FoldCallCast } from './fold'
@@ -106,7 +108,10 @@ export function makeRankText(
   let n = bond.head.line
   let pad = String(n + 1).length
   const defaultIndent = new Array(pad + 1).join(' ')
-  lineList.push(chalk.white(`${defaultIndent} |`))
+  const W = { tone: TONE.fall.base }
+  const WB = { tone: TONE.fall.base, bold: true }
+  const R = { tone: TONE.fall.red }
+  lineList.push(tint(`${defaultIndent} |`, W))
 
   while (i <= n) {
     const line = lineText[i]
@@ -116,23 +121,22 @@ export function makeRankText(
       i < line.length ? x.toString().padStart(pad, ' ') : defaultIndent
 
     if (rank.base.line === i) {
-      lineList.push(chalk.whiteBright(`${z} | ${line}`))
+      lineList.push(tint(`${z} | ${line}`, WB))
       const indentA = new Array(z.length + 1).join(' ')
       const indentB = new Array(rank.base.mark + 1).join(' ')
       const haltText = new Array(
         rank.head.mark - rank.base.mark + 1,
       ).join('~')
       lineList.push(
-        chalk.white(`${indentA} | ${indentB}`) +
-          chalk.red(`${haltText}`),
+        tint(`${indentA} | ${indentB}`, W) + tint(`${haltText}`, R),
       )
     } else {
-      lineList.push(chalk.white(`${z} | ${lineText}`))
+      lineList.push(tint(`${z} | ${lineText}`, W))
     }
     i++
   }
 
-  lineList.push(chalk.white(`${defaultIndent} |`))
+  lineList.push(tint(`${defaultIndent} |`, W))
 
   return lineList.join('\n')
 }
@@ -186,5 +190,22 @@ export function getCursorRangeForTextWhitespaceToken(
       mark: base.rank.base.mark,
       line: base.rank.base.line,
     },
+  }
+}
+
+export function generateInvalidCompilerStateError(
+  hint?: string,
+  path?: string,
+) {
+  return {
+    code: `0028`,
+    file: path,
+    hint: [
+      hint,
+      `This is some bug with the budding compiler. Check the stack trace to see where the error occurred.`,
+    ]
+      .filter(x => x)
+      .join(' '),
+    note: `Invalid compiler state`,
   }
 }

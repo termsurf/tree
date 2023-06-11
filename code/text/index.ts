@@ -20,10 +20,10 @@ export enum TextName {
   RiseLine = 'text-rise-line',
   RiseText = 'text-rise-text',
   LineSlot = 'text-line-slot',
-  SideSize = 'text-signed-integer',
+  SideSize = 'text-side-size',
   Text = 'text-text',
-  TermSlot = 'text-term-fragment',
-  Size = 'text-unsigned-integer',
+  TermSlot = 'text-term-slot',
+  Size = 'text-size',
 }
 
 // rank
@@ -61,7 +61,7 @@ export const TEXT_NAME: Array<TextName> = [
   TextName.Note,
   TextName.Comb,
   TextName.Code,
-  TextName.Line,
+  TextName.LineSlot,
   TextName.RiseCull,
   TextName.RiseSlot,
   TextName.RiseNick,
@@ -69,7 +69,7 @@ export const TEXT_NAME: Array<TextName> = [
   TextName.RiseHold,
   TextName.RiseText,
   TextName.RiseLine,
-  TextName.LineSlot,
+  TextName.Line,
   TextName.SideSize,
   TextName.Text,
   TextName.TermSlot,
@@ -85,7 +85,7 @@ export const TEXT_TEST_LIST: Array<TextName> = [
   TextName.Note,
   TextName.Comb,
   TextName.Code,
-  TextName.Line,
+  TextName.LineSlot,
   TextName.RiseCull,
   TextName.RiseSlot,
   TextName.RiseNick,
@@ -292,6 +292,7 @@ const TEST: Record<TextName, TextSeed> = {
 export type Text =
   | TextFallCull
   | TextLine
+  | TextLineSlot
   | TextRiseSlot
   | TextComb
   | TextSideSize
@@ -311,7 +312,6 @@ export type Text =
   | TextTermSlot
   | TextRiseLine
   | TextFallLine
-  | TextLine
 
 export default function makeTextList(link: TextCallLink): TextCallCast {
   const cast: TextCallCast = {
@@ -359,13 +359,7 @@ export default function makeTextList(link: TextCallLink): TextCallCast {
           let find = textLine.match(seed.test)
 
           if (find) {
-            // console.log(
-            //   textForm,
-            //   form,
-            //   match?.[0],
-            //   textLine,
-            //   seed.test,
-            // )
+            // console.log(textForm, form, find, textLine, seed.test)
             if (seed.head) {
               const stem = cast.list[cast.list.length - 1]
               if (!stem) {
@@ -419,7 +413,7 @@ export default function makeTextList(link: TextCallLink): TextCallCast {
             }
 
             switch (form) {
-              case TextName.Line: {
+              case TextName.LineSlot: {
                 line++
                 mark = 0
               }

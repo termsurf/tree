@@ -17,10 +17,10 @@ export declare enum TextName {
     RiseLine = "text-rise-line",
     RiseText = "text-rise-text",
     LineSlot = "text-line-slot",
-    SideSize = "text-signed-integer",
+    SideSize = "text-side-size",
     Text = "text-text",
-    TermSlot = "text-term-fragment",
-    Size = "text-unsigned-integer"
+    TermSlot = "text-term-slot",
+    Size = "text-size"
 }
 export type TextRankLink = {
     mark: number;
@@ -121,5 +121,5 @@ export type TextCallCast = TextCallLink & {
     list: Array<Text>;
     lineText: Array<string>;
 };
-export type Text = TextFallCull | TextLine | TextRiseSlot | TextComb | TextSideSize | TextSize | TextRiseNest | TextRiseHold | TextFallHold | TextRiseText | TextFallText | TextRiseNick | TextFallNick | TextLink | TextCode | TextNote | TextRiseCull | TextText | TextTermSlot | TextRiseLine | TextFallLine | TextLine;
+export type Text = TextFallCull | TextLine | TextLineSlot | TextRiseSlot | TextComb | TextSideSize | TextSize | TextRiseNest | TextRiseHold | TextFallHold | TextRiseText | TextFallText | TextRiseNick | TextFallNick | TextLink | TextCode | TextNote | TextRiseCull | TextText | TextTermSlot | TextRiseLine | TextFallLine;
 export default function makeTextList(link: TextCallLink): TextCallCast;

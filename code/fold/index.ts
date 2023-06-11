@@ -8,25 +8,18 @@ import type {
 } from '../text/index.js'
 import { TextName } from '../text/index.js'
 
-import { FoldName, Fold } from './form.js'
-import type { FoldCallCast, FoldTermSlot } from './form.js'
-import { generateInvalidWhitespaceError } from 'code/halt.js'
+import { FoldName } from './form.js'
+import type { FoldCallCast, FoldTermSlot, Fold } from './form.js'
+import {
+  generateInvalidCompilerStateError,
+  generateInvalidWhitespaceError,
+} from 'code/halt.js'
 
 export * from './form.js'
 
-export type FoldStateHandleType = (link: FoldCallLink) => void
-
 export type FoldCallLink = TextCallCast
 
-export type FoldStateType = {
-  base: <T extends FoldName>(form: T) => { id: number; form: T }
-  count: (form: FoldName) => number
-  slot: number
-  foldList: Array<FoldName>
-  stack: Array<FoldName>
-}
-
-export default function makeFoldList(link: TextCallCast): FoldCallCast {
+export default function makeFoldList(link: FoldCallLink): FoldCallCast {
   const foldList: Array<Fold> = []
 
   const sizeList: Record<string, number> = {}
@@ -48,6 +41,11 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
   let textSlot = 0 // indent
   let lineHost = false
 
+  const cast = {
+    ...link,
+    foldList,
+  }
+
   while (slot < link.list.length) {
     const seed = link.list[slot]
     if (seed) {
@@ -59,7 +57,7 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
         }
         case TextName.RiseSlot: {
           if (!lineHost) {
-            throw generateInvalidWhitespaceError(link, slot)
+            throw generateInvalidWhitespaceError(cast, slot)
           }
           textSlot++
           foldList.push(fold(FoldName.RiseNest))
@@ -67,10 +65,10 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
           break
         }
         case TextName.RiseNest: {
-          code.throwError(code.generateInvalidWhitespaceError(link))
+          throw generateInvalidWhitespaceError(cast, slot)
           break
         }
-        case TextName.Line: {
+        case TextName.LineSlot: {
           while (textSlot > 0) {
             foldList.push(fold(FoldName.FallNest))
             textSlot--
@@ -92,12 +90,11 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
         case TextName.RiseHold:
         case TextName.RiseText:
         case TextName.Link: {
-          code.throwError(
-            code.generateInvalidCompilerStateError(
-              `Uncastd text type ${seed.form}.`,
-              link.path,
-            ),
-          )
+          throw new Error('Oops')
+          // throw generateInvalidCompilerStateError(
+          //   `Uncastd text type ${seed.form}.`,
+          //   link.path,
+          // )
         }
         case TextName.Note: {
           slot++
@@ -401,7 +398,7 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
     size = 0,
     fall = false,
   ): Array<Fold> {
-    let list: Array<Fold> = []
+    const list: Array<Fold> = []
     const tail: Array<Fold> = []
 
     let cullSize = 0
@@ -417,21 +414,21 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
         }
         case TextName.TermSlot: {
           const slotList = makeTermSlotList(seed)
-          const list: Array<Fold> = []
+          const listNest: Array<Fold> = []
 
           slotList.forEach((slot, i) => {
             if (slot.bond) {
-              list.push(slot)
+              listNest.push(slot)
             }
 
             if (i < slotList.length - 1) {
               hasSeparator = true
-              list.push(fold(FoldName.FallTerm))
-              list.push(fold(FoldName.RiseTerm))
+              listNest.push(fold(FoldName.FallTerm))
+              listNest.push(fold(FoldName.RiseTerm))
             }
           })
 
-          list.push(...list)
+          list.push(...listNest)
 
           break check
         }
@@ -480,24 +477,24 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
         case TextName.Line: {
           const slotList = makeTermSlotList(seed)
 
-          const list: Array<Fold> = []
+          const listNest: Array<Fold> = []
 
-          list.push(fold(FoldName.RiseTerm))
+          listNest.push(fold(FoldName.RiseTerm))
           slotList.forEach((slot, i) => {
             if (slot.bond) {
-              list.push(slot)
+              listNest.push(slot)
             }
 
             if (i < slotList.length - 1) {
               hasSeparator = true
-              list.push(fold(FoldName.FallTerm))
-              list.push(fold(FoldName.RiseTerm))
+              listNest.push(fold(FoldName.FallTerm))
+              listNest.push(fold(FoldName.RiseTerm))
             }
           })
 
-          list.push(fold(FoldName.FallTerm))
+          listNest.push(fold(FoldName.FallTerm))
 
-          list.push(...list)
+          list.push(...listNest)
           break check
         }
         default:
@@ -511,10 +508,6 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
     }
 
     const foldList: Array<Fold> = []
-
-    // if (size === 0) {
-    //   console.log(foldList)
-    // }
 
     if (hasIndex) {
       foldList.push(fold(FoldName.RiseTermLine))
@@ -595,10 +588,5 @@ export default function makeFoldList(link: TextCallCast): FoldCallCast {
 
   // console.log(logDirectionList(foldList))
 
-  // console.log(foldList.map(x => `${x.form} => ${x.value}`))
-
-  return {
-    ...link,
-    foldList,
-  }
+  return cast
 }

@@ -132,9 +132,9 @@ export type LinkTextLine = {
 
 export type LinkTerm = {
   dive: boolean // dereference
-  // guard: boolean
+  soak: boolean
   base: LinkLine | LinkTree | LinkNick
-  // query: boolean
+  cull: boolean
   list: Array<LinkTextLine | LinkNick>
   form: LinkName.Term
 }

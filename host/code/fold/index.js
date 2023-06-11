@@ -1,6 +1,6 @@
 import { TextName } from '../text/index.js';
 import { FoldName } from './form.js';
-import { generateInvalidWhitespaceError } from '../../code/halt.js';
+import { generateInvalidWhitespaceError, } from '../../code/halt.js';
 export * from './form.js';
 export default function makeFoldList(link) {
     const foldList = [];
@@ -18,6 +18,10 @@ export default function makeFoldList(link) {
     let slot = 0;
     let textSlot = 0; // indent
     let lineHost = false;
+    const cast = {
+        ...link,
+        foldList,
+    };
     while (slot < link.list.length) {
         const seed = link.list[slot];
         if (seed) {
@@ -29,7 +33,7 @@ export default function makeFoldList(link) {
                 }
                 case TextName.RiseSlot: {
                     if (!lineHost) {
-                        throw generateInvalidWhitespaceError(link, slot);
+                        throw generateInvalidWhitespaceError(cast, slot);
                     }
                     textSlot++;
                     foldList.push(fold(FoldName.RiseNest));
@@ -37,10 +41,10 @@ export default function makeFoldList(link) {
                     break;
                 }
                 case TextName.RiseNest: {
-                    code.throwError(code.generateInvalidWhitespaceError(link));
+                    throw generateInvalidWhitespaceError(cast, slot);
                     break;
                 }
-                case TextName.Line: {
+                case TextName.LineSlot: {
                     while (textSlot > 0) {
                         foldList.push(fold(FoldName.FallNest));
                         textSlot--;
@@ -62,7 +66,11 @@ export default function makeFoldList(link) {
                 case TextName.RiseHold:
                 case TextName.RiseText:
                 case TextName.Link: {
-                    code.throwError(code.generateInvalidCompilerStateError(`Uncastd text type ${seed.form}.`, link.path));
+                    throw new Error('Oops');
+                    // throw generateInvalidCompilerStateError(
+                    //   `Uncastd text type ${seed.form}.`,
+                    //   link.path,
+                    // )
                 }
                 case TextName.Note: {
                     slot++;
@@ -340,7 +348,7 @@ export default function makeFoldList(link) {
         return foldList;
     }
     function castTermSlot(link, size = 0, fall = false) {
-        let list = [];
+        const list = [];
         const tail = [];
         let cullSize = 0;
         let hasSeparator = false;
@@ -355,18 +363,18 @@ export default function makeFoldList(link) {
                 }
                 case TextName.TermSlot: {
                     const slotList = makeTermSlotList(seed);
-                    const list = [];
+                    const listNest = [];
                     slotList.forEach((slot, i) => {
                         if (slot.bond) {
-                            list.push(slot);
+                            listNest.push(slot);
                         }
                         if (i < slotList.length - 1) {
                             hasSeparator = true;
-                            list.push(fold(FoldName.FallTerm));
-                            list.push(fold(FoldName.RiseTerm));
+                            listNest.push(fold(FoldName.FallTerm));
+                            listNest.push(fold(FoldName.RiseTerm));
                         }
                     });
-                    list.push(...list);
+                    list.push(...listNest);
                     break check;
                 }
                 case TextName.RiseCull: {
@@ -415,20 +423,20 @@ export default function makeFoldList(link) {
                 }
                 case TextName.Line: {
                     const slotList = makeTermSlotList(seed);
-                    const list = [];
-                    list.push(fold(FoldName.RiseTerm));
+                    const listNest = [];
+                    listNest.push(fold(FoldName.RiseTerm));
                     slotList.forEach((slot, i) => {
                         if (slot.bond) {
-                            list.push(slot);
+                            listNest.push(slot);
                         }
                         if (i < slotList.length - 1) {
                             hasSeparator = true;
-                            list.push(fold(FoldName.FallTerm));
-                            list.push(fold(FoldName.RiseTerm));
+                            listNest.push(fold(FoldName.FallTerm));
+                            listNest.push(fold(FoldName.RiseTerm));
                         }
                     });
-                    list.push(fold(FoldName.FallTerm));
-                    list.push(...list);
+                    listNest.push(fold(FoldName.FallTerm));
+                    list.push(...listNest);
                     break check;
                 }
                 default:
@@ -440,9 +448,6 @@ export default function makeFoldList(link) {
             list.pop();
         }
         const foldList = [];
-        // if (size === 0) {
-        //   console.log(foldList)
-        // }
         if (hasIndex) {
             foldList.push(fold(FoldName.RiseTermLine));
             foldList.push(fold(FoldName.RiseTerm));
@@ -511,10 +516,6 @@ export default function makeFoldList(link) {
         });
     }
     // console.log(logDirectionList(foldList))
-    // console.log(foldList.map(x => `${x.form} => ${x.value}`))
-    return {
-        ...link,
-        foldList,
-    };
+    return cast;
 }
 //# sourceMappingURL=index.js.map

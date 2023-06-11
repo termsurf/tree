@@ -1,54 +1,83 @@
 import assert from 'assert'
-import fs from 'fs'
+import { promises as fs } from 'fs'
 import test from 'node:test'
 import { dirname } from 'path'
 import stripAnsi from 'strip-ansi'
 import { fileURLToPath } from 'url'
 
-import { code } from '~'
-
-import make from '../code/link/index.js'
+import makeLinkTree, { showLinkTree } from '../code/link/index.js'
 
 const __filename = fileURLToPath(import.meta.url)
-const __dirname = dirname(__filename).replace(
-  /\/base.link\/host/,
-  '/base.link/make',
-)
+const __dirname = dirname(__filename)
 
 async function start() {
-  await code.loadSourceMaps()
-  const fixtures = (await fs.promises.readdir(`${__dirname}/file`))
+  const fixtures = (await fs.readdir(`${__dirname}/file`))
     .filter(x => x.endsWith('.link'))
     .map(x => `${__dirname}/file/${x}`)
 
   for (const path of fixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
     test(`make ${localPath}`, async () => {
-      const content = await fs.promises.readFile(path, 'utf-8')
-      const [input, expected] = content
+      const content = await fs.readFile(path, 'utf-8')
+      const [provided, expected] = content
         .split(/\n---\n/)
         .map(x => x.trim())
-      assert(input, 'Should have defined initial input')
+      assert(provided, 'Should have defined provided input')
       assert(expected, 'Should have defined expected output')
-      assertParse(path, input, expected)
+      assertParse(path, provided, expected)
+    })
+  }
+
+  const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
+    .filter(x => x.endsWith('.link'))
+    .map(x => `${__dirname}/file/kink/${x}`)
+
+  for (const path of kinkFixtures) {
+    const localPath = path.replace(`${__dirname}/`, '')
+    test(`make ${localPath}`, async () => {
+      const content = await fs.readFile(path, 'utf-8')
+      const [provided, expected] = content
+        .split(/\n---\n/)
+        .map(x => x.trim())
+      assert(provided, 'Should have defined provided input')
+      assert(expected, 'Should have defined expected output')
+      assertParseKink(path, provided, expected)
     })
   }
 }
 
 start()
 
-function assertParse(path: string, input: string, expected: string) {
-  const data = make({ path, text: input })
-  const output = '' //trimLines(code.printMesh(data.link))
+function assertParse(link: string, provided: string, expected: string) {
+  const data = makeLinkTree({ link, text: provided })
+  const output = trimLines(showLinkTree(data.linkTree))
 
-  const a = stripAnsi(output).trim()
-  const b = stripAnsi(expected).trim()
+  const a = String(stripAnsi(output)).trim()
+  const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
     if (process.env.DEVELOP) {
       console.log(output)
     }
-    code.throwError(code.generateStringMismatchError(data, a, b))
+    throw new Error(`${a} != ${b}`)
+    // code.throwError(code.generateStringMismatchError(data, a, b))
+  }
+}
+
+function assertParseKink(
+  link: string,
+  provided: string,
+  expected: string,
+) {
+  try {
+    const data = makeLinkTree({ link, text: provided })
+    console.log(data)
+  } catch (e) {
+    if (e instanceof Error) {
+      if (e.message != expected) {
+        throw e
+      }
+    }
   }
 }
 

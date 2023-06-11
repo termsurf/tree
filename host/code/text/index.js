@@ -20,10 +20,10 @@ export var TextName;
     TextName["RiseLine"] = "text-rise-line";
     TextName["RiseText"] = "text-rise-text";
     TextName["LineSlot"] = "text-line-slot";
-    TextName["SideSize"] = "text-signed-integer";
+    TextName["SideSize"] = "text-side-size";
     TextName["Text"] = "text-text";
-    TextName["TermSlot"] = "text-term-fragment";
-    TextName["Size"] = "text-unsigned-integer";
+    TextName["TermSlot"] = "text-term-slot";
+    TextName["Size"] = "text-size";
 })(TextName || (TextName = {}));
 export const TEXT_LINE_TEST_LIST = [
     TextName.FallLine,
@@ -47,7 +47,7 @@ export const TEXT_NAME = [
     TextName.Note,
     TextName.Comb,
     TextName.Code,
-    TextName.Line,
+    TextName.LineSlot,
     TextName.RiseCull,
     TextName.RiseSlot,
     TextName.RiseNick,
@@ -55,7 +55,7 @@ export const TEXT_NAME = [
     TextName.RiseHold,
     TextName.RiseText,
     TextName.RiseLine,
-    TextName.LineSlot,
+    TextName.Line,
     TextName.SideSize,
     TextName.Text,
     TextName.TermSlot,
@@ -70,7 +70,7 @@ export const TEXT_TEST_LIST = [
     TextName.Note,
     TextName.Comb,
     TextName.Code,
-    TextName.Line,
+    TextName.LineSlot,
     TextName.RiseCull,
     TextName.RiseSlot,
     TextName.RiseNick,
@@ -194,13 +194,7 @@ export default function makeTextList(link) {
                 if (seed && seed.test instanceof RegExp) {
                     let find = textLine.match(seed.test);
                     if (find) {
-                        // console.log(
-                        //   textForm,
-                        //   form,
-                        //   match?.[0],
-                        //   textLine,
-                        //   seed.test,
-                        // )
+                        // console.log(textForm, form, find, textLine, seed.test)
                         if (seed.head) {
                             const stem = cast.list[cast.list.length - 1];
                             if (!stem) {
@@ -251,7 +245,7 @@ export default function makeTextList(link) {
                             mark += findSize;
                         }
                         switch (form) {
-                            case TextName.Line: {
+                            case TextName.LineSlot: {
                                 line++;
                                 mark = 0;
                             }

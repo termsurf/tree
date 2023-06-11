@@ -1,21 +1,25 @@
 import { LinkName } from './form.js';
-export function showMesh(base) {
+import tint from '@tunebond/tint';
+import { TONE } from '@tunebond/halt-text';
+import { haltNotImplemented } from '../halt.js';
+const G = { tone: TONE.fall.green };
+export function showLinkTree(base) {
     const text = [''];
-    showMeshDetails(base).forEach(line => {
+    showLinkTreeBase(base).forEach(line => {
         text.push(`${line}`);
     });
     text.push('');
     return text.join('\n');
 }
-export function showParserMesh(base) {
-    const text = [''];
-    showParserMeshDetails(base).forEach(line => {
-        text.push(`  ${line}`);
-    });
-    text.push('');
-    return text.join('\n');
-}
-function showMeshDetails(node, flat = false) {
+// export function showParserMesh(base: Link): string {
+//   const text: Array<string> = ['']
+//   showParserMeshDetails(base).forEach(line => {
+//     text.push(`  ${line}`)
+//   })
+//   text.push('')
+//   return text.join('\n')
+// }
+function showLinkTreeBase(node, flat = false) {
     const text = [];
     switch (node.form) {
         case LinkName.TextLine: {
@@ -25,13 +29,13 @@ function showMeshDetails(node, flat = false) {
         case LinkName.Tree: {
             const head = [];
             if (node.head) {
-                showMeshDetails(node.head, flat).forEach(line => {
+                showLinkTreeBase(node.head, flat).forEach(line => {
                     head.push(`${line}`);
                 });
             }
             const nest = [];
             node.nest.forEach(el => {
-                showMeshDetails(el, flat).forEach(line => {
+                showLinkTreeBase(el, flat).forEach(line => {
                     nest.push(`${line}`);
                 });
             });
@@ -47,13 +51,13 @@ function showMeshDetails(node, flat = false) {
             break;
         }
         case LinkName.Size: {
-            text.push(chalk.green(`${node.bond}`));
+            text.push(tint(`${node.bond}`, G));
             break;
         }
         case LinkName.Text: {
             const string = [];
             node.list.forEach(seg => {
-                showMeshDetails(seg, true).forEach(line => {
+                showLinkTreeBase(seg, true).forEach(line => {
                     string.push(`${line}`);
                 });
             });
@@ -64,7 +68,7 @@ function showMeshDetails(node, flat = false) {
             if (node.nest.length) {
                 const plugin = [];
                 node.nest.forEach(nest => {
-                    showMeshDetails(nest, true).forEach(line => {
+                    showLinkTreeBase(nest, true).forEach(line => {
                         plugin.push(`${line}`);
                     });
                 });
@@ -77,7 +81,7 @@ function showMeshDetails(node, flat = false) {
         case LinkName.Cull: {
             const slot = [];
             node.nest.forEach(nest => {
-                showMeshDetails(nest, true).forEach(line => {
+                showLinkTreeBase(nest, true).forEach(line => {
                     slot.push(`${line}`);
                 });
             });
@@ -95,7 +99,7 @@ function showMeshDetails(node, flat = false) {
         case LinkName.Term: {
             const term = [];
             node.list.forEach(seg => {
-                showMeshDetails(seg, true).forEach(line => {
+                showLinkTreeBase(seg, true).forEach(line => {
                     term.push(line);
                 });
             });
@@ -105,115 +109,114 @@ function showMeshDetails(node, flat = false) {
         case LinkName.Line: {
             const line = [];
             node.list.forEach((seg, i) => {
-                showMeshDetails(seg, true).forEach(line => {
+                showLinkTreeBase(seg, true).forEach(l => {
                     if (i > 0 && seg.form !== LinkName.Cull) {
                         line.push('/');
                     }
-                    line.push(line);
+                    line.push(l);
                 });
             });
             text.push(line.join(''));
             break;
         }
         default:
-            throw haltNotImplemented(undefined);
+            throw haltNotImplemented(node.form, JSON.stringify(node));
     }
     return text;
 }
-function showParserMeshDetails(node) {
-    const text = [];
-    const title = chalk.white(node.form);
-    switch (node.form) {
-        case LinkName.Text: {
-            text.push(`${title} ${chalk.green(node.bond)}`);
-            break;
-        }
-        case LinkName.Tree: {
-            text.push(`${title}`);
-            if (node.head) {
-                text.push(chalk.gray(`  head:`));
-                showParserMeshDetails(node.head).forEach(line => {
-                    text.push(`    ${line}`);
-                });
-            }
-            else {
-                text.push(chalk.gray('  hook: undefined'));
-            }
-            if (node.nest.length) {
-                text.push(chalk.gray(`  nest:`));
-                node.nest.forEach(el => {
-                    showParserMeshDetails(el).forEach(line => {
-                        text.push(`    ${line}`);
-                    });
-                });
-            }
-            break;
-        }
-        case LinkName.Size: {
-            text.push(`${title} ${node.bond}`);
-            break;
-        }
-        case LinkName.Text: {
-            text.push(`${title}`);
-            node.list.forEach(seg => {
-                showParserMeshDetails(seg).forEach(line => {
-                    text.push(`  ${line}`);
-                });
-            });
-            break;
-        }
-        case LinkName.Nick: {
-            text.push(`${title}`);
-            text.push(chalk.gray(`  size: ${node.size}`));
-            if (node.nest.length) {
-                text.push(chalk.gray(`  nest:`));
-                node.nest.forEach(nest => {
-                    showParserMeshDetails(nest).forEach(line => {
-                        text.push(`    ${line}`);
-                    });
-                });
-            }
-            break;
-        }
-        case LinkName.Cull: {
-            text.push(`${title}`);
-            text.push(chalk.gray(`  nest:`));
-            node.nest.forEach(nest => {
-                showParserMeshDetails(nest).forEach(line => {
-                    text.push(`    ${line}`);
-                });
-            });
-            break;
-        }
-        case LinkName.Comb: {
-            text.push(`${title} ${node.bond}`);
-            break;
-        }
-        case LinkName.Code: {
-            text.push(`${title} #${node.system}${node.code}`);
-            break;
-        }
-        case LinkName.Term: {
-            text.push(`${title}`);
-            node.list.forEach(seg => {
-                showParserMeshDetails(seg).forEach(line => {
-                    text.push(`  ${line}`);
-                });
-            });
-            break;
-        }
-        case LinkName.Line: {
-            text.push(`${title}`);
-            node.list.forEach(seg => {
-                showParserMeshDetails(seg).forEach(line => {
-                    text.push(`  ${line}`);
-                });
-            });
-            break;
-        }
-        default:
-            throw haltNotImplemented(undefined);
-    }
-    return text;
-}
+// function showParserMeshDetails(node: Link): Array<string> {
+//   const text: Array<string> = []
+//   const title = chalk.white(node.form)
+//   switch (node.form) {
+//     case LinkName.Text: {
+//       text.push(`${title} ${chalk.green(node.bond)}`)
+//       break
+//     }
+//     case LinkName.Tree: {
+//       text.push(`${title}`)
+//       if (node.head) {
+//         text.push(chalk.gray(`  head:`))
+//         showParserMeshDetails(node.head).forEach(line => {
+//           text.push(`    ${line}`)
+//         })
+//       } else {
+//         text.push(chalk.gray('  hook: undefined'))
+//       }
+//       if (node.nest.length) {
+//         text.push(chalk.gray(`  nest:`))
+//         node.nest.forEach(el => {
+//           showParserMeshDetails(el).forEach(line => {
+//             text.push(`    ${line}`)
+//           })
+//         })
+//       }
+//       break
+//     }
+//     case LinkName.Size: {
+//       text.push(`${title} ${node.bond}`)
+//       break
+//     }
+//     case LinkName.Text: {
+//       text.push(`${title}`)
+//       node.list.forEach(seg => {
+//         showParserMeshDetails(seg).forEach(line => {
+//           text.push(`  ${line}`)
+//         })
+//       })
+//       break
+//     }
+//     case LinkName.Nick: {
+//       text.push(`${title}`)
+//       text.push(chalk.gray(`  size: ${node.size}`))
+//       if (node.nest.length) {
+//         text.push(chalk.gray(`  nest:`))
+//         node.nest.forEach(nest => {
+//           showParserMeshDetails(nest).forEach(line => {
+//             text.push(`    ${line}`)
+//           })
+//         })
+//       }
+//       break
+//     }
+//     case LinkName.Cull: {
+//       text.push(`${title}`)
+//       text.push(chalk.gray(`  nest:`))
+//       node.nest.forEach(nest => {
+//         showParserMeshDetails(nest).forEach(line => {
+//           text.push(`    ${line}`)
+//         })
+//       })
+//       break
+//     }
+//     case LinkName.Comb: {
+//       text.push(`${title} ${node.bond}`)
+//       break
+//     }
+//     case LinkName.Code: {
+//       text.push(`${title} #${node.system}${node.code}`)
+//       break
+//     }
+//     case LinkName.Term: {
+//       text.push(`${title}`)
+//       node.list.forEach(seg => {
+//         showParserMeshDetails(seg).forEach(line => {
+//           text.push(`  ${line}`)
+//         })
+//       })
+//       break
+//     }
+//     case LinkName.Line: {
+//       text.push(`${title}`)
+//       node.list.forEach(seg => {
+//         showParserMeshDetails(seg).forEach(line => {
+//           text.push(`  ${line}`)
+//         })
+//       })
+//       break
+//     }
+//     default:
+//       throw haltNotImplemented(undefined)
+//   }
+//   return text
+// }
 //# sourceMappingURL=show.js.map

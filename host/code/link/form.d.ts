@@ -85,7 +85,9 @@ export type LinkTextLine = {
 };
 export type LinkTerm = {
     dive: boolean;
+    soak: boolean;
     base: LinkLine | LinkTree | LinkNick;
+    cull: boolean;
     list: Array<LinkTextLine | LinkNick>;
     form: LinkName.Term;
 };
