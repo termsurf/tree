@@ -3,8 +3,7 @@ import _ from 'lodash'
 import type { MarkCallCast } from '../mark/index.js'
 import { MarkName } from '../mark/index.js'
 import { FoldName } from './form.js'
-import type { FoldCallCast, FoldTermSlot, Fold } from './form.js'
-import { generateInvalidWhitespaceError } from '../halt.js'
+import type { FoldCallCast, Fold } from './form.js'
 import { haveMesh, haveWave } from '@tunebond/have'
 
 export * from './form.js'
@@ -56,9 +55,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
 
   function castMark() {
     let textSlot = 0 // indent
-    let lineHost = false
     let lastTextSlot = 0
-    const nest: Array<Form> = []
 
     function diffTextSlot() {
       if (lastTextSlot > textSlot) {
@@ -77,9 +74,11 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         case MarkName.FallCull:
           foldList.push({
             rank: seed.rank,
+            text: seed.text,
             ...fold(FoldName.FallCull),
           })
           formList.pop()
+          slot++
           break
         case MarkName.FallNick:
           foldList.push({
@@ -88,12 +87,18 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             ...fold(FoldName.FallNick),
           })
           formList.pop()
+          const last = formList[formList.length - 1]
+          if (last) {
+            last.nest = -1
+          }
+          slot++
           break
         case MarkName.FallHold:
           foldList.push(fold(FoldName.FallNest))
           slot++
           break
         case MarkName.FallLineText:
+          slot++
           break
         case MarkName.FallText: {
           const base = formList.pop()
@@ -108,8 +113,10 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           break
         }
         case MarkName.Link:
+          slot++
           break
         case MarkName.Note:
+          slot++
           break
         case MarkName.Comb: {
           slot++
@@ -135,6 +142,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           slot++
           foldList.push({
             rank: seed.rank,
+            text: seed.text,
             ...fold(FoldName.RiseCull),
           })
           const head = link.list[slot]
@@ -157,11 +165,13 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         }
         case MarkName.RiseSlot:
           textSlot++
+          slot++
           break
         case MarkName.RiseNick: {
           slot++
           foldList.push({
             rank: seed.rank,
+            text: seed.text,
             size: seed.text.length,
             ...fold(FoldName.RiseNick),
           })
@@ -183,6 +193,10 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           }
           break
         }
+        case MarkName.FallTerm:
+          foldList.push(fold(FoldName.FallTermLine))
+          slot++
+          break
         case MarkName.RiseNest:
           foldList.push(fold(FoldName.RiseNest))
           slot++
@@ -192,6 +206,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           slot++
           break
         case MarkName.RiseLineText:
+          slot++
           break
         case MarkName.RiseText: {
           slot++
@@ -200,8 +215,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             ...fold(FoldName.RiseText),
           })
           const head = link.list[slot]
-          switch (head?.form) {
-            case MarkName.LineSlot:
+          switch (head?.text) {
+            case '\n':
               slot++
               formList.push({
                 form: Form.Text,
@@ -211,7 +226,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             default:
               formList.push({
                 form: Form.Text,
-                nest: textSlot,
+                nest: 0,
               })
               break
           }
@@ -230,7 +245,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
               case MarkName.RiseSlot:
                 slot++
                 textSlot++
-                break walk
+                break
               default:
                 break walk
             }
@@ -241,13 +256,33 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         }
         case MarkName.SideSize: {
           foldList.push({
-            ...seed,
+            rank: seed.rank,
             bond: parseInt(seed.text, 10),
             ...fold(FoldName.Comb),
           })
+          slot++
+          const head = link.list[slot]
+          switch (head?.form) {
+            case MarkName.RiseNest:
+              throw new Error('Cant use numbers as terms.')
+              break
+            default:
+              break
+          }
           break
         }
         case MarkName.Text: {
+          slot++
+          const base = formList[formList.length - 1]
+          haveMesh(base, 'base')
+
+          if (base.nest >= 0) {
+            haveWave(
+              base.nest === seed.text.match(/^(  )+/)?.length,
+              'equal',
+            )
+          }
+
           foldList.push({
             ...seed,
             bond: seed.text,
@@ -255,7 +290,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           })
           break
         }
-        case MarkName.TermText: {
+        case MarkName.TermBase: {
+          slot++
           foldList.push(fold(FoldName.RiseTermLine))
           foldList.push({
             ...seed,
@@ -268,15 +304,52 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           })
           break
         }
+        case MarkName.TermLink: {
+          slot++
+          foldList.push({
+            ...seed,
+            bond: seed.text,
+            ...fold(FoldName.TermText),
+          })
+          break
+        }
+        case MarkName.TermHead: {
+          slot++
+          foldList.push({
+            ...seed,
+            bond: seed.text,
+            ...fold(FoldName.TermText),
+          })
+          break
+        }
+        case MarkName.TermLineLink: {
+          slot++
+          foldList.push({
+            ...seed,
+            bond: seed.text,
+            ...fold(FoldName.TermText),
+          })
+          break
+        }
         case MarkName.Size: {
+          slot++
           foldList.push({
             ...seed,
             bond: parseInt(seed.text, 10),
             ...fold(FoldName.Comb),
           })
+          const head = link.list[slot]
+          switch (head?.form) {
+            case MarkName.RiseNest:
+              throw new Error('Cant use numbers as terms.')
+              break
+            default:
+              break
+          }
           break
         }
         case MarkName.LineTextLink: {
+          slot++
           foldList.push({
             ...seed,
             bond: seed.text,
@@ -285,6 +358,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           break
         }
         case MarkName.LineTextSlot: {
+          slot++
           foldList.push({
             ...seed,
             bond: seed.text,
@@ -296,11 +370,10 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           throw new Error('undefined')
           break
       }
-      slot++
     }
   }
 
-  console.log(JSON.stringify(cast.foldList, null, 2))
+  // console.log(JSON.stringify(cast.foldList, null, 2))
 
   return cast
 }

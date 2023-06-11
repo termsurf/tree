@@ -7,7 +7,9 @@ call some{separator}path
     some text {{
       and interpolation{
         here <and {{
-          there[pretty much{really}] and there
+          test
+            there[pretty much{really}]
+            basic and there
         }} and there!>
       }
     }}

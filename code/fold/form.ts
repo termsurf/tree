@@ -1,7 +1,7 @@
 import type { MarkCallCast, Rank } from '../mark/index.js'
+import haveHalt from '@tunebond/have/halt.js'
 
 export enum FoldName {
-  FallHook = 'fold-fall-hook',
   FallCull = 'fold-fall-cull',
   FallCard = 'fold-fall-card',
   FallNest = 'fold-fall-nest',
@@ -11,7 +11,6 @@ export enum FoldName {
   Note = 'fold-note',
   Comb = 'fold-comb',
   Code = 'fold-code',
-  RiseHook = 'fold-rise-hook',
   RiseCull = 'fold-rise-cull',
   RiseCard = 'fold-rise-card',
   RiseNest = 'fold-rise-nest',
@@ -24,22 +23,40 @@ export enum FoldName {
   Size = 'fold-size',
 }
 
-export type FoldBase = {
-  code: number
+export type FoldHash = {
+  'fold-fall-cull': FoldFallCull
+  'fold-fall-card': FoldFallCard
+  'fold-fall-nest': FoldFallNest
+  'fold-fall-nick': FoldFallNick
+  'fold-fall-term-line': FoldFallTermLine
+  'fold-fall-text': FoldFallText
+  'fold-note': FoldNote
+  'fold-comb': FoldComb
+  'fold-code': FoldCode
+  'fold-rise-cull': FoldRiseCull
+  'fold-rise-card': FoldRiseCard
+  'fold-rise-nest': FoldRiseNest
+  'fold-rise-nick': FoldRiseNick
+  'fold-rise-term-line': FoldRiseTermLine
+  'fold-rise-text': FoldRiseText
+  'fold-side-size': FoldSideSize
+  'fold-text': FoldText
+  'fold-term-text': FoldTermText
+  'fold-size': FoldSize
 }
 
-export type FoldFallHook = FoldBase & {
-  form: FoldName.FallHook
+export type FoldBase = {
+  code: number
+  rank: Rank
 }
 
 export type FoldFallCull = FoldBase & {
   form: FoldName.FallCull
-  rank: Rank
+  text: string
 }
 
 export type FoldTermText = FoldBase & {
   form: FoldName.TermText
-  rank: Rank
   bond: string
 }
 
@@ -53,7 +70,6 @@ export type FoldFallNest = FoldBase & {
 
 export type FoldFallNick = FoldBase & {
   form: FoldName.FallNick
-  rank: Rank
   text: string
 }
 
@@ -64,7 +80,6 @@ export type FoldFallTermLine = FoldBase & {
 export type FoldFallText = FoldBase & {
   form: FoldName.FallText
   text: string
-  rank: Rank
 }
 
 export type FoldNote = FoldBase & {
@@ -72,14 +87,12 @@ export type FoldNote = FoldBase & {
 }
 
 export type FoldComb = FoldBase & {
-  rank: Rank
   form: FoldName.Comb
   bond: number
 }
 
 export type FoldCode = FoldBase & {
   bond: string
-  rank: Rank
   base: string
   form: FoldName.Code
 }
@@ -104,16 +117,10 @@ export type Fold =
   | FoldSideSize
   | FoldText
   | FoldSize
-  | FoldRiseHook
-  | FoldFallHook
-
-export type FoldRiseHook = FoldBase & {
-  form: FoldName.RiseHook
-}
 
 export type FoldRiseCull = FoldBase & {
   form: FoldName.RiseCull
-  rank: Rank
+  text: string
 }
 
 export type FoldRiseCard = FoldBase & {
@@ -127,7 +134,7 @@ export type FoldRiseNest = FoldBase & {
 export type FoldRiseNick = FoldBase & {
   size: number
   form: FoldName.RiseNick
-  rank: Rank
+  text: string
 }
 
 export type FoldRiseTermLine = FoldBase & {
@@ -136,7 +143,6 @@ export type FoldRiseTermLine = FoldBase & {
 
 export type FoldRiseText = FoldBase & {
   form: FoldName.RiseText
-  rank: Rank
 }
 
 export type FoldCallCast = MarkCallCast & {
@@ -144,19 +150,32 @@ export type FoldCallCast = MarkCallCast & {
 }
 
 export type FoldSideSize = FoldBase & {
-  rank: Rank
   form: FoldName.SideSize
   bond: number
 }
 
 export type FoldText = FoldBase & {
-  rank: Rank
   form: FoldName.Text
   bond: string
 }
 
 export type FoldSize = FoldBase & {
-  rank: Rank
   form: FoldName.Size
   bond: number
+}
+
+export function testFoldForm<N extends FoldName>(
+  lead: unknown,
+  name: N,
+): lead is FoldHash[N] {
+  return (lead as Fold).form === name
+}
+
+export function haveFoldForm<N extends FoldName>(
+  lead: unknown,
+  name: N,
+): asserts lead is FoldHash[N] {
+  if (!testFoldForm(lead, name)) {
+    throw haveHalt('form_miss', { call: name, need: 'fold' })
+  }
 }

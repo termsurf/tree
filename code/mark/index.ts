@@ -30,10 +30,14 @@ export enum MarkName {
   LineSlot = 'mark-line-slot',
   SideSize = 'mark-side-size',
   Text = 'mark-text',
-  TermText = 'mark-term-text',
   Size = 'mark-size',
   LineTextLink = 'mark-line-text-link',
   LineTextSlot = 'mark-line-text-slot',
+  TermBase = 'mark-term-base',
+  TermLink = 'mark-term-link',
+  TermHead = 'mark-term-head',
+  TermLineLink = 'mark-term-line-link',
+  FallTerm = 'mark-fall-term',
 }
 
 // rank
@@ -55,7 +59,11 @@ export const MARK_LINE_TEST_LIST: Array<MarkName> = [
 ]
 
 export const MARK_NICK_TEST_LIST: Array<MarkName> = [
-  MarkName.TermText,
+  MarkName.TermBase,
+  MarkName.TermLink,
+  MarkName.TermHead,
+  MarkName.TermLineLink,
+  MarkName.FallTerm,
   MarkName.FallNick,
   MarkName.LineSlot,
   MarkName.RiseSlot,
@@ -78,13 +86,21 @@ export const MARK_TEXT_TEST_LIST: Array<MarkName> = [
 
 export const MARK_TERM_TEST_LIST: Array<MarkName> = [
   MarkName.RiseNick,
-  MarkName.TermText,
+  MarkName.TermBase,
+  MarkName.TermLink,
+  MarkName.TermHead,
+  MarkName.TermLineLink,
+  MarkName.FallTerm,
   MarkName.RiseCull,
   MarkName.RiseNest,
 ]
 
 export const MARK_CULL_TEST_LIST: Array<MarkName> = [
-  MarkName.TermText,
+  MarkName.TermBase,
+  MarkName.TermLink,
+  MarkName.TermHead,
+  MarkName.TermLineLink,
+  MarkName.FallTerm,
   MarkName.Size,
   MarkName.SideSize,
   MarkName.Comb,
@@ -98,6 +114,11 @@ export const MARK_CULL_TEST_LIST: Array<MarkName> = [
 ]
 
 export const MARK_NAME: Array<MarkName> = [
+  MarkName.TermBase,
+  MarkName.TermLink,
+  MarkName.TermHead,
+  MarkName.TermLineLink,
+  MarkName.FallTerm,
   MarkName.FallLineText,
   MarkName.FallCull,
   MarkName.FallNick,
@@ -117,11 +138,15 @@ export const MARK_NAME: Array<MarkName> = [
   MarkName.RiseLineText,
   MarkName.SideSize,
   MarkName.Text,
-  MarkName.TermText,
   MarkName.Size,
 ]
 
 export const MARK_BASE_TEST_LIST: Array<MarkName> = [
+  MarkName.TermBase,
+  MarkName.TermLink,
+  MarkName.TermHead,
+  MarkName.TermLineLink,
+  MarkName.FallTerm,
   MarkName.FallCull,
   MarkName.FallNick,
   MarkName.FallHold,
@@ -139,7 +164,6 @@ export const MARK_BASE_TEST_LIST: Array<MarkName> = [
   MarkName.RiseText,
   MarkName.RiseLineText,
   MarkName.SideSize,
-  MarkName.TermText,
   MarkName.Size,
 ]
 
@@ -192,6 +216,10 @@ export type MarkRiseHold = MarkBase & {
   form: MarkName.RiseHold
 }
 
+export type MarkFallTerm = MarkBase & {
+  form: MarkName.FallTerm
+}
+
 export type MarkFallHold = MarkBase & {
   form: MarkName.FallHold
 }
@@ -228,6 +256,22 @@ export type MarkNote = MarkBase & {
   form: MarkName.Note
 }
 
+export type MarkTermBase = MarkBase & {
+  form: MarkName.TermBase
+}
+
+export type MarkTermLink = MarkBase & {
+  form: MarkName.TermLink
+}
+
+export type MarkTermHead = MarkBase & {
+  form: MarkName.TermHead
+}
+
+export type MarkTermLineLink = MarkBase & {
+  form: MarkName.TermLineLink
+}
+
 export type MarkRiseLineText = MarkBase & {
   form: MarkName.RiseLineText
 }
@@ -238,10 +282,6 @@ export type MarkLineSlot = MarkBase & {
 
 export type MarkText = MarkBase & {
   form: MarkName.Text
-}
-
-export type MarkTermText = MarkBase & {
-  form: MarkName.TermText
 }
 
 export type MarkCallLink = {
@@ -260,8 +300,12 @@ export type MarkBase = {
 }
 
 export type MarkSeed = {
+  // what comes before
   base?: Array<MarkName>
+  // what comes after
+  head?: Array<MarkName>
   test: RegExp
+  // whether or not we consume token
   take?: boolean
 }
 
@@ -327,14 +371,37 @@ const TEST: Record<MarkName, MarkSeed> = {
     test: /^[\w:\-\*\.]+|\.{1,2}/,
   },
   [MarkName.FallLineText]: {
-    test: /^[\n, ]/,
+    test: /^[\n, (]/,
     take: false,
   },
   [MarkName.SideSize]: {
     test: /^-?\d+(?=\b)/,
   },
-  [MarkName.TermText]: {
-    test: /^[a-z0-9\/\-]+/,
+  [MarkName.TermBase]: {
+    test: /^[a-z][a-z0-9]*/,
+  },
+  [MarkName.TermLink]: {
+    base: [MarkName.TermBase, MarkName.RiseNick],
+    test: /^\-/,
+  },
+  [MarkName.TermHead]: {
+    base: [MarkName.TermLink, MarkName.RiseNick],
+    test: /^[a-z0-9]+/,
+  },
+  [MarkName.FallTerm]: {
+    base: [MarkName.TermHead, MarkName.TermBase],
+    head: [MarkName.RiseCull, MarkName.FallNick],
+    test: /^[\n, \(\]\[\}]/,
+    take: false,
+  },
+  [MarkName.TermLineLink]: {
+    base: [
+      MarkName.FallNick,
+      MarkName.TermHead,
+      MarkName.TermBase,
+      MarkName.FallCull,
+    ],
+    test: /^\//,
   },
   [MarkName.Size]: {
     test: /^\d+(?=\b)/,
@@ -346,28 +413,32 @@ const TEST: Record<MarkName, MarkSeed> = {
 
 export type Mark =
   | MarkFallCull
-  | MarkLineSlot
-  | MarkRiseSlot
+  | MarkFallNick
+  | MarkFallHold
+  | MarkFallLineText
+  | MarkFallText
+  | MarkLink
+  | MarkNote
   | MarkComb
-  | MarkSideSize
-  | MarkSize
+  | MarkCode
+  | MarkRiseCull
+  | MarkRiseSlot
+  | MarkRiseNick
   | MarkRiseNest
   | MarkRiseHold
-  | MarkFallHold
-  | MarkRiseText
-  | MarkFallText
-  | MarkRiseNick
-  | MarkFallNick
-  | MarkLink
-  | MarkCode
-  | MarkNote
-  | MarkRiseCull
-  | MarkText
-  | MarkTermText
   | MarkRiseLineText
-  | MarkFallLineText
+  | MarkRiseText
+  | MarkLineSlot
+  | MarkSideSize
+  | MarkText
+  | MarkSize
   | MarkLineTextLink
   | MarkLineTextSlot
+  | MarkTermBase
+  | MarkTermLink
+  | MarkTermHead
+  | MarkTermLineLink
+  | MarkFallTerm
 
 export default function makeTextList(link: MarkCallLink): MarkCallCast {
   const cast: MarkCallCast = {
@@ -399,17 +470,40 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
         haveMesh(seed, 'seed')
 
         let find = textLine.match(seed.test)
-        console.log(find, textForm, form, textLine)
+        // console.log(find, textForm, form, textLine)
 
         if (find) {
+          let findBase = true
           if (seed.base) {
+            findBase = false
             const stem = cast.list[cast.list.length - 1]
-            if (!stem) {
+            if (stem && seed.base.includes(stem.form)) {
+              findBase = true
+            }
+          }
+
+          if (!findBase) {
+            let findHead = true
+            if (seed.head) {
+              findHead = false
+              const text = textLine.slice(0, find[0].length)
+              for (const head of seed.head) {
+                const headSeed = TEST[head]
+                const headFind = text.match(headSeed.test)
+                if (headFind) {
+                  findHead = true
+                  break
+                }
+              }
+            }
+
+            if (!findHead) {
               continue
             }
-            if (!seed.base.includes(stem.form)) {
-              continue
-            }
+          }
+
+          if (!findBase) {
+            continue
           }
 
           progressed = true
@@ -503,7 +597,7 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
       if (!progressed) {
         const last = cast.list[cast.list.length - 1]
         haveMesh(last, 'last')
-        console.log(cast.list)
+        // console.log(cast.list)
         throw generateSyntaxTokenError(cast, last)
       }
     }
@@ -515,7 +609,7 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
     }
   }
 
-  console.log(JSON.stringify(cast.list, null, 2))
+  // console.log(JSON.stringify(cast.list, null, 2))
 
   return cast
 }

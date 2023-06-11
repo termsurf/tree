@@ -358,6 +358,101 @@ a little more complex to parse. As such we divide it into 3 phases:
 3. **`link`**: This phase takes the `fold` instructions and converts
    them into the "link tree".
 
+Here is the basic set of TypeScript types for Link Text:
+
+```ts
+type LinkWave = {
+  form: LinkName.Wave
+  bond: boolean
+}
+
+type LinkComb = {
+  form: LinkName.Comb
+  bond: number
+}
+
+type LinkCode = {
+  bond: string
+  base: string
+  form: LinkName.Code
+}
+
+type LinkCull = {
+  nest: Array<LinkTree | LinkTerm | LinkLine | LinkBond>
+  base: LinkLine
+  form: LinkName.Cull
+}
+
+type Link =
+  | LinkTerm
+  | LinkKnit
+  | LinkTree
+  | LinkSize
+  | LinkSideSize
+  | LinkKnit
+  | LinkText
+  | LinkNick
+  | LinkCull
+  | LinkComb
+  | LinkCode
+  | LinkLine
+  | LinkWave
+
+type LinkLine = {
+  base: LinkTree | LinkNick | LinkCull
+  list: Array<LinkTerm | LinkCull>
+  form: LinkName.Line
+}
+
+type LinkNick = {
+  nest: Array<LinkTree | LinkTerm | LinkLine>
+  base: LinkTerm | LinkKnit
+  size: number
+  form: LinkName.Nick
+}
+
+type LinkSideSize = {
+  form: LinkName.SideSize
+  bond: number
+}
+
+type LinkText = {
+  form: LinkName.TextLine
+  bond: string
+}
+
+type LinkTerm = {
+  base: LinkLine | LinkTree | LinkNick
+  nest: Array<LinkText | LinkNick>
+  form: LinkName.Term
+}
+
+type LinkKnit = {
+  nest: Array<LinkText | LinkNick>
+  form: LinkName.Text
+}
+
+type LinkTree = {
+  head?: LinkTerm
+  nest: Array<Link>
+  base?: LinkTree | LinkNick | LinkCull
+  form: LinkName.Tree
+}
+
+type LinkSize = {
+  form: LinkName.Size
+  bond: number
+}
+
+type LinkBond =
+  | LinkSize
+  | LinkKnit
+  | LinkSideSize
+  | LinkCode
+  | LinkComb
+  | LinkWave
+```
+
 ## Syntax Highlighter Installation
 
 The Link Text has a
