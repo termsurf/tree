@@ -1,4 +1,4 @@
-import type { TextRank } from '../text/index.js';
+import type { TextRank } from '../mark/index.js';
 export declare enum LinkHint {
     NickLine = "nick-line",
     NickTerm = "nick-term",

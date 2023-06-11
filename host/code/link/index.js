@@ -1,10 +1,10 @@
 import makeFoldList, { FoldName, } from '../fold/index.js';
-import makeTextList from '../text/index.js';
+import makeTextList from '../mark/index.js';
 import { LinkHint, LinkName, } from './form.js';
 import { haltNotImplemented } from '../halt.js';
 import { haveLink, haveLinkForm } from '../../code/have.js';
 export * from '../fold/index.js';
-export * from '../text/index.js';
+export * from '../mark/index.js';
 export * from './form.js';
 function readFoldTree(link) {
     const hold = {

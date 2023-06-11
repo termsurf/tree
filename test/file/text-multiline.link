@@ -1,0 +1,32 @@
+
+details
+  bind data, text <
+    some
+    multiline
+    text
+  >
+
+two
+  text
+    <
+      some
+      multline
+      text
+      {{
+        some tree code
+          too
+      }}
+      or {{
+        like this
+      }}
+    >
+
+---
+
+details
+  bind
+    data
+  text
+    <some
+multiline
+text>

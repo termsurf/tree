@@ -3,7 +3,7 @@ import makeFoldList, {
   FoldCallCast,
   FoldName,
 } from '../fold/index.js'
-import makeTextList, { TextCallLink } from '../text/index.js'
+import makeTextList, { TextCallLink } from '../mark/index.js'
 import {
   Link,
   LinkCallCast,
@@ -25,7 +25,7 @@ import { haltNotImplemented } from '../halt.js'
 import { haveLink, haveLinkForm } from 'code/have.js'
 
 export * from '../fold/index.js'
-export * from '../text/index.js'
+export * from '../mark/index.js'
 export * from './form.js'
 
 type LinkWall = {

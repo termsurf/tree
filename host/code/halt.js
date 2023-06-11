@@ -1,7 +1,7 @@
 import Halt from '@tunebond/halt';
 import { TONE } from '@tunebond/halt-text';
 import tint from '@tunebond/tint';
-import { TextName } from './text';
+import { MarkName } from './mark';
 import { haveMesh, haveText } from '@tunebond/have';
 const host = '@tunebond/link';
 const base = {
@@ -104,8 +104,8 @@ export function getCursorRangeForTextWhitespaceToken(call, slot) {
         let t = call.list[i];
         haveMesh(t, 't');
         switch (t.form) {
-            case TextName.RiseSlot:
-            case TextName.RiseNest:
+            case MarkName.RiseSlot:
+            case MarkName.RiseNest:
                 seedList.push(t);
                 break;
             default:

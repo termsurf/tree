@@ -1,0 +1,20 @@
+
+save separator, text </>
+
+# adds a new indentation context
+call some{separator}path
+  <
+    some text {{
+      and interpolation{
+        here <and {{
+          there and there
+        }} and there!>
+      }
+    }}
+  >
+
+code with-interpolation
+  <
+    {{{{this is not actually interpolated}}}}
+    <!-- it results in two brackets each -->
+  >

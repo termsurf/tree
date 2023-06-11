@@ -1,13 +1,11 @@
-import type { TextCallCast, TextRank } from '../text/index.js'
+import type { MarkCallCast, Rank } from '../mark/index.js'
 
 export enum FoldName {
   FallHook = 'fold-fall-hook',
   FallCull = 'fold-fall-cull',
-  FallLine = 'fold-fall-line',
   FallCard = 'fold-fall-card',
   FallNest = 'fold-fall-nest',
   FallNick = 'fold-fall-nick',
-  FallTerm = 'fold-fall-term',
   FallTermLine = 'fold-fall-term-line',
   FallText = 'fold-fall-text',
   Note = 'fold-note',
@@ -15,17 +13,14 @@ export enum FoldName {
   Code = 'fold-code',
   RiseHook = 'fold-rise-hook',
   RiseCull = 'fold-rise-cull',
-  RiseLine = 'fold-rise-line',
   RiseCard = 'fold-rise-card',
   RiseNest = 'fold-rise-nest',
   RiseNick = 'fold-rise-nick',
-  RiseTerm = 'fold-rise-term',
   RiseTermLine = 'fold-rise-term-line',
   RiseText = 'fold-rise-text',
   SideSize = 'fold-side-size',
   Text = 'fold-text',
-  TermSlot = 'fold-term-slot', // term fragment
-  TermSlotLink = 'fold-term-slot-link', // term separator
+  TermText = 'fold-term-text',
   Size = 'fold-size',
 }
 
@@ -39,10 +34,13 @@ export type FoldFallHook = FoldBase & {
 
 export type FoldFallCull = FoldBase & {
   form: FoldName.FallCull
+  rank: Rank
 }
 
-export type FoldFallLine = FoldBase & {
-  form: FoldName.FallLine
+export type FoldTermText = FoldBase & {
+  form: FoldName.TermText
+  rank: Rank
+  bond: string
 }
 
 export type FoldFallCard = FoldBase & {
@@ -55,14 +53,11 @@ export type FoldFallNest = FoldBase & {
 
 export type FoldFallNick = FoldBase & {
   form: FoldName.FallNick
+  rank: Rank
 }
 
 export type FoldFallTermLine = FoldBase & {
   form: FoldName.FallTermLine
-}
-
-export type FoldFallTerm = FoldBase & {
-  form: FoldName.FallTerm
 }
 
 export type FoldFallText = FoldBase & {
@@ -74,14 +69,14 @@ export type FoldNote = FoldBase & {
 }
 
 export type FoldComb = FoldBase & {
-  rank: TextRank
+  rank: Rank
   form: FoldName.Comb
   bond: number
 }
 
 export type FoldCode = FoldBase & {
   bond: string
-  rank: TextRank
+  rank: Rank
   base: string
   form: FoldName.Code
 }
@@ -91,25 +86,20 @@ export type Fold =
   | FoldFallCard
   | FoldFallNick
   | FoldFallTermLine
-  | FoldFallTerm
+  | FoldTermText
   | FoldRiseNest
   | FoldFallNest
   | FoldFallText
   | FoldNote
-  | FoldTermSlotLink
   | FoldComb
-  | FoldRiseLine
-  | FoldFallLine
   | FoldCode
   | FoldRiseCull
   | FoldRiseCard
   | FoldRiseNick
   | FoldRiseTermLine
-  | FoldRiseTerm
   | FoldRiseText
   | FoldSideSize
   | FoldText
-  | FoldTermSlot
   | FoldSize
   | FoldRiseHook
   | FoldFallHook
@@ -120,10 +110,7 @@ export type FoldRiseHook = FoldBase & {
 
 export type FoldRiseCull = FoldBase & {
   form: FoldName.RiseCull
-}
-
-export type FoldRiseLine = FoldBase & {
-  form: FoldName.RiseLine
+  rank: Rank
 }
 
 export type FoldRiseCard = FoldBase & {
@@ -137,52 +124,35 @@ export type FoldRiseNest = FoldBase & {
 export type FoldRiseNick = FoldBase & {
   size: number
   form: FoldName.RiseNick
+  rank: Rank
 }
 
 export type FoldRiseTermLine = FoldBase & {
   form: FoldName.RiseTermLine
 }
 
-export type FoldRiseTerm = FoldBase & {
-  form: FoldName.RiseTerm
-}
-
 export type FoldRiseText = FoldBase & {
   form: FoldName.RiseText
 }
 
-export type FoldCallCast = TextCallCast & {
+export type FoldCallCast = MarkCallCast & {
   foldList: Array<Fold>
 }
 
 export type FoldSideSize = FoldBase & {
-  rank: TextRank
+  rank: Rank
   form: FoldName.SideSize
   bond: number
 }
 
 export type FoldText = FoldBase & {
-  rank: TextRank
+  rank: Rank
   form: FoldName.Text
   bond: string
 }
 
-export type FoldTermSlot = FoldBase & {
-  dive: boolean
-  soak: boolean // absorb null / guard
-  cull: boolean
-  rank: TextRank
-  base: boolean
-  form: FoldName.TermSlot
-  bond: string
-}
-
-export type FoldTermSlotLink = FoldBase & {
-  form: FoldName.TermSlotLink
-}
-
 export type FoldSize = FoldBase & {
-  rank: TextRank
+  rank: Rank
   form: FoldName.Size
   bond: number
 }

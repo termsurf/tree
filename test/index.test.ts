@@ -60,9 +60,7 @@ function assertParse(link: string, provided: string, expected: string) {
   const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
-    if (process.env.DEVELOP) {
-      console.log(output)
-    }
+    console.log(output)
     throw new Error(`${a} != ${b}`)
     // code.throwError(code.generateStringMismatchError(data, a, b))
   }
@@ -75,7 +73,6 @@ function assertParseKink(
 ) {
   try {
     const data = makeLinkTree({ link, text: provided })
-    console.log(data)
   } catch (e) {
     if (e instanceof Error) {
       if (e.message != expected) {
