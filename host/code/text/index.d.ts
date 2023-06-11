@@ -1,26 +1,37 @@
+declare enum Form {
+    Base = "base",
+    Line = "line",
+    Text = "text",
+    Nick = "nick",
+    Cull = "cull",
+    Term = "term"
+}
 export declare enum TextName {
     FallCull = "text-fall-cull",
     FallNick = "text-fall-nick",
     FallHold = "text-fall-hold",
-    FallLine = "text-fall-line",
+    FallLineText = "text-fall-line",
     FallText = "text-fall-text",
     Link = "text-link",
     Note = "text-note",
     Comb = "text-comb",
     Code = "text-code",
-    Line = "text-line",
     RiseCull = "text-rise-cull",
     RiseSlot = "text-rise-slot",
     RiseNick = "text-rise-nick",
     RiseNest = "text-rise-nest",
     RiseHold = "text-rise-hold",
-    RiseLine = "text-rise-line",
+    RiseLineText = "text-rise-line",
     RiseText = "text-rise-text",
     LineSlot = "text-line-slot",
     SideSize = "text-side-size",
     Text = "text-text",
-    TermSlot = "text-term-slot",
-    Size = "text-size"
+    TermText = "text-term-text",
+    RiseTerm = "text-rise-term",
+    FallTerm = "text-fall-term",
+    Size = "text-size",
+    LineTextLink = "text-line-text-link",
+    LineTextSlot = "text-line-text-slot"
 }
 export type TextRankLink = {
     mark: number;
@@ -31,20 +42,33 @@ export type TextRank = {
     head: TextRankLink;
 };
 export declare const TEXT_LINE_TEST_LIST: Array<TextName>;
+export declare const TEXT_NICK_TEST_LIST: Array<TextName>;
 export declare const TEXT_TEXT_TEST_LIST: Array<TextName>;
+export declare const TEXT_TERM_TEST_LIST: Array<TextName>;
+export declare const TEXT_CULL_TEST_LIST: Array<TextName>;
 export declare const TEXT_NAME: Array<TextName>;
-export declare const TEXT_TEST_LIST: Array<TextName>;
+export declare const TEXT_BASE_TEST_LIST: Array<TextName>;
+export declare const TEXT_TEST: Record<Form, Array<TextName>>;
+export type TextRiseTerm = TextBase & {
+    form: TextName.RiseTerm;
+};
+export type TextFallTerm = TextBase & {
+    form: TextName.FallTerm;
+};
 export type TextFallCull = TextBase & {
     form: TextName.FallCull;
 };
-export type TextFallLine = TextBase & {
-    form: TextName.FallLine;
-};
-export type TextLine = TextBase & {
-    form: TextName.Line;
+export type TextFallLineText = TextBase & {
+    form: TextName.FallLineText;
 };
 export type TextRiseSlot = TextBase & {
     form: TextName.RiseSlot;
+};
+export type TextLineTextLink = TextBase & {
+    form: TextName.LineTextLink;
+};
+export type TextLineTextSlot = TextBase & {
+    form: TextName.LineTextSlot;
 };
 export type TextComb = TextBase & {
     form: TextName.Comb;
@@ -88,8 +112,8 @@ export type TextCode = TextBase & {
 export type TextNote = TextBase & {
     form: TextName.Note;
 };
-export type TextRiseLine = TextBase & {
-    form: TextName.RiseLine;
+export type TextRiseLineText = TextBase & {
+    form: TextName.RiseLineText;
 };
 export type TextLineSlot = TextBase & {
     form: TextName.LineSlot;
@@ -97,8 +121,8 @@ export type TextLineSlot = TextBase & {
 export type TextText = TextBase & {
     form: TextName.Text;
 };
-export type TextTermSlot = TextBase & {
-    form: TextName.TermSlot;
+export type TextTermText = TextBase & {
+    form: TextName.TermText;
 };
 export type TextCallLink = {
     link: string;
@@ -113,7 +137,7 @@ export type TextBase = {
     text: string;
 };
 export type TextSeed = {
-    head?: Array<TextName>;
+    base?: Array<TextName>;
     test: RegExp;
     take?: boolean;
 };
@@ -121,5 +145,6 @@ export type TextCallCast = TextCallLink & {
     list: Array<Text>;
     lineText: Array<string>;
 };
-export type Text = TextFallCull | TextLine | TextLineSlot | TextRiseSlot | TextComb | TextSideSize | TextSize | TextRiseNest | TextRiseHold | TextFallHold | TextRiseText | TextFallText | TextRiseNick | TextFallNick | TextLink | TextCode | TextNote | TextRiseCull | TextText | TextTermSlot | TextRiseLine | TextFallLine;
+export type Text = TextFallCull | TextLineSlot | TextRiseSlot | TextComb | TextSideSize | TextSize | TextRiseNest | TextRiseHold | TextFallHold | TextRiseText | TextFallText | TextRiseNick | TextFallNick | TextLink | TextCode | TextNote | TextRiseCull | TextText | TextTermText | TextRiseLineText | TextFallLineText | TextRiseTerm | TextFallTerm | TextLineTextLink | TextLineTextSlot;
 export default function makeTextList(link: TextCallLink): TextCallCast;
+export {};

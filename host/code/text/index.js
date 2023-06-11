@@ -1,44 +1,73 @@
 import { haveMesh } from '@tunebond/have';
 import { generateSyntaxTokenError } from '../halt.js';
+var Form;
+(function (Form) {
+    Form["Base"] = "base";
+    Form["Line"] = "line";
+    Form["Text"] = "text";
+    Form["Nick"] = "nick";
+    Form["Cull"] = "cull";
+    Form["Term"] = "term";
+})(Form || (Form = {}));
 export var TextName;
 (function (TextName) {
     TextName["FallCull"] = "text-fall-cull";
     TextName["FallNick"] = "text-fall-nick";
     TextName["FallHold"] = "text-fall-hold";
-    TextName["FallLine"] = "text-fall-line";
+    TextName["FallLineText"] = "text-fall-line";
     TextName["FallText"] = "text-fall-text";
     TextName["Link"] = "text-link";
     TextName["Note"] = "text-note";
     TextName["Comb"] = "text-comb";
     TextName["Code"] = "text-code";
-    TextName["Line"] = "text-line";
     TextName["RiseCull"] = "text-rise-cull";
     TextName["RiseSlot"] = "text-rise-slot";
     TextName["RiseNick"] = "text-rise-nick";
     TextName["RiseNest"] = "text-rise-nest";
     TextName["RiseHold"] = "text-rise-hold";
-    TextName["RiseLine"] = "text-rise-line";
+    TextName["RiseLineText"] = "text-rise-line";
     TextName["RiseText"] = "text-rise-text";
     TextName["LineSlot"] = "text-line-slot";
     TextName["SideSize"] = "text-side-size";
     TextName["Text"] = "text-text";
-    TextName["TermSlot"] = "text-term-slot";
+    TextName["TermText"] = "text-term-text";
+    TextName["RiseTerm"] = "text-rise-term";
+    TextName["FallTerm"] = "text-fall-term";
     TextName["Size"] = "text-size";
+    TextName["LineTextLink"] = "text-line-text-link";
+    TextName["LineTextSlot"] = "text-line-text-slot";
 })(TextName || (TextName = {}));
 export const TEXT_LINE_TEST_LIST = [
-    TextName.FallLine,
+    TextName.FallLineText,
     TextName.RiseNick,
+    TextName.LineTextLink,
+    TextName.LineTextSlot,
+];
+export const TEXT_NICK_TEST_LIST = [
+    TextName.RiseTerm,
     TextName.FallNick,
-    TextName.Line,
 ];
 export const TEXT_TEXT_TEST_LIST = [
     TextName.RiseNick,
-    TextName.FallNick,
     TextName.FallText,
     TextName.Text,
+];
+export const TEXT_TERM_TEST_LIST = [
+    TextName.RiseNick,
+    TextName.TermText,
+    TextName.FallTerm,
+    TextName.RiseCull,
+];
+export const TEXT_CULL_TEST_LIST = [
+    TextName.RiseTerm,
+    TextName.Size,
+    TextName.SideSize,
+    TextName.Comb,
+    TextName.Code,
+    TextName.FallCull,
 ];
 export const TEXT_NAME = [
-    TextName.FallLine,
+    TextName.FallLineText,
     TextName.FallCull,
     TextName.FallNick,
     TextName.FallHold,
@@ -54,14 +83,13 @@ export const TEXT_NAME = [
     TextName.RiseNest,
     TextName.RiseHold,
     TextName.RiseText,
-    TextName.RiseLine,
-    TextName.Line,
+    TextName.RiseLineText,
     TextName.SideSize,
     TextName.Text,
-    TextName.TermSlot,
+    TextName.TermText,
     TextName.Size,
 ];
-export const TEXT_TEST_LIST = [
+export const TEXT_BASE_TEST_LIST = [
     TextName.FallCull,
     TextName.FallNick,
     TextName.FallHold,
@@ -77,20 +105,22 @@ export const TEXT_TEST_LIST = [
     TextName.RiseNest,
     TextName.RiseHold,
     TextName.RiseText,
-    TextName.RiseLine,
+    TextName.RiseLineText,
     TextName.SideSize,
-    TextName.TermSlot,
+    TextName.RiseTerm,
     TextName.Size,
 ];
-var Form;
-(function (Form) {
-    Form["Line"] = "line";
-    Form["Text"] = "text";
-    Form["Tree"] = "tree";
-})(Form || (Form = {}));
+export const TEXT_TEST = {
+    [Form.Line]: TEXT_LINE_TEST_LIST,
+    [Form.Text]: TEXT_TEXT_TEST_LIST,
+    [Form.Nick]: TEXT_NICK_TEST_LIST,
+    [Form.Cull]: TEXT_CULL_TEST_LIST,
+    [Form.Term]: TEXT_TERM_TEST_LIST,
+    [Form.Base]: TEXT_BASE_TEST_LIST,
+};
 const TEST = {
     [TextName.FallCull]: {
-        test: /^ *\] */,
+        test: /^\]/,
     },
     [TextName.FallNick]: {
         test: /^\}/,
@@ -117,16 +147,10 @@ const TEST = {
         test: /^\n/,
     },
     [TextName.RiseCull]: {
-        test: /^ *\[ */,
-    },
-    [TextName.RiseSlot]: {
-        test: /^  /,
+        test: /^\[/,
     },
     [TextName.RiseNick]: {
         test: /^\{/,
-    },
-    [TextName.RiseNest]: {
-        test: /^ /,
     },
     [TextName.RiseHold]: {
         test: /^\(/,
@@ -134,22 +158,39 @@ const TEST = {
     [TextName.RiseText]: {
         test: /^</,
     },
-    [TextName.RiseLine]: {
-        head: [TextName.RiseSlot, TextName.RiseNest, TextName.Link],
-        test: /^(?:(?:@[\w:\-\.]+\/)|(?:\.{1,2}\/)|\*{1,2}\/|(?:\/))/,
+    [TextName.RiseSlot]: {
+        test: /^  /,
     },
-    [TextName.Line]: {
-        test: /^[\w:\-\.\*]*(\/[\w:\-\.\*]*)*/,
+    [TextName.RiseNest]: {
+        test: /^ /,
     },
-    [TextName.FallLine]: {
+    [TextName.RiseLineText]: {
+        base: [TextName.RiseSlot, TextName.RiseNest, TextName.Link],
+        test: /^@[\w:\-\*]+\/|\.{1,2}\/|\*{1,2}\/|\//,
+    },
+    [TextName.LineTextLink]: {
+        test: /^\//,
+    },
+    [TextName.LineTextSlot]: {
+        test: /^[\w:\-\*]+|\.{1,2}/,
+    },
+    [TextName.FallLineText]: {
         test: /^[\n, ]/,
         take: false,
     },
     [TextName.SideSize]: {
         test: /^-\d+(?=\b)/,
     },
-    [TextName.TermSlot]: {
-        test: /^-?(?:[*~]?[a-z0-9]*(?:-[a-z0-9]+)*\??)(?:\/[a-z0-9]*(?:-[a-z0-9]+)*\??)*-?|-|\//,
+    [TextName.RiseTerm]: {
+        test: /^[*~]?[a-z]/,
+        take: false,
+    },
+    [TextName.TermText]: {
+        test: /^[a-z][a-z0-9]*\??(?:\/[a-z][a-z0-9]*\??)*/,
+    },
+    [TextName.FallTerm]: {
+        test: /^[\n, \]\[]/,
+        take: false,
     },
     [TextName.Size]: {
         test: /^\d+(?=\b)/,
@@ -164,7 +205,7 @@ export default function makeTextList(link) {
         list: [],
         lineText: link.text.split('\n'),
     };
-    let formList = [Form.Tree];
+    let formList = [Form.Base];
     let line = 0;
     let mark = 0;
     let move = 0;
@@ -172,117 +213,119 @@ export default function makeTextList(link) {
         // apphead `\n` so test matching works as expected
         textLine = `${textLine}\n`;
         while (textLine) {
-            const textForm = formList[formList.length - 1] || Form.Tree;
-            let testList = TEXT_TEST_LIST;
-            switch (textForm) {
-                case Form.Tree:
-                    testList = TEXT_TEST_LIST;
-                    break;
-                case Form.Text:
-                    testList = TEXT_TEXT_TEST_LIST;
-                    break;
-                case Form.Line:
-                    testList = TEXT_LINE_TEST_LIST;
-                    break;
-                default:
-                    testList = TEXT_TEST_LIST;
-                    break;
-            }
+            const textForm = formList[formList.length - 1] || Form.Base;
+            const testList = TEXT_TEST[textForm];
             let progressed = false;
             testLoop: for (const form of testList) {
                 const seed = TEST[form];
-                if (seed && seed.test instanceof RegExp) {
-                    let find = textLine.match(seed.test);
-                    if (find) {
-                        // console.log(textForm, form, find, textLine, seed.test)
-                        if (seed.head) {
-                            const stem = cast.list[cast.list.length - 1];
-                            if (!stem) {
-                                continue;
-                            }
-                            if (!seed.head.includes(stem.form)) {
-                                continue;
-                            }
+                haveMesh(seed, 'seed');
+                let find = textLine.match(seed.test);
+                console.log(find, form, textLine);
+                if (find) {
+                    if (seed.base) {
+                        const stem = cast.list[cast.list.length - 1];
+                        if (!stem) {
+                            continue;
                         }
-                        progressed = true;
-                        if (seed.take === false) {
-                            const stem = {
-                                rank: {
-                                    head: {
-                                        mark,
-                                        line,
-                                    },
-                                    base: {
-                                        mark,
-                                        line,
-                                    },
-                                },
-                                text: '',
-                                form: form,
-                            };
-                            cast.list.push(stem);
+                        if (!seed.base.includes(stem.form)) {
+                            continue;
                         }
-                        else {
-                            const findSize = find[0].length;
-                            const findText = textLine.slice(0, findSize);
-                            const stem = {
-                                rank: {
-                                    head: {
-                                        mark: mark + findSize,
-                                        line,
-                                    },
-                                    base: {
-                                        mark,
-                                        line,
-                                    },
-                                },
-                                text: findText,
-                                form: form,
-                            };
-                            cast.list.push(stem);
-                            textLine = textLine.slice(findSize);
-                            move += findSize;
-                            mark += findSize;
-                        }
-                        switch (form) {
-                            case TextName.LineSlot: {
-                                line++;
-                                mark = 0;
-                            }
-                            case TextName.RiseNick: {
-                                formList.push(Form.Tree);
-                                break;
-                            }
-                            case TextName.FallNick: {
-                                formList.pop();
-                                break;
-                            }
-                            case TextName.RiseText: {
-                                formList.push(Form.Text);
-                                break;
-                            }
-                            case TextName.FallText: {
-                                formList.pop();
-                                break;
-                            }
-                            case TextName.RiseLine: {
-                                formList.push(Form.Line);
-                                break;
-                            }
-                            case TextName.FallLine: {
-                                formList.pop();
-                                break;
-                            }
-                            default:
-                                break;
-                        }
-                        break testLoop;
                     }
+                    progressed = true;
+                    if (seed.take === false) {
+                        const stem = {
+                            rank: {
+                                head: {
+                                    mark,
+                                    line,
+                                },
+                                base: {
+                                    mark,
+                                    line,
+                                },
+                            },
+                            text: '',
+                            form: form,
+                        };
+                        cast.list.push(stem);
+                    }
+                    else {
+                        const findSize = find[0].length;
+                        const findText = textLine.slice(0, findSize);
+                        const stem = {
+                            rank: {
+                                head: {
+                                    mark: mark + findSize,
+                                    line,
+                                },
+                                base: {
+                                    mark,
+                                    line,
+                                },
+                            },
+                            text: findText,
+                            form: form,
+                        };
+                        cast.list.push(stem);
+                        textLine = textLine.slice(findSize);
+                        move += findSize;
+                        mark += findSize;
+                    }
+                    switch (form) {
+                        case TextName.LineSlot: {
+                            line++;
+                            mark = 0;
+                        }
+                        case TextName.RiseNick: {
+                            formList.push(Form.Nick);
+                            break;
+                        }
+                        case TextName.FallNick: {
+                            formList.pop();
+                            break;
+                        }
+                        case TextName.RiseCull: {
+                            formList.push(Form.Cull);
+                            break;
+                        }
+                        case TextName.FallCull: {
+                            formList.pop();
+                            break;
+                        }
+                        case TextName.RiseTerm: {
+                            formList.push(Form.Term);
+                            break;
+                        }
+                        case TextName.FallTerm: {
+                            formList.pop();
+                            break;
+                        }
+                        case TextName.RiseText: {
+                            formList.push(Form.Text);
+                            break;
+                        }
+                        case TextName.FallText: {
+                            formList.pop();
+                            break;
+                        }
+                        case TextName.RiseLineText: {
+                            formList.push(Form.Line);
+                            break;
+                        }
+                        case TextName.FallLineText: {
+                            formList.pop();
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                    break testLoop;
                 }
             }
             if (!progressed) {
                 const last = cast.list[cast.list.length - 1];
                 haveMesh(last, 'last');
+                console.log(cast.list);
                 throw generateSyntaxTokenError(cast, last);
             }
         }
@@ -292,7 +335,8 @@ export default function makeTextList(link) {
             throw generateSyntaxTokenError(cast, last);
         }
     }
-    // console.log(JSON.stringify(cast.list, null, 2))
+    console.log(JSON.stringify(cast.list, null, 2));
+    process.exit();
     return cast;
 }
 //# sourceMappingURL=index.js.map
