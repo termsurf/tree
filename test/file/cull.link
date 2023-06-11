@@ -1,5 +1,7 @@
 
 save term[name]
+save term{{foo}}[cull]/another{thing}
+save term{{bar}}[{rand}]/still-another{thing}
 
 ---
 
