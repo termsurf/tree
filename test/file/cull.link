@@ -1,6 +1,21 @@
 
 save term[name]
 
+term grow[text]
+  deeper term[
+    text
+  ], another[
+    even[
+      more
+    ]
+  ]
+
 ---
 
-save term[name]
+save
+  term[name]
+
+term
+  grow[text]
+  deeper
+    term[text], another[even[more]]

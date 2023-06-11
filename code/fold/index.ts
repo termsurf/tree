@@ -10,10 +10,8 @@ import { TextName } from '../text/index.js'
 
 import { FoldName } from './form.js'
 import type { FoldCallCast, FoldTermSlot, Fold } from './form.js'
-import {
-  generateInvalidCompilerStateError,
-  generateInvalidWhitespaceError,
-} from 'code/halt.js'
+import { generateInvalidWhitespaceError } from 'code/halt.js'
+import { haveMesh } from '@tunebond/have'
 
 export * from './form.js'
 
@@ -46,114 +44,144 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     foldList,
   }
 
+  function castTerm(): Array<Fold> {
+    const list: Array<Fold> = []
+    const tail: Array<Fold> = []
+
+    loop: while (slot < link.list.length) {
+      const seed = link.list[slot]
+      haveMesh(seed, 'seed')
+
+      test: switch (seed.form) {
+        case TextName.RiseTerm:
+          break test
+        case TextName.TermText:
+          break test
+        case TextName.RiseCull:
+          slot++
+          break
+        case TextName.RiseHold:
+          slot++
+          break
+        default:
+          break loop
+      }
+    }
+
+    return list
+  }
+
   while (slot < link.list.length) {
     const seed = link.list[slot]
-    if (seed) {
-      switch (seed.form) {
-        case TextName.TermSlot: {
-          lineHost = false
-          foldList.push(...castTermSlot(link))
-          break
-        }
-        case TextName.RiseSlot: {
-          if (!lineHost) {
-            throw generateInvalidWhitespaceError(cast, slot)
-          }
-          textSlot++
-          foldList.push(fold(FoldName.RiseNest))
-          slot++
-          break
-        }
-        case TextName.RiseNest: {
-          throw generateInvalidWhitespaceError(cast, slot)
-          break
-        }
-        case TextName.LineSlot: {
-          while (textSlot > 0) {
-            foldList.push(fold(FoldName.FallNest))
-            textSlot--
-          }
-          lineHost = true
-          slot++
-          break
-        }
-        case TextName.RiseNick:
-          lineHost = false
-          foldList.push(...castTermSlot(link, 0, true))
-          break
-        case TextName.FallCull:
-        case TextName.FallNick:
-        case TextName.FallHold:
-        case TextName.FallText:
-        case TextName.RiseCull:
-        case TextName.RiseNest:
-        case TextName.RiseHold:
-        case TextName.RiseText:
-        case TextName.Link: {
-          throw new Error('Oops')
-          // throw generateInvalidCompilerStateError(
-          //   `Uncastd text type ${seed.form}.`,
-          //   link.path,
-          // )
-        }
-        case TextName.Note: {
-          slot++
-          lineHost = false
-          break
-        }
+    haveMesh(seed, 'seed')
 
-        case TextName.Size: {
-          lineHost = false
-          foldList.push({
-            ...seed,
-            bond: parseInt(seed.text, 10),
-            ...fold(FoldName.Size),
-          })
-          slot++
-          break
-        }
-        case TextName.SideSize: {
-          lineHost = false
-          foldList.push({
-            ...seed,
-            bond: parseInt(seed.text, 10),
-            ...fold(FoldName.SideSize),
-          })
-          slot++
-          break
-        }
-        case TextName.Comb: {
-          lineHost = false
-          foldList.push({
-            ...seed,
-            bond: parseFloat(seed.text),
-            ...fold(FoldName.Comb),
-          })
-          slot++
-          break
-        }
-        case TextName.RiseLine: {
-          lineHost = false
-          foldList.push(...castLine(link))
-          break
-        }
-        case TextName.Code: {
-          lineHost = false
-          const [hash, base = '', ...bond] = seed.text
-          foldList.push({
-            ...seed,
-            bond: bond.join(''),
-            base,
-            ...fold(FoldName.Code),
-          })
-          slot++
-          break
-        }
-        default:
-          lineHost = false
-          slot++
-          break
+    switch (seed.form) {
+      case TextName.RiseTerm: {
+        lineHost = false
+        foldList.push(...castTerm())
+        break
       }
+      // interpolation
+      case TextName.RiseNick:
+        lineHost = false
+        foldList.push(...castTerm())
+        break
+      // indentation
+      case TextName.RiseSlot: {
+        if (!lineHost) {
+          throw generateInvalidWhitespaceError(cast, slot)
+        }
+        textSlot++
+        foldList.push(fold(FoldName.RiseNest))
+        slot++
+        break
+      }
+      case TextName.RiseNest: {
+        throw generateInvalidWhitespaceError(cast, slot)
+      }
+      // newline
+      case TextName.LineSlot: {
+        while (textSlot > 0) {
+          foldList.push(fold(FoldName.FallNest))
+          textSlot--
+        }
+        lineHost = true
+        slot++
+        break
+      }
+      case TextName.FallCull:
+      case TextName.FallNick:
+      case TextName.FallHold:
+      case TextName.FallText:
+      case TextName.RiseCull:
+      case TextName.RiseNest:
+      case TextName.RiseHold:
+      case TextName.RiseText:
+      case TextName.Link: {
+        throw new Error('Oops')
+        // throw generateInvalidCompilerStateError(
+        //   `Uncastd text type ${seed.form}.`,
+        //   link.path,
+        // )
+      }
+      // comment
+      case TextName.Note: {
+        slot++
+        lineHost = false
+        break
+      }
+      case TextName.Size: {
+        lineHost = false
+        foldList.push({
+          ...seed,
+          bond: parseInt(seed.text, 10),
+          ...fold(FoldName.Size),
+        })
+        slot++
+        break
+      }
+      case TextName.SideSize: {
+        lineHost = false
+        foldList.push({
+          ...seed,
+          bond: parseInt(seed.text, 10),
+          ...fold(FoldName.SideSize),
+        })
+        slot++
+        break
+      }
+      case TextName.Comb: {
+        lineHost = false
+        foldList.push({
+          ...seed,
+          bond: parseFloat(seed.text),
+          ...fold(FoldName.Comb),
+        })
+        slot++
+        break
+      }
+      // start path
+      case TextName.RiseLine: {
+        lineHost = false
+        foldList.push(...castLine(link))
+        break
+      }
+      case TextName.Code: {
+        lineHost = false
+        const [hash, base = '', ...bond] = seed.text
+        foldList.push({
+          ...seed,
+          bond: bond.join(''),
+          base,
+          ...fold(FoldName.Code),
+        })
+        slot++
+        break
+      }
+      default:
+        lineHost = false
+        slot++
+        break
     }
   }
 
@@ -407,6 +435,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     loop: while (slot < link.list.length) {
       const seed = link.list[slot++]
       check: switch (seed?.form) {
+        // open paren
         case TextName.RiseHold: {
           slot--
           tail.push(...castHold(link))

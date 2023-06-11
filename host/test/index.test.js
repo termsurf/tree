@@ -7,10 +7,12 @@ import { fileURLToPath } from 'url';
 import makeLinkTree, { showLinkTree } from '../code/link/index.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const FIND = process.env.FIND;
 async function start() {
     const fixtures = (await fs.readdir(`${__dirname}/file`))
         .filter(x => x.endsWith('.link'))
-        .map(x => `${__dirname}/file/${x}`);
+        .map(x => `${__dirname}/file/${x}`)
+        .filter(x => !FIND || x.match(FIND));
     for (const path of fixtures) {
         const localPath = path.replace(`${__dirname}/`, '');
         test(`make ${localPath}`, async () => {
@@ -25,7 +27,8 @@ async function start() {
     }
     const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
         .filter(x => x.endsWith('.link'))
-        .map(x => `${__dirname}/file/kink/${x}`);
+        .map(x => `${__dirname}/file/kink/${x}`)
+        .filter(x => !FIND || x.match(FIND));
     for (const path of kinkFixtures) {
         const localPath = path.replace(`${__dirname}/`, '');
         test(`make ${localPath}`, async () => {
