@@ -82,7 +82,7 @@ export type LinkCode = {
 }
 
 export type LinkCull = {
-  nest: Array<LinkTree | LinkTerm | LinkLine | LinkBond>
+  head?: LinkTree
   base?: LinkLine
   form: LinkName.Cull
   rank: Rank
@@ -104,14 +104,14 @@ export type Link =
   | LinkWave
 
 export type LinkLine = {
-  base?: LinkTree | LinkNick | LinkCull
+  base?: LinkTree
   list: Array<LinkTerm | LinkCull | LinkNick | LinkText>
   form: LinkName.Line
   rank: Rank
 }
 
 export type LinkNick = {
-  nest: Array<LinkTree | LinkTerm | LinkLine>
+  head?: LinkTree
   base?: LinkTerm | LinkKnit
   size: number
   form: LinkName.Nick
@@ -135,7 +135,7 @@ export type LinkText = {
 }
 
 export type LinkTerm = {
-  base?: LinkLine | LinkTree | LinkNick
+  base?: LinkLine
   nest: Array<LinkText | LinkNick>
   form: LinkName.Term
 }
@@ -164,6 +164,7 @@ export type LinkBond =
   | LinkCode
   | LinkComb
   | LinkWave
+  | LinkText
 
 export function testLinkForm<N extends LinkName>(
   lead: unknown,

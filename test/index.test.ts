@@ -60,7 +60,7 @@ function assertParse(link: string, provided: string, expected: string) {
   const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
-    console.log(output)
+    console.log(a)
     throw new Error(`${a} != ${b}`)
     // code.throwError(code.generateStringMismatchError(data, a, b))
   }

@@ -21,6 +21,8 @@ export enum FoldName {
   Text = 'fold-text',
   TermText = 'fold-term-text',
   Size = 'fold-size',
+  RiseTree = 'fold-rise-tree',
+  FallTree = 'fold-rise-tree',
 }
 
 export type FoldHash = {
@@ -43,6 +45,8 @@ export type FoldHash = {
   'fold-text': FoldText
   'fold-term-text': FoldTermText
   'fold-size': FoldSize
+  'fold-rise-tree': FoldRiseTree
+  'fold-fall-tree': FoldFallTree
 }
 
 export type FoldBase = {
@@ -64,7 +68,15 @@ export type FoldFallCard = FoldBase & {
   form: FoldName.FallCard
 }
 
-export type FoldFallNest = FoldBase & {
+export type FoldRiseTree = Omit<FoldBase, 'rank'> & {
+  form: FoldName.RiseTree
+}
+
+export type FoldFallTree = Omit<FoldBase, 'rank'> & {
+  form: FoldName.FallTree
+}
+
+export type FoldFallNest = Omit<FoldBase, 'rank'> & {
   form: FoldName.FallNest
 }
 
@@ -73,7 +85,7 @@ export type FoldFallNick = FoldBase & {
   text: string
 }
 
-export type FoldFallTermLine = FoldBase & {
+export type FoldFallTermLine = Omit<FoldBase, 'rank'> & {
   form: FoldName.FallTermLine
 }
 
@@ -117,6 +129,8 @@ export type Fold =
   | FoldSideSize
   | FoldText
   | FoldSize
+  | FoldRiseTree
+  | FoldFallTree
 
 export type FoldRiseCull = FoldBase & {
   form: FoldName.RiseCull

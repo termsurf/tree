@@ -6,227 +6,263 @@ import { haltNotImplemented } from '../halt.js'
 const G = { tone: TONE.fall.green }
 
 export function showLinkTree(base: Link): string {
-  const text: Array<string> = ['']
+  const list: Array<string> = ['']
 
   showLinkTreeBase(base).forEach(line => {
-    text.push(`${line}`)
+    list.push(`${line}`)
   })
 
-  text.push('')
+  list.push('')
 
-  return text.join('\n')
+  console.log(list)
+  return list.join('\n')
 }
 
 // export function showParserMesh(base: Link): string {
-//   const text: Array<string> = ['']
+//   const list: Array<string> = ['']
 
 //   showParserMeshDetails(base).forEach(line => {
-//     text.push(`  ${line}`)
+//     list.push(`  ${line}`)
 //   })
 
-//   text.push('')
+//   list.push('')
 
-//   return text.join('\n')
+//   return list.join('\n')
 // }
 
-function showLinkTreeBase(node: Link, flat = false): Array<string> {
-  const text: Array<string> = []
+function showLinkTreeBase(
+  node: Link,
+  flat = false,
+  nestSize = 0,
+): Array<string> {
+  const list: Array<string> = []
 
   switch (node.form) {
-    case LinkName.TextLine: {
-      text.push(node.bond)
+    case LinkName.Text: {
+      console.log(`${move(nestSize)}text`, node.bond)
+      list.push(node.bond)
       break
     }
     case LinkName.Tree: {
+      console.log(`${move(nestSize)}tree`)
       const head: Array<string> = []
-      if (node.head) {
-        showLinkTreeBase(node.head, flat).forEach(line => {
-          head.push(`${line}`)
-        })
-      }
+      // if (node.head) {
+      //   showLinkTreeBase(node.head, flat).forEach(line => {
+      //     head.push(`${line}`)
+      //   })
+      // }
       const nest: Array<string> = []
       node.nest.forEach(el => {
-        showLinkTreeBase(el, flat).forEach(line => {
+        showLinkTreeBase(el, flat, nestSize + 1).forEach(line => {
           nest.push(`${line}`)
         })
       })
 
       if (flat) {
-        text.push(`${head.join('')}(${nest.join(', ')})`)
+        const text = nest.join(', ')
+        if (text) {
+          list.push(`${text}`)
+        }
       } else {
-        text.push(`${head.join('')}`)
+        // list.push(`${head.join('')}`)
         nest.forEach(line => {
-          text.push(`  ${line}`)
+          if (line) {
+            list.push(`${line}`)
+          }
         })
       }
       break
     }
     case LinkName.Size: {
-      text.push(tint(`${node.bond}`, G))
+      console.log(`${move(nestSize)}size`)
+      list.push(tint(`${node.bond}`, G))
       break
     }
-    case LinkName.Text: {
+    case LinkName.Knit: {
+      console.log(`${move(nestSize)}knit`)
       const string: Array<string> = []
-      node.list.forEach(seg => {
-        showLinkTreeBase(seg, true).forEach(line => {
+      node.nest.forEach(seg => {
+        showLinkTreeBase(seg, true, nestSize + 1).forEach(line => {
           string.push(`${line}`)
         })
       })
-      text.push(`<${string.join('')}>`)
+      list.push(`<${string.join('')}>`)
       break
     }
     case LinkName.Nick: {
-      if (node.nest.length) {
+      console.log(`${move(nestSize)}nick`)
+      if (node.head) {
         const plugin: Array<string> = []
-        node.nest.forEach(nest => {
-          showLinkTreeBase(nest, true).forEach(line => {
+        showLinkTreeBase(node.head, true, nestSize + 1).forEach(
+          line => {
             plugin.push(`${line}`)
-          })
-        })
-        text.push(
-          '{'.repeat(node.size) +
-            plugin.join('') +
-            '}'.repeat(node.size),
+          },
         )
+        const text = plugin.join('')
+        if (text) {
+          list.push(
+            '{'.repeat(node.size) + text + '}'.repeat(node.size),
+          )
+        }
       }
       break
     }
     case LinkName.Cull: {
+      console.log(`${move(nestSize)}cull`)
       const slot: Array<string> = []
-      node.nest.forEach(nest => {
-        showLinkTreeBase(nest, true).forEach(line => {
-          slot.push(`${line}`)
-        })
-      })
-      text.push('[' + slot.join('') + ']')
+      if (node.head) {
+        showLinkTreeBase(node.head, true, nestSize + 1).forEach(
+          line => {
+            slot.push(`${line}`)
+          },
+        )
+      }
+      const text = slot.join('')
+      if (text) {
+        list.push('[' + text + ']')
+      }
       break
     }
     case LinkName.Comb: {
-      text.push(`${node.bond}`)
+      console.log(`${move(nestSize)}comb`)
+      list.push(`${node.bond}`)
       break
     }
     case LinkName.Code: {
-      text.push(`#${node.base}${node.bond}`)
+      console.log(`${move(nestSize)}code`)
+      list.push(`#${node.base}${node.bond}`)
       break
     }
     case LinkName.Term: {
+      console.log(`${move(nestSize)}term`)
       const term: Array<string> = []
-      node.list.forEach(seg => {
-        showLinkTreeBase(seg, true).forEach(line => {
+      node.nest.forEach(seg => {
+        showLinkTreeBase(seg, true, nestSize + 1).forEach(line => {
           term.push(line)
         })
       })
-      text.push(term.join(''))
+      const text = term.join('')
+      if (text) {
+        list.push(text)
+      }
       break
     }
     case LinkName.Line: {
+      console.log(`${move(nestSize)}line`)
       const line: Array<string> = []
       node.list.forEach((seg, i) => {
-        showLinkTreeBase(seg, true).forEach(l => {
-          if (i > 0 && seg.form !== LinkName.Cull) {
+        showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
+          if (
+            i > 0 &&
+            seg.form !== LinkName.Cull &&
+            seg.form !== LinkName.Nick
+          ) {
             line.push('/')
           }
           line.push(l)
         })
       })
-      text.push(line.join(''))
+      const text = line.join('')
+      if (text) {
+        list.push(text)
+      }
       break
     }
     default:
       throw haltNotImplemented(node.form, JSON.stringify(node))
   }
 
-  return text
+  return list
 }
 
 // function showParserMeshDetails(node: Link): Array<string> {
-//   const text: Array<string> = []
+//   const list: Array<string> = []
 
 //   const title = chalk.white(node.form)
 
 //   switch (node.form) {
 //     case LinkName.Text: {
-//       text.push(`${title} ${chalk.green(node.bond)}`)
+//       list.push(`${title} ${chalk.green(node.bond)}`)
 //       break
 //     }
 //     case LinkName.Tree: {
-//       text.push(`${title}`)
+//       list.push(`${title}`)
 //       if (node.head) {
-//         text.push(chalk.gray(`  head:`))
+//         list.push(chalk.gray(`  head:`))
 //         showParserMeshDetails(node.head).forEach(line => {
-//           text.push(`    ${line}`)
+//           list.push(`    ${line}`)
 //         })
 //       } else {
-//         text.push(chalk.gray('  hook: undefined'))
+//         list.push(chalk.gray('  hook: undefined'))
 //       }
 //       if (node.nest.length) {
-//         text.push(chalk.gray(`  nest:`))
+//         list.push(chalk.gray(`  nest:`))
 //         node.nest.forEach(el => {
 //           showParserMeshDetails(el).forEach(line => {
-//             text.push(`    ${line}`)
+//             list.push(`    ${line}`)
 //           })
 //         })
 //       }
 //       break
 //     }
 //     case LinkName.Size: {
-//       text.push(`${title} ${node.bond}`)
+//       list.push(`${title} ${node.bond}`)
 //       break
 //     }
 //     case LinkName.Text: {
-//       text.push(`${title}`)
+//       list.push(`${title}`)
 //       node.list.forEach(seg => {
 //         showParserMeshDetails(seg).forEach(line => {
-//           text.push(`  ${line}`)
+//           list.push(`  ${line}`)
 //         })
 //       })
 //       break
 //     }
 //     case LinkName.Nick: {
-//       text.push(`${title}`)
-//       text.push(chalk.gray(`  size: ${node.size}`))
+//       list.push(`${title}`)
+//       list.push(chalk.gray(`  size: ${node.size}`))
 //       if (node.nest.length) {
-//         text.push(chalk.gray(`  nest:`))
+//         list.push(chalk.gray(`  nest:`))
 //         node.nest.forEach(nest => {
 //           showParserMeshDetails(nest).forEach(line => {
-//             text.push(`    ${line}`)
+//             list.push(`    ${line}`)
 //           })
 //         })
 //       }
 //       break
 //     }
 //     case LinkName.Cull: {
-//       text.push(`${title}`)
-//       text.push(chalk.gray(`  nest:`))
+//       list.push(`${title}`)
+//       list.push(chalk.gray(`  nest:`))
 //       node.nest.forEach(nest => {
 //         showParserMeshDetails(nest).forEach(line => {
-//           text.push(`    ${line}`)
+//           list.push(`    ${line}`)
 //         })
 //       })
 //       break
 //     }
 //     case LinkName.Comb: {
-//       text.push(`${title} ${node.bond}`)
+//       list.push(`${title} ${node.bond}`)
 //       break
 //     }
 //     case LinkName.Code: {
-//       text.push(`${title} #${node.system}${node.code}`)
+//       list.push(`${title} #${node.system}${node.code}`)
 //       break
 //     }
 //     case LinkName.Term: {
-//       text.push(`${title}`)
+//       list.push(`${title}`)
 //       node.list.forEach(seg => {
 //         showParserMeshDetails(seg).forEach(line => {
-//           text.push(`  ${line}`)
+//           list.push(`  ${line}`)
 //         })
 //       })
 //       break
 //     }
 //     case LinkName.Line: {
-//       text.push(`${title}`)
+//       list.push(`${title}`)
 //       node.list.forEach(seg => {
 //         showParserMeshDetails(seg).forEach(line => {
-//           text.push(`  ${line}`)
+//           list.push(`  ${line}`)
 //         })
 //       })
 //       break
@@ -235,5 +271,9 @@ function showLinkTreeBase(node: Link, flat = false): Array<string> {
 //       throw haltNotImplemented(undefined)
 //   }
 
-//   return text
+//   return list
 // }
+
+function move(size: number) {
+  return new Array(size + 1).join('  ')
+}
