@@ -54,6 +54,7 @@ export type FoldFallNest = FoldBase & {
 export type FoldFallNick = FoldBase & {
   form: FoldName.FallNick
   rank: Rank
+  text: string
 }
 
 export type FoldFallTermLine = FoldBase & {
@@ -62,6 +63,8 @@ export type FoldFallTermLine = FoldBase & {
 
 export type FoldFallText = FoldBase & {
   form: FoldName.FallText
+  text: string
+  rank: Rank
 }
 
 export type FoldNote = FoldBase & {
@@ -133,6 +136,7 @@ export type FoldRiseTermLine = FoldBase & {
 
 export type FoldRiseText = FoldBase & {
   form: FoldName.RiseText
+  rank: Rank
 }
 
 export type FoldCallCast = MarkCallCast & {

@@ -7,14 +7,18 @@ call some{separator}path
     some text {{
       and interpolation{
         here <and {{
-          there and there
+          there[pretty much{really}] and there
         }} and there!>
       }
     }}
   >
 
-code with-interpolation
-  <
-    {{{{this is not actually interpolated}}}}
-    <!-- it results in two brackets each -->
-  >
+---
+
+save
+  separator
+  text
+    </>
+call
+  some{separator}path
+  <some text {{and interpolation{here <and {{there and there}} and there!>}}}>

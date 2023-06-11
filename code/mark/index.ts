@@ -57,12 +57,17 @@ export const MARK_LINE_TEST_LIST: Array<MarkName> = [
 export const MARK_NICK_TEST_LIST: Array<MarkName> = [
   MarkName.TermText,
   MarkName.FallNick,
+  MarkName.LineSlot,
+  MarkName.RiseSlot,
   MarkName.RiseNest,
   MarkName.Size,
   MarkName.SideSize,
   MarkName.Comb,
   MarkName.Code,
   MarkName.Link,
+  MarkName.RiseText,
+  MarkName.RiseNick,
+  MarkName.RiseCull,
 ]
 
 export const MARK_TEXT_TEST_LIST: Array<MarkName> = [
@@ -85,6 +90,11 @@ export const MARK_CULL_TEST_LIST: Array<MarkName> = [
   MarkName.Comb,
   MarkName.Code,
   MarkName.FallCull,
+  MarkName.RiseNick,
+  MarkName.RiseCull,
+  MarkName.LineSlot,
+  MarkName.RiseSlot,
+  MarkName.RiseNest,
 ]
 
 export const MARK_NAME: Array<MarkName> = [
@@ -265,7 +275,7 @@ const TEST: Record<MarkName, MarkSeed> = {
     test: /^\]/,
   },
   [MarkName.FallNick]: {
-    test: /^\}/,
+    test: /^\}+/,
   },
   [MarkName.FallHold]: {
     test: /^\)/,
@@ -292,7 +302,7 @@ const TEST: Record<MarkName, MarkSeed> = {
     test: /^\[/,
   },
   [MarkName.RiseNick]: {
-    test: /^\{/,
+    test: /^\{+/,
   },
   [MarkName.RiseHold]: {
     test: /^\(/,

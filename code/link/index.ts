@@ -67,8 +67,8 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
     }
 
     switch (seed.form) {
-      case FoldName.TermSlot:
-        readTermSlot({
+      case FoldName.TermText:
+        readTermText({
           ...link,
           hold,
           seed,
@@ -206,6 +206,8 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
           hold,
           seed,
         })
+        break
+      case FoldName.TermText:
         break
       default:
         throw haltNotImplemented(seed.form, link.link)
@@ -732,7 +734,7 @@ function readText(link: LinkCallLink): void {
   }
 }
 
-function readTermSlot(link: LinkCallLink): void {
+function readTermText(link: LinkCallLink): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -743,12 +745,12 @@ function readTermSlot(link: LinkCallLink): void {
       const base = ride.base
       const oldTerm = ride
 
-      if (link.seed.form === FoldName.TermSlot) {
-        oldTerm.dive = link.seed.dive
-        oldTerm.soak = link.seed.soak
+      if (link.seed.form === FoldName.TermText) {
+        // oldTerm.dive = link.seed.dive
+        // oldTerm.soak = link.seed.soak
         oldTerm.form = LinkName.Term
         oldTerm.base = base
-        oldTerm.cull = link.seed.cull
+        // oldTerm.cull = link.seed.cull
 
         oldTerm.list.push({
           rank: link.seed.rank,
@@ -765,6 +767,9 @@ function readTermSlot(link: LinkCallLink): void {
         // base.list.push(newTerm)
         // list.push(newTerm)
       }
+      break
+    }
+    case LinkName.Line: {
       break
     }
     default:
