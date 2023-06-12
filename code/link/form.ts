@@ -16,7 +16,6 @@ export enum LinkHint {
 }
 
 export enum LinkName {
-  Hash = 'link-hash',
   Wave = 'link-wave',
   Comb = 'link-comb',
   Code = 'link-code',
@@ -25,14 +24,12 @@ export enum LinkName {
   Nick = 'link-nick',
   SideSize = 'link-side-size',
   Text = 'link-text',
-  Term = 'link-term',
   Knit = 'link-knit',
   Tree = 'link-tree',
   Size = 'link-size',
 }
 
 export type LinkHash = {
-  'link-hash': LinkHash
   'link-wave': LinkWave
   'link-comb': LinkComb
   'link-code': LinkCode
@@ -41,7 +38,6 @@ export type LinkHash = {
   'link-nick': LinkNick
   'link-side-size': LinkSideSize
   'link-text': LinkText
-  'link-term': LinkTerm
   'link-knit': LinkKnit
   'link-tree': LinkTree
   'link-size': LinkSize
@@ -57,10 +53,15 @@ export const LINK_TYPE = [
   LinkName.SideSize,
   LinkName.Knit,
   LinkName.Text,
-  LinkName.Term,
   LinkName.Tree,
   LinkName.Size,
 ]
+
+export type LinkTree = {
+  nest: Array<Link>
+  base?: LinkTree | LinkNick | LinkCull
+  form: LinkName.Tree
+}
 
 export type LinkWave = {
   form: LinkName.Wave
@@ -77,19 +78,18 @@ export type LinkComb = {
 export type LinkCode = {
   bond: string
   rank: Rank
-  base: string
+  mold: string
   form: LinkName.Code
 }
 
 export type LinkCull = {
-  head?: LinkTree
+  head?: LinkTree | LinkBond
   base?: LinkLine
   form: LinkName.Cull
   rank: Rank
 }
 
 export type Link =
-  | LinkTerm
   | LinkKnit
   | LinkTree
   | LinkSize
@@ -105,14 +105,14 @@ export type Link =
 
 export type LinkLine = {
   base?: LinkTree
-  list: Array<LinkTerm | LinkCull | LinkNick | LinkText>
+  list: Array<LinkCull | LinkNick | LinkKnit>
   form: LinkName.Line
   rank: Rank
 }
 
 export type LinkNick = {
   head?: LinkTree
-  base?: LinkTerm | LinkKnit
+  base?: LinkLine | LinkKnit
   size: number
   form: LinkName.Nick
   rank: Rank
@@ -134,22 +134,9 @@ export type LinkText = {
   bond: string
 }
 
-export type LinkTerm = {
-  base?: LinkLine
-  nest: Array<LinkText | LinkNick>
-  form: LinkName.Term
-}
-
 export type LinkKnit = {
   nest: Array<LinkText | LinkNick>
   form: LinkName.Knit
-}
-
-export type LinkTree = {
-  head?: LinkTerm
-  nest: Array<Link>
-  base?: LinkTree | LinkNick | LinkCull
-  form: LinkName.Tree
 }
 
 export type LinkSize = {

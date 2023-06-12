@@ -154,6 +154,13 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
           seed,
         })
         break
+      case FoldName.FallTree:
+        readFallTree({
+          ...link,
+          hold,
+          seed,
+        })
+        break
       case FoldName.Text:
         readText({
           ...link,
@@ -239,6 +246,11 @@ function readFallNick(link: LinkCallLink<FoldName.FallNick>): void {
   wall.pop()
 }
 
+function readFallTree(link: LinkCallLink<FoldName.FallTree>): void {
+  const { wall } = link.hold
+  wall.pop()
+}
+
 function readFallTermLine(
   link: LinkCallLink<FoldName.FallTermLine>,
 ): void {
@@ -306,7 +318,7 @@ function readCode(link: LinkCallLink<FoldName.Code>): void {
   }
 }
 
-function readRiseTree(link: LinkCallLink<FoldName.RiseCull>): void {
+function readRiseTree(link: LinkCallLink<FoldName.RiseTree>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -551,6 +563,39 @@ function readRiseNick(link: LinkCallLink<FoldName.RiseNick>): void {
 
       break
     }
+    case LinkName.Tree: {
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
+      }
+
+      const line: LinkLine = {
+        form: LinkName.Line,
+        list: [nick],
+        rank: link.seed.rank,
+      }
+
+      // linkBase(nick, line)
+      // linkBase(line, ride)
+
+      ride.nest.push(nick)
+
+      // list?.push(line)
+      list?.push(nick)
+
+      const tree = nick
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
+      break
+    }
     // case LinkName.Line: {
     //   haveFoldForm(link.seed, FoldName.RiseNick)
     //   haveMesh(ride, 'ride')
@@ -605,7 +650,7 @@ function readRiseNick(link: LinkCallLink<FoldName.RiseNick>): void {
 
       wall.push({
         line: [],
-        list: [tree, nick],
+        list: [tree],
         tree,
       })
 
@@ -629,22 +674,22 @@ function readRiseTermLine(
 
   switch (ride?.form) {
     case LinkName.Tree: {
-      const line: LinkLine = {
-        rank: link.seed.rank,
-        list: [],
-        form: LinkName.Line,
-      }
+      // const line: LinkLine = {
+      //   rank: link.seed.rank,
+      //   list: [],
+      //   form: LinkName.Line,
+      // }
 
       const tree: LinkTree = {
         form: LinkName.Tree,
-        nest: [line],
+        nest: [],
       }
 
-      linkBase(line, tree)
+      // linkBase(line, tree)
       linkBase(tree, ride)
 
       list?.push(tree)
-      list?.push(line)
+      // list?.push(line)
 
       ride.nest.push(tree)
 

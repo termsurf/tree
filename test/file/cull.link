@@ -1,6 +1,6 @@
 
 save term[name]
-save term{{foo}}[cull]/another{thing}
+save term{{foo{baz}}}[cull]/another{thing}
 save term{{bar}}[{rand}]/still-another{thing}
 
 term grow[text]
@@ -11,6 +11,8 @@ term grow[text]
       more
     ]
   ]
+
+foo bar
 
 ---
 
