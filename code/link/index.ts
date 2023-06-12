@@ -91,6 +91,13 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
           seed,
         })
         break
+      case FoldName.RiseTree:
+        readRiseTree({
+          ...link,
+          hold,
+          seed,
+        })
+        break
       case FoldName.TermText:
         readTermText({
           ...link,
@@ -198,13 +205,6 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
         break
       case FoldName.FallNest:
         readFallNest({
-          ...link,
-          hold,
-          seed,
-        })
-        break
-      case FoldName.RiseTree:
-        readRiseTree({
           ...link,
           hold,
           seed,
@@ -323,8 +323,6 @@ function readRiseTree(link: LinkCallLink<FoldName.RiseTree>): void {
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
   const ride = list?.[list.length - 1]
-
-  // console.log(JSON.stringify(ride, null, 2), link.seed)
 
   switch (ride?.form) {
     case LinkName.Tree: {
@@ -674,22 +672,22 @@ function readRiseTermLine(
 
   switch (ride?.form) {
     case LinkName.Tree: {
-      // const line: LinkLine = {
-      //   rank: link.seed.rank,
-      //   list: [],
-      //   form: LinkName.Line,
-      // }
+      const line: LinkLine = {
+        rank: link.seed.rank,
+        list: [],
+        form: LinkName.Line,
+      }
 
       const tree: LinkTree = {
         form: LinkName.Tree,
         nest: [],
       }
 
-      // linkBase(line, tree)
+      linkBase(line, tree)
       linkBase(tree, ride)
 
       list?.push(tree)
-      // list?.push(line)
+      list?.push(line)
 
       ride.nest.push(tree)
 

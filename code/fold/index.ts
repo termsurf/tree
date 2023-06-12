@@ -186,7 +186,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       const seed = link.list[slot]
       haveMesh(seed, 'seed')
 
-      // console.log(seed.text, seed.form)
+      console.log(seed.text, seed.form)
 
       switch (seed.form) {
         case MarkName.FallCull: {
@@ -447,8 +447,6 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
               ...fold(FoldName.FallTree),
             })
           }
-
-          console.log(a, b)
         }
         textSlot = 0
         slot++
@@ -488,12 +486,10 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
               rank: seed.rank,
               ...fold(FoldName.RiseTermLine),
             })
-            console.log(seed.text, seed.form)
             saveForm(Form.Tree)
             saveForm(Form.TermLine)
             break
           default:
-            console.log('MORE', seed.text, seed.form)
             break
         }
 

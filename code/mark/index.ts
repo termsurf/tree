@@ -307,6 +307,7 @@ export type MarkSeed = {
   test: RegExp
   // whether or not we consume token
   take?: boolean
+  link?: MarkName
 }
 
 export type MarkCallCast = MarkCallLink & {
@@ -320,6 +321,7 @@ const TEST: Record<MarkName, MarkSeed> = {
   },
   [MarkName.FallNick]: {
     test: /^\}+/,
+    link: MarkName.RiseNick,
   },
   [MarkName.FallHold]: {
     test: /^\)/,
@@ -390,8 +392,8 @@ const TEST: Record<MarkName, MarkSeed> = {
   },
   [MarkName.FallTerm]: {
     base: [MarkName.TermHead, MarkName.TermBase],
-    head: [MarkName.RiseCull, MarkName.FallNick],
-    test: /^[\n, \(\]\[\}]/,
+    head: [MarkName.FallNick],
+    test: /^[\n, \(\]\}]/,
     take: false,
   },
   [MarkName.TermLineLink]: {
@@ -452,6 +454,8 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
   let line = 0
   let mark = 0
   let move = 0
+
+  const nickList: Array<string> = []
 
   for (let textLine of cast.lineText) {
     // apphead `\n` so test matching works as expected
@@ -525,8 +529,16 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
             }
             cast.list.push(stem)
           } else {
-            const findSize = find[0].length
-            const findText = textLine.slice(0, findSize)
+            let findSize = find[0].length
+            let findText = textLine.slice(0, findSize)
+
+            if (seed.link === MarkName.RiseNick) {
+              const last = nickList[nickList.length - 1]
+              if (last) {
+                findSize = last.length
+                findText = findText.slice(0, last.length)
+              }
+            }
             const stem: Mark = {
               rank: {
                 head: {
@@ -546,6 +558,12 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
             textLine = textLine.slice(findSize)
             move += findSize
             mark += findSize
+
+            if (form === MarkName.RiseNick) {
+              nickList.push(findText)
+            } else if (form === MarkName.FallNick) {
+              nickList.pop()
+            }
           }
 
           switch (form) {
