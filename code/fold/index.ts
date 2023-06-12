@@ -167,6 +167,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     // console.log(foldList.slice(foldList.length - 5))
   }
 
+  fallBond()
+
   function castCode(seed: MarkCode) {
     if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
       const mold = RegExp.$1

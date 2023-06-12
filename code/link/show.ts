@@ -67,7 +67,7 @@ function showLinkTreeBase(
         // list.push(`${head.join('')}`)
         nest.forEach(line => {
           if (line) {
-            list.push(`${line}`)
+            list.push(`  ${line}`)
           }
         })
       }
