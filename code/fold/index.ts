@@ -46,6 +46,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     foldList,
   }
 
+  // console.log(link.list)
+
   function head(form: Form, nest = 0) {
     return { form, nest }
   }
@@ -68,6 +70,11 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     switch (seed.form) {
       case MarkName.RiseCull:
         headTextSlot()
+        foldList.push({
+          form: FoldName.RiseCull,
+          text: seed.text,
+          rank: seed.rank,
+        })
         line.push(head(Form.Cull))
         break
       case MarkName.FallCull:
@@ -88,6 +95,9 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         break
       case MarkName.RiseHold:
         line.push(head(Form.Nest))
+        foldList.push({
+          form: FoldName.RiseNest,
+        })
         break
       case MarkName.FallHold:
         castFallHold(seed)
@@ -188,18 +198,11 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
   function castFallCull(seed: MarkFallCull) {
     walk: while (true) {
       const head = readHead()
+      // console.log(head)
       switch (head?.form) {
-        case Form.Cull:
-          foldList.push({
-            text: seed.text,
-            rank: seed.rank,
-            form: FoldName.FallCull,
-          })
-          line.pop()
-          break
         case Form.Knit:
           foldList.push({
-            form: FoldName.FallTree,
+            form: FoldName.FallKnit,
           })
           line.pop()
           break
@@ -207,6 +210,14 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           foldList.push({ form: FoldName.FallTree })
           line.pop()
           break
+        case Form.Cull:
+          foldList.push({
+            text: seed.text,
+            rank: seed.rank,
+            form: FoldName.FallCull,
+          })
+          line.pop()
+          break walk
         default:
           break walk
       }
@@ -216,7 +227,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
   }
 
   if (haltList.length) {
-    console.log(haltList)
+    // console.log(haltList)
   }
 
   console.log(cast.foldList)
@@ -262,16 +273,24 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     const last = readMark(-1)
     switch (last?.form) {
       case MarkName.Slot:
+      case MarkName.LineSlot:
+      case MarkName.RiseSlot:
+      case MarkName.Link:
+      case MarkName.RiseCull:
+      case MarkName.RiseNick:
       case undefined: {
         foldList.push({
           form: FoldName.RiseTree,
         })
+        line.push(head(Form.Tree))
         foldList.push({
-          form: FoldName.Knit,
+          form: FoldName.RiseKnit,
         })
+        line.push(head(Form.Knit))
         break
       }
       default:
+        // console.log(last)
         break
     }
 
@@ -287,6 +306,12 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
   function castRiseNick(seed: MarkRiseNick) {
     headTextSlot()
     line.push(head(Form.Nick))
+    foldList.push({
+      form: FoldName.RiseNick,
+      text: seed.text,
+      rank: seed.rank,
+      size: seed.text.length,
+    })
   }
 
   function castFallText(seed: MarkFallText) {
@@ -313,7 +338,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
   }
 
   function readMark(move = 1) {
-    return link.list[slot + move]
+    return link.list[slot + move - 1]
   }
 
   function readHead() {
@@ -324,17 +349,9 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     walk: while (true) {
       const head = readHead()
       switch (head?.form) {
-        case Form.Nick:
-          foldList.push({
-            text: seed.text,
-            rank: seed.rank,
-            form: FoldName.FallNick,
-          })
-          line.pop()
-          break
         case Form.Knit:
           foldList.push({
-            form: FoldName.FallTree,
+            form: FoldName.FallKnit,
           })
           line.pop()
           break
@@ -342,6 +359,14 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           foldList.push({ form: FoldName.FallTree })
           line.pop()
           break
+        case Form.Nick:
+          foldList.push({
+            text: seed.text,
+            rank: seed.rank,
+            form: FoldName.FallNick,
+          })
+          line.pop()
+          break walk
         default:
           break walk
       }

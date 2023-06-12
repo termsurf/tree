@@ -126,8 +126,8 @@ export const MARK_BASE_TEST_LIST: Array<MarkName> = [
   MarkName.Size,
   MarkName.FallSlot,
   MarkName.Slot,
-  MarkName.Line,
   MarkName.Knit,
+  MarkName.Line,
 ]
 
 export const MARK_TEST: Record<Form, Array<MarkName>> = {
@@ -289,10 +289,10 @@ const TEST: Record<MarkName, MarkSeed> = {
   [MarkName.FallSlot]: {
     test: /^ +$/,
   },
-  [MarkName.RiseSlot]: {
+  [MarkName.Slot]: {
     test: /^ +/,
   },
-  [MarkName.Slot]: {
+  [MarkName.RiseSlot]: {
     test: /^ +/,
   },
   [MarkName.Line]: {
@@ -354,39 +354,39 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
     // apphead `\n` so test matching works as expected
     textLine = `${textLine}\n`
 
-    while (textLine) {
-      const slotTest = TEST[MarkName.RiseSlot].test
-      const slotText = textLine.match(slotTest)
-      if (slotText) {
-        const slotTextFind = slotText[0]
-        const slotTextSize = slotTextFind.length
+    const slotTest = TEST[MarkName.RiseSlot].test
+    const slotText = textLine.match(slotTest)
+    if (slotText) {
+      const slotTextFind = slotText[0]
+      const slotTextSize = slotTextFind.length
 
-        const stem: Mark = {
-          rank: {
-            head: {
-              mark: mark + slotTextSize,
-              line,
-            },
-            base: {
-              mark,
-              line,
-            },
+      const stem: Mark = {
+        rank: {
+          head: {
+            mark: mark + slotTextSize,
+            line,
           },
-          text: slotTextFind,
-          form: MarkName.RiseSlot as Mark['form'],
-        }
-        cast.list.push(stem)
-
-        move += slotTextSize
-        mark += slotTextSize
-
-        textLine = textLine.slice(slotTextSize)
-
-        if (!textLine) {
-          break walkBase
-        }
+          base: {
+            mark,
+            line,
+          },
+        },
+        text: slotTextFind,
+        form: MarkName.RiseSlot as Mark['form'],
       }
+      cast.list.push(stem)
 
+      move += slotTextSize
+      mark += slotTextSize
+
+      textLine = textLine.slice(slotTextSize)
+
+      if (!textLine) {
+        break walkBase
+      }
+    }
+
+    while (textLine) {
       const textForm: Form = formList[formList.length - 1] || Form.Base
 
       const testList = MARK_TEST[textForm]
