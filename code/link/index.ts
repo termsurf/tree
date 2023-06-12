@@ -1,9 +1,10 @@
 import makeFoldList, {
-  Fold,
   FoldCallCast,
+  FoldHash,
   FoldName,
+  haveFoldForm,
 } from '../fold/index.js'
-import makeTextList, { TextCallLink } from '../text/index.js'
+import makeTextList, { MarkCallLink } from '../mark/index.js'
 import {
   Link,
   LinkCallCast,
@@ -17,15 +18,17 @@ import {
   LinkSideSize,
   LinkSize,
   LinkTerm,
+  LinkKnit,
   LinkText,
-  LinkTextLine,
   LinkTree,
+  haveLink,
+  haveLinkForm,
 } from './form.js'
 import { haltNotImplemented } from '../halt.js'
-import { haveLink, haveLinkForm } from 'code/have.js'
+import { haveMesh } from '@tunebond/have'
 
 export * from '../fold/index.js'
-export * from '../text/index.js'
+export * from '../mark/index.js'
 export * from './form.js'
 
 type LinkWall = {
@@ -40,9 +43,9 @@ type LinkCallLinkHold = {
   tree: LinkTree
 }
 
-type LinkCallLink = FoldCallCast & {
+type LinkCallLink<T extends FoldName> = FoldCallCast & {
   hold: LinkCallLinkHold
-  seed: Fold
+  seed: FoldHash[T]
 }
 
 function readFoldTree(link: FoldCallCast): LinkCallCast {
@@ -51,6 +54,20 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
     slot: 0,
     tree: { nest: [], form: LinkName.Tree },
   }
+
+  // console.log(
+  //   link.foldList.map(x => ({
+  //     form: x.form,
+  //     text: x.text,
+  //   })),
+  // )
+
+  // // console.log(
+  //   link.list.map(x => ({
+  //     form: x.form,
+  //     text: x.text,
+  //   })),
+  // )
 
   const context: LinkWall = {
     line: [],
@@ -62,20 +79,27 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
 
   while (hold.slot < link.foldList.length) {
     const seed = link.foldList[hold.slot]
-    if (!seed) {
-      continue
-    }
+    haveMesh(seed, 'seed')
+
+    console.log(seed.form, seed.text)
 
     switch (seed.form) {
-      case FoldName.TermSlot:
-        readTermSlot({
+      case FoldName.RiseTermLine:
+        readRiseTermLine({
           ...link,
           hold,
           seed,
         })
         break
-      case FoldName.RiseHook:
-        readRiseHook({
+      case FoldName.RiseTree:
+        readRiseTree({
+          ...link,
+          hold,
+          seed,
+        })
+        break
+      case FoldName.TermText:
+        readTermText({
           ...link,
           hold,
           seed,
@@ -90,13 +114,6 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
         break
       case FoldName.FallNick:
         readFallNick({
-          ...link,
-          hold,
-          seed,
-        })
-        break
-      case FoldName.RiseTermLine:
-        readRiseTermLine({
           ...link,
           hold,
           seed,
@@ -123,27 +140,6 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
           seed,
         })
         break
-      case FoldName.RiseTerm:
-        readRiseTerm({
-          ...link,
-          hold,
-          seed,
-        })
-        break
-      case FoldName.FallTerm:
-        readFallTerm({
-          ...link,
-          hold,
-          seed,
-        })
-        break
-      case FoldName.FallHook:
-        readFallHook({
-          ...link,
-          hold,
-          seed,
-        })
-        break
       case FoldName.Size:
         readSize({
           ...link,
@@ -160,6 +156,13 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
         break
       case FoldName.FallText:
         readFallText({
+          ...link,
+          hold,
+          seed,
+        })
+        break
+      case FoldName.FallTree:
+        readFallTree({
           ...link,
           hold,
           seed,
@@ -207,6 +210,8 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
           seed,
         })
         break
+      case FoldName.TermText:
+        break
       default:
         throw haltNotImplemented(seed.form, link.link)
     }
@@ -224,51 +229,45 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
   }
 }
 
-function readFallHook(link: LinkCallLink): void {
-  const wall = link.hold.wall[link.hold.wall.length - 1]
-  const list = wall?.list
-  list?.pop()
-}
-
-function readFallCull(link: LinkCallLink): void {
+function readFallCull(link: LinkCallLink<FoldName.FallCull>): void {
   const { wall } = link.hold
   wall.pop()
 }
 
-function readFallNest(link: LinkCallLink): void {
+function readFallNest(link: LinkCallLink<FoldName.FallNest>): void {
   const wall = link.hold.wall[link.hold.wall.length - 1]
   const list = wall?.list
   list?.pop()
   wall?.line.pop()
 }
 
-function readFallNick(link: LinkCallLink): void {
+function readFallNick(link: LinkCallLink<FoldName.FallNick>): void {
   const { wall } = link.hold
   wall.pop()
 }
 
-function readFallTerm(link: LinkCallLink): void {
+function readFallTree(link: LinkCallLink<FoldName.FallTree>): void {
+  const { wall } = link.hold
+  wall.pop()
+}
+
+function readFallTermLine(
+  link: LinkCallLink<FoldName.FallTermLine>,
+): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
   list?.pop()
 }
 
-function readFallTermLine(link: LinkCallLink): void {
+function readFallText(link: LinkCallLink<FoldName.FallText>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
   list?.pop()
 }
 
-function readFallText(link: LinkCallLink): void {
-  const { wall } = link.hold
-  const context = wall[wall.length - 1]
-  const list = context?.list
-  list?.pop()
-}
-
-function readComb(link: LinkCallLink): void {
+function readComb(link: LinkCallLink<FoldName.Comb>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -293,7 +292,7 @@ function readComb(link: LinkCallLink): void {
   }
 }
 
-function readCode(link: LinkCallLink): void {
+function readCode(link: LinkCallLink<FoldName.Code>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -319,73 +318,91 @@ function readCode(link: LinkCallLink): void {
   }
 }
 
-function readRiseHook(link: LinkCallLink): void {
+function readRiseTree(link: LinkCallLink<FoldName.RiseTree>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
   const ride = list?.[list.length - 1]
 
   switch (ride?.form) {
-    case LinkName.Nick: {
+    case LinkName.Tree: {
       const tree: LinkTree = {
         nest: [],
-        base: ride,
         form: LinkName.Tree,
       }
+
+      linkBase(tree, ride)
+
       ride.nest.push(tree)
       list?.push(tree)
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
       break
     }
     case LinkName.Cull: {
       const tree: LinkTree = {
         nest: [],
-        base: ride,
         form: LinkName.Tree,
       }
-      ride.nest.push(tree)
+
+      linkBase(tree, ride)
+
+      ride.head = tree
+
       list?.push(tree)
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
       break
     }
-    case LinkName.Tree: {
+    case LinkName.Nick: {
       const tree: LinkTree = {
         nest: [],
-        base: ride,
         form: LinkName.Tree,
       }
-      ride.nest.push(tree)
+
+      linkBase(tree, ride)
+
+      ride.head = tree
+
       list?.push(tree)
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
       break
     }
-    // case LinkName.Term: {
-    //   const tree: LinkTree = {
-    //     nest: [],
-    //     base: ride,
-    //     form: LinkName.Tree,
-    //   }
-    //   ride.nest.push(tree)
-    //   list?.push(tree)
-    //   break
-    // }
     default:
       haveLink(ride, 'ride')
       throw haltNotImplemented(ride.form, link.link)
   }
 }
 
-function readRiseCull(link: LinkCallLink): void {
+function readRiseCull(link: LinkCallLink<FoldName.RiseCull>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
   const ride = list?.[list.length - 1]
 
+  // console.log(JSON.stringify(ride.base, null, 2), link.seed)
+
   switch (ride?.form) {
     case LinkName.Line: {
       const cull: LinkCull = {
-        // rank: link.seed.rank,
-        nest: [],
-        base: ride,
+        rank: link.seed.rank,
         form: LinkName.Cull,
       }
+
+      linkBase(cull, ride)
 
       ride.list.push(cull)
       list?.push(cull)
@@ -405,65 +422,61 @@ function readRiseCull(link: LinkCallLink): void {
   }
 }
 
-function readRiseNest(link: LinkCallLink): void {
+function readRiseNest(link: LinkCallLink<FoldName.RiseNest>): void {
   const wall = link.hold.wall[link.hold.wall.length - 1]
 
   if (!wall) {
     return
   }
 
+  // console.log(wall.line, JSON.stringify(wall.tree, null, 2))
   let tree: LinkTree | LinkNick | LinkCull | undefined = wall.tree
 
-  for (const part of wall.line) {
-    if (tree && tree.form === LinkName.Tree) {
-      const node: Link | undefined = tree.nest[part]
-      if (node) {
-        if (node.form === LinkName.Tree) {
-          tree = node
-        } else {
-          tree = undefined
-        }
-      } else {
-        tree = undefined
-        break
-      }
-    } else if (tree && tree.form === LinkName.Nick) {
-      const node: Link | undefined = tree.nest[part]
-      if (node) {
-        if (node.form === LinkName.Tree) {
-          tree = node
-        } else {
-          tree = undefined
-        }
-      } else {
-        tree = undefined
-        break
-      }
-    } else if (tree && tree.form === LinkName.Cull) {
-      const node: Link | undefined = tree.nest[part]
-      if (node) {
-        if (node.form === LinkName.Tree) {
-          tree = node
-        } else {
-          tree = undefined
-        }
-      } else {
-        tree = undefined
-        break
-      }
-    }
-  }
+  // for (const part of wall.line) {
+  //   if (tree && tree.form === LinkName.Tree) {
+  //     const node: Link | undefined = tree.nest[part]
+  //     if (node) {
+  //       if (node.form === LinkName.Tree) {
+  //         tree = node
+  //       } else {
+  //         tree = undefined
+  //       }
+  //     } else {
+  //       tree = undefined
+  //       break
+  //     }
+  //   } else if (tree && tree.form === LinkName.Nick) {
+  //     const node: Link | undefined = tree.nest[part]
+  //     if (node) {
+  //       if (node.form === LinkName.Tree) {
+  //         tree = node
+  //       } else {
+  //         tree = undefined
+  //       }
+  //     } else {
+  //       tree = undefined
+  //       break
+  //     }
+  //   } else if (tree && tree.form === LinkName.Cull) {
+  //     const node: Link | undefined = tree.nest[part]
+  //     if (node) {
+  //       if (node.form === LinkName.Tree) {
+  //         tree = node
+  //       } else {
+  //         tree = undefined
+  //       }
+  //     } else {
+  //       tree = undefined
+  //       break
+  //     }
+  //   }
+  // }
 
-  if (
-    tree &&
-    (tree.form === LinkName.Tree ||
-      tree.form === LinkName.Nick ||
-      tree.form === LinkName.Cull)
-  ) {
+  if (tree && tree.form === LinkName.Tree) {
     wall.line.push(tree.nest.length - 1)
-    const node = tree.nest[tree.nest.length - 1]
-    if (node) {
-      wall.list.push(node)
+    const head = tree.nest[tree.nest.length - 1]
+    if (head) {
+      wall.list.push(head)
     } else {
       // throw new Error()
     }
@@ -472,68 +485,7 @@ function readRiseNest(link: LinkCallLink): void {
   }
 }
 
-function readRiseNick(link: LinkCallLink): void {
-  const { wall } = link.hold
-  const context = wall[wall.length - 1]
-  const list = context?.list ?? []
-  const ride = list?.[list.length - 1]
-
-  switch (ride?.form) {
-    case LinkName.Term: {
-      if (link.seed.form === FoldName.RiseNick) {
-        const plugin: LinkNick = {
-          nest: [],
-          base: ride,
-          size: link.seed.size,
-          form: LinkName.Nick,
-        }
-
-        ride.list.push(plugin)
-
-        const tree = plugin
-
-        wall.push({
-          line: [],
-          list: [tree],
-          tree,
-        })
-
-        // list?.push(plugin)
-      }
-
-      break
-    }
-    case LinkName.Text: {
-      if (link.seed.form === FoldName.RiseNick) {
-        const plugin: LinkNick = {
-          nest: [],
-          base: ride,
-          size: link.seed.size,
-          form: LinkName.Nick,
-        }
-
-        ride.list.push(plugin)
-
-        const tree = plugin
-
-        wall.push({
-          line: [],
-          list: [tree],
-          tree,
-        })
-
-        // list?.push(plugin)
-      }
-
-      break
-    }
-    default:
-      haveLink(ride, 'ride')
-      throw haltNotImplemented(ride.form, link.link)
-  }
-}
-
-function readRiseTerm(link: LinkCallLink): void {
+function readRiseNick(link: LinkCallLink<FoldName.RiseNick>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -541,61 +493,178 @@ function readRiseTerm(link: LinkCallLink): void {
 
   switch (ride?.form) {
     case LinkName.Line: {
-      const term: LinkTerm = {
-        dive: false,
-        soak: false,
-        base: ride,
-        cull: false,
-        list: [],
-        form: LinkName.Term,
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
       }
 
-      list?.push(term)
+      linkBase(nick, ride)
 
-      ride.list.push(term)
+      ride.list.push(nick)
+
+      const tree = nick
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
       break
     }
-    case LinkName.Nick: {
-      const term: LinkTerm = {
-        dive: false,
-        soak: false,
-        base: ride,
-        cull: false,
-        list: [],
-        form: LinkName.Term,
+    case LinkName.Term: {
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
       }
 
-      list?.push(term)
+      linkBase(nick, ride)
 
-      ride.nest.push(term)
+      ride.base?.list.push(nick)
+
+      const tree = nick
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
+      break
+    }
+    case LinkName.Knit: {
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
+      }
+
+      linkBase(nick, ride)
+
+      ride.nest.push(nick)
+
+      const tree = nick
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
       break
     }
     case LinkName.Tree: {
-      const term: LinkTerm = {
-        dive: false,
-        soak: false,
-        base: ride,
-        cull: false,
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
+      }
+
+      const line: LinkLine = {
+        form: LinkName.Line,
+        list: [nick],
+        rank: link.seed.rank,
+      }
+
+      // linkBase(nick, line)
+      // linkBase(line, ride)
+
+      ride.nest.push(nick)
+
+      // list?.push(line)
+      list?.push(nick)
+
+      const tree = nick
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
+      break
+    }
+    // case LinkName.Line: {
+    //   haveFoldForm(link.seed, FoldName.RiseNick)
+    //   haveMesh(ride, 'ride')
+
+    //   const nick: LinkNick = {
+    //     rank: link.seed.rank,
+    //     size: link.seed.size,
+    //     form: LinkName.Nick,
+    //   }
+
+    //   linkBase(nick, ride)
+
+    //   ride.list.push(nick)
+
+    //   const tree = nick
+
+    //   wall.push({
+    //     line: [],
+    //     list: [tree],
+    //     tree,
+    //   })
+
+    //   // list?.push(plugin)
+
+    //   break
+    // }
+    case LinkName.Cull: {
+      const nick: LinkNick = {
+        rank: link.seed.rank,
+        size: link.seed.size,
+        form: LinkName.Nick,
+      }
+
+      const line: LinkLine = {
+        form: LinkName.Line,
         list: [],
-        form: LinkName.Term,
+        rank: link.seed.rank,
       }
 
-      list?.push(term)
-
-      if (ride.head) {
-        ride.nest.push(term)
-      } else {
-        ride.head = term
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [],
       }
+
+      linkBase(nick, line)
+      linkBase(line, tree)
+      linkBase(tree, ride)
+
+      list?.push(tree)
+      list?.push(line)
+      list?.push(nick)
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      // list?.push(plugin)
+
       break
     }
     default:
-      haveLink(ride, 'ride')
+      haveMesh(ride, 'ride')
       throw haltNotImplemented(ride.form, link.link)
   }
 }
 
-function readRiseTermLine(link: LinkCallLink): void {
+function readRiseTermLine(
+  link: LinkCallLink<FoldName.RiseTermLine>,
+): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -604,40 +673,118 @@ function readRiseTermLine(link: LinkCallLink): void {
   switch (ride?.form) {
     case LinkName.Tree: {
       const line: LinkLine = {
-        base: ride,
+        rank: link.seed.rank,
         list: [],
         form: LinkName.Line,
       }
 
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [],
+      }
+
+      linkBase(line, tree)
+      linkBase(tree, ride)
+
+      list?.push(tree)
       list?.push(line)
 
-      ride.nest.push(line)
+      ride.nest.push(tree)
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
+
+      break
+    }
+    // // case LinkName.Term: {
+    // //   break
+    // // }
+    // case LinkName.Cull: {
+    //   const line: LinkLine = {
+    //     rank: link.seed.rank,
+    //     list: [],
+    //     form: LinkName.Line,
+    //   }
+
+    //   const tree: LinkTree = {
+    //     nest: [line],
+    //     form: LinkName.Tree,
+    //   }
+
+    //   linkBase(line, tree)
+
+    //   linkBase(tree, ride)
+
+    //   list?.push(tree)
+    //   list?.push(line)
+
+    //   ride.head = tree
+
+    //   break
+    // }
+    case LinkName.Line: {
+      const line = ride
+
+      // list?.push(ride)
 
       break
     }
     case LinkName.Nick: {
       const line: LinkLine = {
-        base: ride,
+        rank: link.seed.rank,
         list: [],
         form: LinkName.Line,
       }
 
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [line],
+      }
+
+      linkBase(line, tree)
+      linkBase(tree, ride)
+
+      list?.push(tree)
       list?.push(line)
 
-      ride.nest.push(line)
+      ride.head = tree
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
 
       break
     }
     case LinkName.Cull: {
       const line: LinkLine = {
-        base: ride,
+        rank: link.seed.rank,
         list: [],
         form: LinkName.Line,
       }
 
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [line],
+      }
+
+      linkBase(line, tree)
+      linkBase(tree, ride)
+
+      list?.push(tree)
       list?.push(line)
 
-      ride.nest.push(line)
+      ride.head = tree
+
+      wall.push({
+        line: [],
+        list: [tree],
+        tree,
+      })
 
       break
     }
@@ -647,30 +794,30 @@ function readRiseTermLine(link: LinkCallLink): void {
   }
 }
 
-function readRiseText(link: LinkCallLink): void {
+function readRiseText(link: LinkCallLink<FoldName.RiseText>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
   const ride = list?.[list.length - 1]
 
   switch (ride?.form) {
-    case LinkName.Tree: {
-      const text: LinkText = {
-        list: [],
-        form: LinkName.Text,
-      }
+    // case LinkName.Tree: {
+    //   const text: LinkKnit = {
+    //     list: [],
+    //     form: LinkName.Text,
+    //   }
 
-      ride.nest.push(text)
-      list?.push(text)
-      break
-    }
+    //   ride.nest.push(text)
+    //   list?.push(text)
+    //   break
+    // }
     default:
       haveLink(ride, 'ride')
       throw haltNotImplemented(ride.form, link.link)
   }
 }
 
-function readSideSize(link: LinkCallLink): void {
+function readSideSize(link: LinkCallLink<FoldName.SideSize>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -695,7 +842,7 @@ function readSideSize(link: LinkCallLink): void {
   }
 }
 
-function readText(link: LinkCallLink): void {
+function readText(link: LinkCallLink<FoldName.Text>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -704,7 +851,7 @@ function readText(link: LinkCallLink): void {
   switch (ride?.form) {
     case LinkName.Text: {
       if (link.seed.form === FoldName.Text) {
-        const string: LinkTextLine = {
+        const string: LinkKnit = {
           rank: link.seed.rank,
           form: LinkName.TextLine,
           bond: link.seed.bond,
@@ -716,7 +863,7 @@ function readText(link: LinkCallLink): void {
     }
     case LinkName.Tree: {
       if (link.seed.form === FoldName.Text) {
-        const string: LinkTextLine = {
+        const string: LinkKnit = {
           rank: link.seed.rank,
           form: LinkName.TextLine,
           bond: link.seed.bond,
@@ -732,7 +879,7 @@ function readText(link: LinkCallLink): void {
   }
 }
 
-function readTermSlot(link: LinkCallLink): void {
+function readTermText(link: LinkCallLink<FoldName.TermText>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -742,29 +889,124 @@ function readTermSlot(link: LinkCallLink): void {
     case LinkName.Term: {
       const base = ride.base
       const oldTerm = ride
+      // oldTerm.dive = link.seed.dive
+      // oldTerm.soak = link.seed.soak
+      oldTerm.form = LinkName.Term
+      oldTerm.base = base
+      // oldTerm.cull = link.seed.cull
 
-      if (link.seed.form === FoldName.TermSlot) {
-        oldTerm.dive = link.seed.dive
-        oldTerm.soak = link.seed.soak
-        oldTerm.form = LinkName.Term
-        oldTerm.base = base
-        oldTerm.cull = link.seed.cull
+      oldTerm.nest.push({
+        rank: link.seed.rank,
+        form: LinkName.Text,
+        bond: link.seed.bond,
+      })
 
-        oldTerm.list.push({
-          rank: link.seed.rank,
-          form: LinkName.TextLine,
-          bond: link.seed.bond,
-        })
-
-        // if (!link.seed.start) {
-        //   const termList: Array<LinkTerm> = mergeTerms(
-        //     oldTerm,
-        //     newTerm,
-        //   )
-        // }
-        // base.list.push(newTerm)
-        // list.push(newTerm)
+      // if (!link.seed.start) {
+      //   const termList: Array<LinkTerm> = mergeTerms(
+      //     oldTerm,
+      //     newTerm,
+      //   )
+      // }
+      // base.list.push(newTerm)
+      // list.push(newTerm)
+      break
+    }
+    case LinkName.Line: {
+      const line = ride
+      const text: LinkText = {
+        rank: link.seed.rank,
+        form: LinkName.Text,
+        bond: link.seed.bond,
       }
+      linkBase(text, line)
+      line.list.push(text)
+      // list?.push(text)
+      break
+    }
+    case LinkName.Cull: {
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [],
+      }
+      const line: LinkLine = {
+        form: LinkName.Line,
+        rank: link.seed.rank,
+        list: [],
+      }
+      const cull = ride
+      const text: LinkText = {
+        rank: link.seed.rank,
+        form: LinkName.Text,
+        bond: link.seed.bond,
+      }
+      line.list.push(text)
+      tree.nest.push(line)
+
+      linkBase(text, line)
+      linkBase(line, tree)
+
+      cull.head = tree
+
+      list?.push(tree)
+      list?.push(line)
+      // list?.push(text)
+      break
+    }
+    case LinkName.Nick: {
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [],
+      }
+      const line: LinkLine = {
+        form: LinkName.Line,
+        rank: link.seed.rank,
+        list: [],
+      }
+      const cull = ride
+      const text: LinkText = {
+        rank: link.seed.rank,
+        form: LinkName.Text,
+        bond: link.seed.bond,
+      }
+      line.list.push(text)
+      tree.nest.push(line)
+
+      linkBase(text, line)
+      linkBase(line, tree)
+
+      cull.head = tree
+
+      list?.push(tree)
+      list?.push(line)
+      // list?.push(text)
+      break
+    }
+    case LinkName.Tree: {
+      const tree: LinkTree = {
+        form: LinkName.Tree,
+        nest: [],
+      }
+      const line: LinkLine = {
+        form: LinkName.Line,
+        rank: link.seed.rank,
+        list: [],
+      }
+      const text: LinkText = {
+        rank: link.seed.rank,
+        form: LinkName.Text,
+        bond: link.seed.bond,
+      }
+      line.list.push(text)
+      tree.nest.push(line)
+
+      linkBase(text, line)
+      linkBase(line, tree)
+
+      ride.nest.push(tree)
+
+      list?.push(tree)
+      list?.push(line)
+      // list?.push(text)
       break
     }
     default:
@@ -773,7 +1015,7 @@ function readTermSlot(link: LinkCallLink): void {
   }
 }
 
-function readSize(link: LinkCallLink): void {
+function readSize(link: LinkCallLink<FoldName.Size>): void {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list ?? []
@@ -807,8 +1049,16 @@ export const LINK_HINT_TEXT: Record<LinkHint, string> = {
   [LinkHint.Line]: 'line',
 }
 
-export default function makeLinkTree(link: TextCallLink): LinkCallCast {
+export default function makeLinkTree(link: MarkCallLink): LinkCallCast {
   return readFoldTree(makeFoldList(makeTextList(link)))
 }
 
 export * from './show.js'
+
+function linkBase(head: Link, base: Link) {
+  Object.defineProperty(head, 'base', {
+    value: base,
+    enumerable: false,
+    writable: true,
+  })
+}

@@ -1,0 +1,26 @@
+
+save separator, text </>
+
+# adds a new indentation context
+call some{separator}path
+  <
+    some text {{
+      and interpolation{
+        here <and {{
+          test
+            there[pretty much{really}]
+            basic and there
+        }} and there!>
+      }
+    }}
+  >
+
+---
+
+save
+  separator
+  text
+    </>
+call
+  some{separator}path
+  <some text {{and interpolation{here <and {{there and there}} and there!>}}}>

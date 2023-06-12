@@ -10,10 +10,13 @@ import makeLinkTree, { showLinkTree } from '../code/link/index.js'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
+const FIND = process.env.FIND
+
 async function start() {
   const fixtures = (await fs.readdir(`${__dirname}/file`))
     .filter(x => x.endsWith('.link'))
     .map(x => `${__dirname}/file/${x}`)
+    .filter(x => !FIND || x.match(FIND))
 
   for (const path of fixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
@@ -31,6 +34,7 @@ async function start() {
   const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
     .filter(x => x.endsWith('.link'))
     .map(x => `${__dirname}/file/kink/${x}`)
+    .filter(x => !FIND || x.match(FIND))
 
   for (const path of kinkFixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
@@ -56,9 +60,7 @@ function assertParse(link: string, provided: string, expected: string) {
   const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
-    if (process.env.DEVELOP) {
-      console.log(output)
-    }
+    console.log(a)
     throw new Error(`${a} != ${b}`)
     // code.throwError(code.generateStringMismatchError(data, a, b))
   }
@@ -71,7 +73,6 @@ function assertParseKink(
 ) {
   try {
     const data = makeLinkTree({ link, text: provided })
-    console.log(data)
   } catch (e) {
     if (e instanceof Error) {
       if (e.message != expected) {

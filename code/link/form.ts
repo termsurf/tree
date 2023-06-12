@@ -1,4 +1,5 @@
-import type { TextRank } from '../text/index.js'
+import type { Rank } from '../mark/index.js'
+import haveHalt from '@tunebond/have/halt.js'
 
 export enum LinkHint {
   // Code = 'code',
@@ -18,13 +19,12 @@ export enum LinkName {
   Wave = 'link-wave',
   Comb = 'link-comb',
   Code = 'link-code',
-  Cull = 'link-cull', // index type
+  Cull = 'link-cull',
   Line = 'link-line',
   Nick = 'link-nick',
   SideSize = 'link-side-size',
-  Term = 'link-term',
   Text = 'link-text',
-  TextLine = 'link-text-line',
+  Knit = 'link-knit',
   Tree = 'link-tree',
   Size = 'link-size',
 }
@@ -37,9 +37,8 @@ export type LinkHash = {
   'link-line': LinkLine
   'link-nick': LinkNick
   'link-side-size': LinkSideSize
-  'link-term': LinkTerm
   'link-text': LinkText
-  'link-text-line': LinkTextLine
+  'link-knit': LinkKnit
   'link-tree': LinkTree
   'link-size': LinkSize
 }
@@ -52,48 +51,51 @@ export const LINK_TYPE = [
   LinkName.Line,
   LinkName.Nick,
   LinkName.SideSize,
-  LinkName.Text,
-  LinkName.TextLine,
-  LinkName.Term,
+  LinkName.Knit,
   LinkName.Text,
   LinkName.Tree,
   LinkName.Size,
 ]
 
+export type LinkTree = {
+  nest: Array<Link>
+  base?: LinkTree | LinkNick | LinkCull
+  form: LinkName.Tree
+}
+
 export type LinkWave = {
   form: LinkName.Wave
   bond: boolean
-  rank: TextRank
+  rank: Rank
 }
 
 export type LinkComb = {
-  rank: TextRank
+  rank: Rank
   form: LinkName.Comb
   bond: number
 }
 
 export type LinkCode = {
   bond: string
-  rank: TextRank
-  base: string
+  rank: Rank
+  mold: string
   form: LinkName.Code
 }
 
 export type LinkCull = {
-  nest: Array<LinkTree | LinkTerm | LinkLine>
-  base: LinkLine
+  head?: LinkTree | LinkBond
+  base?: LinkLine
   form: LinkName.Cull
-  // rank: TextRank
+  rank: Rank
 }
 
 export type Link =
-  | LinkTerm
-  | LinkText
+  | LinkKnit
   | LinkTree
   | LinkSize
   | LinkSideSize
+  | LinkKnit
   | LinkText
-  | LinkTextLine
   | LinkNick
   | LinkCull
   | LinkComb
@@ -102,16 +104,18 @@ export type Link =
   | LinkWave
 
 export type LinkLine = {
-  base: LinkTree | LinkNick | LinkCull
-  list: Array<LinkTerm | LinkCull>
+  base?: LinkTree
+  list: Array<LinkCull | LinkNick | LinkKnit>
   form: LinkName.Line
+  rank: Rank
 }
 
 export type LinkNick = {
-  nest: Array<LinkTree | LinkTerm | LinkLine>
-  base: LinkTerm | LinkText
+  head?: LinkTree
+  base?: LinkLine | LinkKnit
   size: number
   form: LinkName.Nick
+  rank: Rank
 }
 
 export type LinkCallCast = {
@@ -119,39 +123,61 @@ export type LinkCallCast = {
 }
 
 export type LinkSideSize = {
-  rank: TextRank
+  rank: Rank
   form: LinkName.SideSize
   bond: number
 }
 
-export type LinkTextLine = {
-  rank: TextRank
-  form: LinkName.TextLine
+export type LinkText = {
+  rank: Rank
+  form: LinkName.Text
   bond: string
 }
 
-export type LinkTerm = {
-  dive: boolean // dereference
-  soak: boolean
-  base: LinkLine | LinkTree | LinkNick
-  cull: boolean
-  list: Array<LinkTextLine | LinkNick>
-  form: LinkName.Term
-}
-
-export type LinkText = {
-  list: Array<LinkTextLine | LinkNick>
-  form: LinkName.Text
-}
-
-export type LinkTree = {
-  head?: LinkTerm
-  nest: Array<Link>
-  base?: LinkTree | LinkNick | LinkCull
-  form: LinkName.Tree
+export type LinkKnit = {
+  nest: Array<LinkText | LinkNick>
+  form: LinkName.Knit
 }
 
 export type LinkSize = {
   form: LinkName.Size
   bond: number
+}
+
+export type LinkBond =
+  | LinkSize
+  | LinkKnit
+  | LinkSideSize
+  | LinkCode
+  | LinkComb
+  | LinkWave
+  | LinkText
+
+export function testLinkForm<N extends LinkName>(
+  lead: unknown,
+  name: N,
+): lead is LinkHash[N] {
+  return (lead as Link).form === name
+}
+
+export function haveLinkForm<N extends LinkName>(
+  lead: unknown,
+  name: N,
+): asserts lead is LinkHash[N] {
+  if (!testLinkForm(lead, name)) {
+    throw haveHalt('form_miss', { call: name, need: 'link' })
+  }
+}
+
+export function testLink(lead: unknown): lead is Link {
+  return LINK_TYPE.includes((lead as Link).form)
+}
+
+export function haveLink(
+  lead: unknown,
+  call: string,
+): asserts lead is Link {
+  if (!testLink(lead)) {
+    throw haveHalt('form_miss', { call, need: 'link' })
+  }
 }

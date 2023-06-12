@@ -1,7 +1,7 @@
 import Halt, { Link } from '@tunebond/halt'
 import { TONE } from '@tunebond/halt-text'
 import tint from '@tunebond/tint'
-import { Text, TextCallCast, TextName, TextRank } from './text'
+import { Mark, MarkCallCast, MarkName, Rank } from './mark'
 import { haveMesh, haveText } from '@tunebond/have'
 import { FoldCallCast } from './fold'
 
@@ -49,10 +49,10 @@ export function haltNotImplemented(name: string, base: string) {
 }
 
 export function generateSyntaxTokenError(
-  cast: TextCallCast,
-  last: Text,
+  cast: MarkCallCast,
+  last: Mark,
 ) {
-  const rank: TextRank = {
+  const rank: Rank = {
     head: {
       mark: 0,
       line: 0,
@@ -75,14 +75,14 @@ export function generateSyntaxTokenError(
 
 export function generateHighlightedErrorText(
   lineText: Array<string>,
-  rank: TextRank,
+  rank: Rank,
 ): string {
   const headLine = Math.min(rank.base.line + 2, lineText.length - 1)
   const headLineString = lineText[headLine]
   haveText(headLineString, `text[${headLine}]`)
 
   const headMark = headLineString.length - 1
-  const bindRank: TextRank = {
+  const bindRank: Rank = {
     head: {
       mark: headMark,
       line: headLine,
@@ -99,9 +99,9 @@ export function generateHighlightedErrorText(
 }
 
 export function makeRankText(
-  bond: TextRank,
+  bond: Rank,
   lineText: Array<string>,
-  rank: TextRank,
+  rank: Rank,
 ): string {
   const lineList: Array<string> = []
   let i = bond.base.line
@@ -158,15 +158,15 @@ export function getCursorRangeForTextWhitespaceToken(
   call: FoldCallCast,
   slot: number,
 ) {
-  let seedList: Array<Text> = []
+  let seedList: Array<Mark> = []
   let i = slot
 
   loop: while (i < call.list.length) {
     let t = call.list[i]
     haveMesh(t, 't')
     switch (t.form) {
-      case TextName.RiseSlot:
-      case TextName.RiseNest:
+      case MarkName.RiseSlot:
+      case MarkName.RiseNest:
         seedList.push(t)
         break
       default:
