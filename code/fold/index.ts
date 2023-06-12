@@ -1,6 +1,7 @@
 import _ from 'lodash'
 
 import type {
+  Mark,
   MarkCallCast,
   MarkCode,
   MarkComb,
@@ -17,6 +18,7 @@ import { MarkName } from '../mark/form.js'
 import { FoldName } from './form.js'
 import type { FoldCallCast, Fold } from './form.js'
 import { haveMesh } from '@tunebond/have'
+import show from './show.js'
 
 export * from './form.js'
 
@@ -35,7 +37,7 @@ enum Form {
 
 type Head = {
   form: Form
-  nest: number
+  seed?: Mark
 }
 
 export default function makeFoldList(link: FoldCallLink): FoldCallCast {
@@ -48,13 +50,22 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
 
   // console.log(link.list)
 
-  function head(form: Form, nest = 0) {
-    return { form, nest }
+  function head(form: Form, seed?: Mark) {
+    return { form, seed }
+  }
+
+  function saveHead(head: Head, list = false) {
+    if (list) {
+      line.push([head])
+    } else {
+      const last = line[line.length - 1]
+      last?.push(head)
+    }
   }
 
   let slot = 0
 
-  const line: Array<Head> = [head(Form.Card)]
+  const line: Array<Array<Head>> = [[head(Form.Card)]]
 
   let textSlot = 0
   let needSlot = true
@@ -67,6 +78,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     const seed = link.list[slot++]
     haveMesh(seed, 'seed')
 
+    console.log(seed.form, seed.text)
+
     switch (seed.form) {
       case MarkName.RiseCull:
         headTextSlot()
@@ -75,7 +88,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           text: seed.text,
           rank: seed.rank,
         })
-        line.push(head(Form.Cull))
+        saveHead(head(Form.Cull, seed), true)
         break
       case MarkName.FallCull:
         castFallCull(seed)
@@ -88,13 +101,13 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         break
       case MarkName.RiseText:
         headTextSlot()
-        line.push(head(Form.Text))
+        saveHead(head(Form.Text), true)
         break
       case MarkName.FallText:
         castFallText(seed)
         break
       case MarkName.RiseHold:
-        line.push(head(Form.Nest))
+        saveHead(head(Form.Nest))
         foldList.push({
           form: FoldName.RiseNest,
         })
@@ -136,6 +149,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       case MarkName.LineSlot:
         textSlot = 0
         needSlot = true
+        fallBond()
         break
       case MarkName.Text:
         castText(seed)
@@ -149,6 +163,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       default:
         break
     }
+
+    // console.log(foldList.slice(foldList.length - 5))
   }
 
   function castCode(seed: MarkCode) {
@@ -197,18 +213,18 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
 
   function castFallCull(seed: MarkFallCull) {
     walk: while (true) {
-      const head = readHead()
-      // console.log(head)
+      const { head, find } = readHead()
+      console.log('fall cull', head)
       switch (head?.form) {
         case Form.Knit:
           foldList.push({
             form: FoldName.FallKnit,
           })
-          line.pop()
+          tossHead()
           break
         case Form.Tree:
           foldList.push({ form: FoldName.FallTree })
-          line.pop()
+          tossHead()
           break
         case Form.Cull:
           foldList.push({
@@ -216,19 +232,25 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             rank: seed.rank,
             form: FoldName.FallCull,
           })
-          line.pop()
-          break walk
+          tossHead()
+          break
         default:
           break walk
       }
+
+      if (!find) {
+        break walk
+      }
     }
 
-    line.pop()
+    tossHead()
   }
 
   if (haltList.length) {
     // console.log(haltList)
   }
+
+  console.log(foldList.slice(50))
 
   function readCode(mold: string) {
     switch (mold) {
@@ -280,11 +302,11 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         foldList.push({
           form: FoldName.RiseTree,
         })
-        line.push(head(Form.Tree))
+        saveHead(head(Form.Tree))
         foldList.push({
           form: FoldName.RiseKnit,
         })
-        line.push(head(Form.Knit))
+        saveHead(head(Form.Knit))
         break
       }
       default:
@@ -299,11 +321,13 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     })
   }
 
+  console.log(show(cast.foldList))
+
   return cast
 
   function castRiseNick(seed: MarkRiseNick) {
     headTextSlot()
-    line.push(head(Form.Nick))
+    saveHead(head(Form.Nick, seed), true)
     foldList.push({
       form: FoldName.RiseNick,
       text: seed.text,
@@ -318,19 +342,23 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       rank: seed.rank,
       form: FoldName.FallText,
     })
-    line.pop()
+    tossHead()
   }
 
   function castFallHold(seed: MarkFallHold) {
     walk: while (true) {
-      const head = readHead()
+      const { head, find } = readHead()
       switch (head?.form) {
         case Form.Nest:
           foldList.push({ form: FoldName.FallNest })
-          line.pop()
+          tossHead()
           break
         default:
           break walk
+      }
+
+      if (!find) {
+        break walk
       }
     }
   }
@@ -339,23 +367,65 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     return link.list[slot + move - 1]
   }
 
-  function readHead() {
-    return line[line.length - 1]
+  function readHead(fill = false) {
+    const list = line[line.length - 1]
+    if (list) {
+      const head = list[list.length - 1]
+      const find = list.length > 1
+      if (!head) {
+        line.pop()
+      }
+      if (!head && fill) {
+        const list = line[line.length - 1]
+        if (list) {
+          const head = list[list.length - 1]
+          const find = list.length > 1
+          return { head, find }
+        }
+      }
+      return { head, find }
+    }
+    return {}
+  }
+
+  function tossHead(fill = false) {
+    const list = line[line.length - 1]
+    // console.log(fill,line)
+    if (list) {
+      const last = list[list.length - 1]
+      if (last) {
+        list.pop()
+      } else if (!last && fill) {
+        line.pop()
+        const list = line[line.length - 1]
+        if (list) {
+          list.pop()
+          if (!list.length) {
+            line.pop()
+          }
+        }
+      } else {
+        list.pop()
+        if (!list.length) {
+          line.pop()
+        }
+      }
+    }
   }
 
   function castFallNick(seed: MarkFallNick) {
     walk: while (true) {
-      const head = readHead()
+      const { head, find } = readHead()
       switch (head?.form) {
         case Form.Knit:
           foldList.push({
             form: FoldName.FallKnit,
           })
-          line.pop()
+          tossHead()
           break
         case Form.Tree:
           foldList.push({ form: FoldName.FallTree })
-          line.pop()
+          tossHead()
           break
         case Form.Nick:
           foldList.push({
@@ -363,29 +433,64 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
             rank: seed.rank,
             form: FoldName.FallNick,
           })
-          line.pop()
-          break walk
+          tossHead()
+          break
         default:
           break walk
       }
+      if (!find) {
+        break walk
+      }
     }
 
-    line.pop()
+    tossHead()
   }
 
   // // close the parentheses
-  // function haltBond() {
-  //   const last = line[line.length - 1]
-  //   switch (last?.form) {
-  //     case Form.Nick:
-  //       foldList.push({
-  //         form: FoldName.FallNick,
-  //       })
-  //       break
-  //     default:
-  //       break
-  //   }
-  // }
+  function fallBond() {
+    walk: while (true) {
+      const { head, find } = readHead(true)
+      switch (head?.form) {
+        case Form.Tree:
+          foldList.push({
+            form: FoldName.FallTree,
+          })
+          tossHead(true)
+          break
+        case Form.Knit:
+          foldList.push({
+            form: FoldName.FallKnit,
+          })
+          tossHead(true)
+          break
+        case Form.Nick:
+          haveMesh(head.seed, 'seed')
+          foldList.push({
+            form: FoldName.FallNick,
+            rank: head.seed.rank,
+            text: head.seed.text,
+          })
+          tossHead(true)
+          break
+        case Form.Cull:
+          haveMesh(head.seed, 'seed')
+          foldList.push({
+            form: FoldName.FallCull,
+            rank: head.seed.rank,
+            text: head.seed.text,
+          })
+          tossHead(true)
+          break
+        case Form.Card:
+          break walk
+        default:
+          break
+      }
+      if (!find) {
+        break walk
+      }
+    }
+  }
 
   function haltBondLine() {}
 

@@ -1,48 +1,29 @@
 import { Fold } from './form.js'
 
-// export function logDirectionList(foldList: Array<Fold>): Array<string> {
-//   const tree: Array<string> = ['']
+export default function show(foldList: Array<Fold>) {
+  const list: Array<string> = []
 
-//   let textSlot = 1
-//   let yay = 0
-//   let nay = 0
+  let move = 0
 
-//   foldList.forEach(direction => {
-//     let color = chalk.gray
-//     let diff = 0
-//     let type = 'neutral'
-//     if (direction.form.match('open')) {
-//       textSlot++
-//       yay++
-//       color = chalk.green
-//       type = 'open'
-//     } else if (direction.form.match('fall')) {
-//       diff = -1
-//       nay++
-//       color = chalk.yellow
-//       type = 'fall'
-//     }
+  foldList.forEach(fold => {
+    if (fold.form.match('rise')) {
+      list.push(
+        `${makeTextMove(move++)}${fold.form}+ ${fold.text ?? ''}`,
+      )
+    } else if (fold.form.match('fall')) {
+      list.push(
+        `${makeTextMove(--move)}${fold.form}- ${fold.text ?? ''}`,
+      )
+    } else {
+      list.push(
+        `${makeTextMove(move)}[${fold.form}] ${fold.text ?? ''}`,
+      )
+    }
+  })
 
-//     const textSlotText = new Array(
-//       Math.max(0, type.match(/open|fall/) ? textSlot : textSlot + 1),
-//     ).join('  ')
-//     const value = chalk.whiteBright(
-//       'value' in direction
-//         ? direction.value
-//         : 'text' in direction
-//         ? direction.text
-//         : '',
-//     )
-//     const symbol = chalk.gray(
-//       '', // type === 'fall' ? nay : type === 'open' ? yay : '',
-//     )
-//     tree.push(
-//       `  ${textSlotText}${color(direction.form)} ${value} ${symbol}`,
-//     )
-//     textSlot += diff
-//   })
+  return list.join('\n')
+}
 
-//   tree.push('')
-
-//   return tree
-// }
+function makeTextMove(move: number) {
+  return new Array(move + 1).join('  ')
+}

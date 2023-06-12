@@ -3,17 +3,6 @@ save term[name]
 save term{{foo{baz}}}[cull]/another{thing}
 save term{{bar}}[{rand}]/still-another{thing}
 
-term grow[text]
-  deeper term[
-    text
-  ], another[
-    even[
-      more
-    ]
-  ]
-
-foo bar
-
 ---
 
 save

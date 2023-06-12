@@ -1,7 +1,7 @@
 import Halt, { Link } from '@tunebond/halt'
 import { TONE } from '@tunebond/halt-text'
 import tint from '@tunebond/tint'
-import { Mark, MarkCallCast, MarkName, Rank } from './mark'
+import { Mark, MarkCallCast, MarkName, Rank } from './mark/form.js'
 import { haveMesh, haveText } from '@tunebond/have'
 import { FoldCallCast } from './fold'
 
