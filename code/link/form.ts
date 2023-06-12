@@ -57,6 +57,10 @@ export const LINK_TYPE = [
   LinkName.Size,
 ]
 
+export type LinkCallCast = {
+  linkTree: LinkTree
+}
+
 export type LinkTree = {
   nest: Array<Link>
   base?: LinkTree | LinkNick | LinkCull
@@ -89,20 +93,6 @@ export type LinkCull = {
   rank: Rank
 }
 
-export type Link =
-  | LinkKnit
-  | LinkTree
-  | LinkSize
-  | LinkSideSize
-  | LinkKnit
-  | LinkText
-  | LinkNick
-  | LinkCull
-  | LinkComb
-  | LinkCode
-  | LinkLine
-  | LinkWave
-
 export type LinkLine = {
   base?: LinkTree
   list: Array<LinkCull | LinkNick | LinkKnit>
@@ -116,10 +106,6 @@ export type LinkNick = {
   size: number
   form: LinkName.Nick
   rank: Rank
-}
-
-export type LinkCallCast = {
-  linkTree: LinkTree
 }
 
 export type LinkSideSize = {
@@ -152,6 +138,20 @@ export type LinkBond =
   | LinkComb
   | LinkWave
   | LinkText
+
+export type Link =
+  | LinkKnit
+  | LinkTree
+  | LinkSize
+  | LinkSideSize
+  | LinkKnit
+  | LinkText
+  | LinkNick
+  | LinkCull
+  | LinkComb
+  | LinkCode
+  | LinkLine
+  | LinkWave
 
 export function testLinkForm<N extends LinkName>(
   lead: unknown,

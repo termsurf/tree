@@ -2,7 +2,6 @@ import makeFoldList, {
   FoldCallCast,
   FoldHash,
   FoldName,
-  haveFoldForm,
 } from '../fold/index.js'
 import makeTextList, { MarkCallLink } from '../mark/index.js'
 import {
@@ -17,7 +16,6 @@ import {
   LinkNick,
   LinkSideSize,
   LinkSize,
-  LinkTerm,
   LinkKnit,
   LinkText,
   LinkTree,
@@ -302,7 +300,7 @@ function readCode(link: LinkCallLink<FoldName.Code>): void {
     case LinkName.Tree: {
       if (link.seed.form === FoldName.Code) {
         const code: LinkCode = {
-          base: link.seed.base,
+          mold: link.seed.base,
           rank: link.seed.rank,
           bond: link.seed.bond,
           form: LinkName.Code,

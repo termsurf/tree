@@ -233,6 +233,18 @@ text <
 >
 ```
 
+Or even:
+
+```link
+form user
+  note
+    <
+      This is a long paragraph.
+
+      And this is another paragraph.
+    >
+```
+
 Then we can add interpolation into the template, by referencing terms
 wrapped in angle brackets:
 
@@ -276,6 +288,13 @@ value, or write bits and things like that. Note though, these just get
 compiled down to the following, so the code handler would need to
 resolve them properly in the proper context.
 
+An arbitrary base code can be produced with `#<num>n<value>`, like this
+for base 60:
+
+```
+#60n123
+```
+
 ### Nest
 
 A nest is a selector, which is a digging down into terms. They look like
@@ -289,33 +308,25 @@ get foo/bar
 You can interpolate on these as well, like doing array index lookup.
 
 ```link
-get node/children[~i]/name
+get node/children[i]/name
 ```
 
 The interpolations can be nested as well, and chained. Here is a complex
 example:
 
 ```link
-get foo/bar[x][o/children[~i]/name]/value
+get foo/bar[x][o/children[i]/name]/value
 ```
 
-The `~` tilde is by convention used for lookup by key (index in array,
-key in map), while without the tilde is just a dynamically resolved
-property value if you think of it that way.
+Finally, you can do actual interpolations beyond property/array lookups:
 
-There is also room to write `*` so we can dereference like in other
-language paradigms.
-
-```
-get *foo/bar
+```link
+get foo{bar}{{baz}}{{{bing}}}boop
 ```
 
-Finally, we have the `?` which is theoretically optionally grabbing a
-value if it exists.
-
-```
-get foo/bar?/baz
-```
+In theory, the number of brackets means the number of passes the
+compiler has to go through it, so if it's 2 brackets, that will be
+compiled to 1 bracket, and that 1 bracket will be evaluated at runtime.
 
 ### Line
 
@@ -361,82 +372,68 @@ a little more complex to parse. As such we divide it into 3 phases:
 Here is the basic set of TypeScript types for Link Text:
 
 ```ts
+type LinkTree = {
+  nest: Array<Link>
+  base?: LinkTree | LinkNick | LinkCull
+  form: LinkName.Tree
+}
+
 type LinkWave = {
   form: LinkName.Wave
   bond: boolean
+  rank: Rank
 }
 
 type LinkComb = {
+  rank: Rank
   form: LinkName.Comb
   bond: number
 }
 
 type LinkCode = {
   bond: string
-  base: string
+  rank: Rank
+  mold: string
   form: LinkName.Code
 }
 
 type LinkCull = {
-  nest: Array<LinkTree | LinkTerm | LinkLine | LinkBond>
-  base: LinkLine
+  head?: LinkTree | LinkBond
+  base?: LinkLine
   form: LinkName.Cull
+  rank: Rank
 }
 
-type Link =
-  | LinkTerm
-  | LinkKnit
-  | LinkTree
-  | LinkSize
-  | LinkSideSize
-  | LinkKnit
-  | LinkText
-  | LinkNick
-  | LinkCull
-  | LinkComb
-  | LinkCode
-  | LinkLine
-  | LinkWave
-
 type LinkLine = {
-  base: LinkTree | LinkNick | LinkCull
-  list: Array<LinkTerm | LinkCull>
+  base?: LinkTree
+  list: Array<LinkCull | LinkNick | LinkKnit>
   form: LinkName.Line
+  rank: Rank
 }
 
 type LinkNick = {
-  nest: Array<LinkTree | LinkTerm | LinkLine>
-  base: LinkTerm | LinkKnit
+  head?: LinkTree
+  base?: LinkLine | LinkKnit
   size: number
   form: LinkName.Nick
+  rank: Rank
 }
 
 type LinkSideSize = {
+  rank: Rank
   form: LinkName.SideSize
   bond: number
 }
 
 type LinkText = {
-  form: LinkName.TextLine
+  rank: Rank
+  form: LinkName.Text
   bond: string
-}
-
-type LinkTerm = {
-  base: LinkLine | LinkTree | LinkNick
-  nest: Array<LinkText | LinkNick>
-  form: LinkName.Term
 }
 
 type LinkKnit = {
   nest: Array<LinkText | LinkNick>
-  form: LinkName.Text
-}
-
-type LinkTree = {
-  head?: LinkTerm
-  nest: Array<Link>
-  base?: LinkTree | LinkNick | LinkCull
-  form: LinkName.Tree
+  form: LinkName.Knit
 }
 
 type LinkSize = {
@@ -451,7 +448,40 @@ type LinkBond =
   | LinkCode
   | LinkComb
   | LinkWave
+  | LinkText
+
+type Link =
+  | LinkKnit
+  | LinkTree
+  | LinkSize
+  | LinkSideSize
+  | LinkKnit
+  | LinkText
+  | LinkNick
+  | LinkCull
+  | LinkComb
+  | LinkCode
+  | LinkLine
+  | LinkWave
 ```
+
+Some other notes... Terms are tricky in the implementation because you
+can have terms like this:
+
+```
+save x, text </>
+save y{x}z, 10
+```
+
+Where you dynamically construct a path. You can get even more
+complicated.
+
+```
+y{x}z-/{foo{{bar(baz)}-boom[beep]}}
+```
+
+You should really write code like this, but the compiler should be able
+to probably handle most of it.
 
 ## Syntax Highlighter Installation
 
