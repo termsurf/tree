@@ -8,17 +8,12 @@ import { MarkCallLink } from '../mark/form.js'
 import {
   Link,
   LinkCallCast,
-  LinkCode,
-  LinkComb,
   LinkCord,
   LinkCull,
   LinkHint,
   LinkKnit,
   LinkName,
   LinkNick,
-  LinkSideSize,
-  LinkSize,
-  LinkText,
   LinkTree,
   haveLink,
   haveLinkForm,
@@ -78,7 +73,7 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
     const seed = link.foldList[hold.slot]
     haveMesh(seed, 'seed')
 
-    console.log(seed)
+    // console.log(seed)
 
     switch (seed.form) {
       case FoldName.RiseKnit:
@@ -256,7 +251,7 @@ function readFallTree(link: LinkCallLink<FoldName.FallTree>): void {
   // const { wall } = link.hold
   // wall.pop()
   takeWallLeaf(link)
-  console.log('fall tree', link.seed.form)
+  // console.log('fall tree', link.seed.form)
 }
 
 function readFallKnit(link: LinkCallLink<FoldName.FallKnit>): void {
@@ -273,7 +268,7 @@ function takeWallLeaf(link: LinkCallLink<FoldName>) {
   const { wall } = link.hold
   const context = wall[wall.length - 1]
   const list = context?.list
-  console.log('take leaf', link.seed.form, list?.[list.length - 1])
+  // console.log('take leaf', link.seed.form, list?.[list.length - 1])
   return list?.pop()
 }
 
@@ -478,15 +473,20 @@ function readRiseKnit(link: LinkCallLink<FoldName.RiseKnit>): void {
 
   switch (ride?.form) {
     case LinkName.Tree: {
-      const knit: LinkKnit = {
-        form: LinkName.Knit,
-        list: [],
+      const base = ride.nest.find(find => find.form === LinkName.Knit)
+      if (base) {
+        list.push(base)
+      } else {
+        const knit: LinkKnit = {
+          form: LinkName.Knit,
+          list: [],
+        }
+
+        ride.nest.push(knit)
+        list.push(knit)
+
+        linkBase(knit, ride)
       }
-
-      ride.nest.push(knit)
-      list.push(knit)
-
-      linkBase(knit, ride)
       break
     }
     default:
@@ -527,6 +527,18 @@ function readText(link: LinkCallLink<FoldName.Text>): void {
       }
 
       ride.list.push(cord)
+
+      linkBase(cord, ride)
+      break
+    }
+    case LinkName.Tree: {
+      const cord: LinkCord = {
+        form: LinkName.Cord,
+        bond: link.seed.bond,
+        rank: link.seed.rank,
+      }
+
+      ride.nest.push(cord)
 
       linkBase(cord, ride)
       break

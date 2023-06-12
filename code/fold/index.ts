@@ -10,6 +10,7 @@ import type {
   MarkFallNick,
   MarkFallText,
   MarkKnit,
+  MarkLine,
   MarkLink,
   MarkRiseNick,
   MarkText,
@@ -154,6 +155,9 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       case MarkName.Text:
         castText(seed)
         break
+      case MarkName.Line:
+        castLine(seed)
+        break
       // term templates
       case MarkName.Knit:
         castKnit(seed)
@@ -163,8 +167,6 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       default:
         break
     }
-
-    // console.log(foldList.slice(foldList.length - 5))
   }
 
   fallBond()
@@ -213,10 +215,18 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     })
   }
 
+  function castLine(seed: MarkLine) {
+    foldList.push({
+      form: FoldName.Text,
+      bond: seed.text,
+      rank: seed.rank,
+    })
+  }
+
   function castFallCull(seed: MarkFallCull) {
     walk: while (true) {
       const { head, find } = readHead()
-      console.log('fall cull', head)
+      // console.log('fall cull', head)
       switch (head?.form) {
         case Form.Knit:
           foldList.push({

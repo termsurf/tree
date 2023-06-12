@@ -39,7 +39,7 @@ function showLinkTreeBase(
 
   switch (node.form) {
     case LinkName.Cord: {
-      console.log(`${move(nestSize)}text`, node.bond)
+      console.log(`${move(nestSize)}cord`, node.bond)
       list.push(node.bond)
       break
     }
@@ -79,7 +79,7 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Text: {
-      console.log(`${move(nestSize)}knit`)
+      console.log(`${move(nestSize)}text`)
       const string: Array<string> = []
       node.nest.forEach(seg => {
         showLinkTreeBase(seg, true, nestSize + 1).forEach(line => {
@@ -134,7 +134,7 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Knit: {
-      console.log(`${move(nestSize)}line`)
+      console.log(`${move(nestSize)}knit`)
       const line: Array<string> = []
       node.list.forEach((seg, i) => {
         showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
@@ -143,7 +143,7 @@ function showLinkTreeBase(
             seg.form !== LinkName.Cull &&
             seg.form !== LinkName.Nick
           ) {
-            line.push('/')
+            line.push('')
           }
           line.push(l)
         })
