@@ -12,8 +12,8 @@ import type {
   MarkLink,
   MarkRiseNick,
   MarkText,
-} from '../mark/index.js'
-import { MarkName } from '../mark/index.js'
+} from '../mark/form.js'
+import { MarkName } from '../mark/form.js'
 import { FoldName } from './form.js'
 import type { FoldCallCast, Fold } from './form.js'
 import { haveMesh } from '@tunebond/have'

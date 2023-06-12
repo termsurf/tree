@@ -1,4 +1,4 @@
-import type { Rank } from '../mark/index.js'
+import type { Rank } from '../mark/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
 export enum LinkHint {

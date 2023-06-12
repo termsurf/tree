@@ -3,7 +3,8 @@ import makeFoldList, {
   FoldHash,
   FoldName,
 } from '../fold/index.js'
-import makeTextList, { MarkCallLink } from '../mark/index.js'
+import makeTextList from '../mark/index.js'
+import { MarkCallLink } from '../mark/form.js'
 import {
   Link,
   LinkCallCast,
