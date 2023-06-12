@@ -85,7 +85,7 @@ export type LinkCode = {
 }
 
 export type LinkCull = {
-  head?: LinkTree | LinkBond
+  head?: LinkTree | LinkBond | LinkKnit
   base?: LinkKnit
   form: LinkName.Cull
   rank?: Rank

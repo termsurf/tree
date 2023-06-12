@@ -109,6 +109,10 @@ export type MarkLineSlot = MarkBase & {
   form: MarkName.LineSlot
 }
 
+export type MarkLine = MarkBase & {
+  form: MarkName.Line
+}
+
 export type MarkText = MarkBase & {
   form: MarkName.Text
 }
@@ -168,3 +172,4 @@ export type Mark =
   | MarkRiseSlot
   | MarkFallSlot
   | MarkKnit
+  | MarkLine

@@ -25,5 +25,5 @@ export default function show(foldList: Array<Fold>) {
 }
 
 function makeTextMove(move: number) {
-  return new Array(move + 1).join('  ')
+  return new Array(Math.max(0, move + 1)).join('  ')
 }
