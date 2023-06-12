@@ -195,13 +195,15 @@ The same as:
 add a, subtract b, c
 ```
 
-### Mark
+### Size
 
-You can use numbers ("marks") in the system too:
+You can use numbers ("sizes") in the system too:
 
 ```link
 add 1, 2
 ```
+
+An unsigned integer is called a sided-size.
 
 ### Comb
 
@@ -264,6 +266,12 @@ without ambiguity, you just need to prefix them with backslashes.
 ```link
 i <am \<brackets\> included in the actual string>
 ```
+
+### Wave
+
+Although not really part of the language, for completeness we also have
+the _wave_, or boolean value. We typically just write `true` or `false`,
+but you can do it however.
 
 ### Code
 
@@ -340,6 +348,8 @@ Text.
 load @some/path
 load ./relative/path.png
 load /an-absolute/other/path.js
+load **/*.js
+hook /@:user
 ```
 
 That is, they are just special strings. You can interpolate on them like
