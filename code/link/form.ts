@@ -24,7 +24,7 @@ export enum LinkName {
   Nick = 'link-nick',
   SideSize = 'link-side-size',
   Text = 'link-text',
-  Knit = 'link-knit',
+  Cord = 'link-cord',
   Tree = 'link-tree',
   Size = 'link-size',
 }
@@ -37,8 +37,8 @@ export type LinkHash = {
   'link-line': LinkLine
   'link-nick': LinkNick
   'link-side-size': LinkSideSize
-  'link-text': LinkCord
-  'link-knit': LinkText
+  'link-cord': LinkCord
+  'link-text': LinkText
   'link-tree': LinkTree
   'link-size': LinkSize
 }
@@ -51,8 +51,8 @@ export const LINK_TYPE = [
   LinkName.Line,
   LinkName.Nick,
   LinkName.SideSize,
-  LinkName.Knit,
   LinkName.Text,
+  LinkName.Cord,
   LinkName.Tree,
   LinkName.Size,
 ]
@@ -116,13 +116,13 @@ export type LinkSideSize = {
 
 export type LinkCord = {
   rank: Rank
-  form: LinkName.Text
+  form: LinkName.Cord
   bond: string
 }
 
 export type LinkText = {
   nest: Array<LinkCord | LinkNick>
-  form: LinkName.Knit
+  form: LinkName.Text
 }
 
 export type LinkSize = {

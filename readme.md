@@ -441,13 +441,13 @@ type LinkSideSize = {
 
 type LinkCord = {
   rank: Rank
-  form: LinkName.Text
+  form: LinkName.Cord
   bond: string
 }
 
 type LinkText = {
   nest: Array<LinkCord | LinkNick>
-  form: LinkName.Knit
+  form: LinkName.Cord
 }
 
 type LinkSize = {
