@@ -37,8 +37,8 @@ export type LinkHash = {
   'link-line': LinkLine
   'link-nick': LinkNick
   'link-side-size': LinkSideSize
-  'link-text': LinkText
-  'link-knit': LinkKnit
+  'link-text': LinkCord
+  'link-knit': LinkText
   'link-tree': LinkTree
   'link-size': LinkSize
 }
@@ -95,14 +95,14 @@ export type LinkCull = {
 
 export type LinkLine = {
   base?: LinkTree
-  list: Array<LinkCull | LinkNick | LinkKnit>
+  list: Array<LinkCull | LinkNick | LinkText>
   form: LinkName.Line
   rank: Rank
 }
 
 export type LinkNick = {
   head?: LinkTree
-  base?: LinkLine | LinkKnit
+  base?: LinkLine | LinkText
   size: number
   form: LinkName.Nick
   rank: Rank
@@ -114,14 +114,14 @@ export type LinkSideSize = {
   bond: number
 }
 
-export type LinkText = {
+export type LinkCord = {
   rank: Rank
   form: LinkName.Text
   bond: string
 }
 
-export type LinkKnit = {
-  nest: Array<LinkText | LinkNick>
+export type LinkText = {
+  nest: Array<LinkCord | LinkNick>
   form: LinkName.Knit
 }
 
@@ -132,20 +132,20 @@ export type LinkSize = {
 
 export type LinkBond =
   | LinkSize
-  | LinkKnit
+  | LinkText
   | LinkSideSize
   | LinkCode
   | LinkComb
   | LinkWave
-  | LinkText
+  | LinkCord
 
 export type Link =
-  | LinkKnit
+  | LinkText
   | LinkTree
   | LinkSize
   | LinkSideSize
-  | LinkKnit
   | LinkText
+  | LinkCord
   | LinkNick
   | LinkCull
   | LinkComb

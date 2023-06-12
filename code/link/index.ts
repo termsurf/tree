@@ -513,30 +513,7 @@ function readRiseNick(link: LinkCallLink<FoldName.RiseNick>): void {
 
       break
     }
-    case LinkName.Term: {
-      const nick: LinkNick = {
-        rank: link.seed.rank,
-        size: link.seed.size,
-        form: LinkName.Nick,
-      }
-
-      linkBase(nick, ride)
-
-      ride.base?.list.push(nick)
-
-      const tree = nick
-
-      wall.push({
-        line: [],
-        list: [tree],
-        tree,
-      })
-
-      // list?.push(plugin)
-
-      break
-    }
-    case LinkName.Knit: {
+    case LinkName.Text: {
       const nick: LinkNick = {
         rank: link.seed.rank,
         size: link.seed.size,

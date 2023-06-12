@@ -129,6 +129,10 @@ deck @tunebond/base
 )
 ```
 
+This is isolated out of the
+[`base.link`](https://github.com/tunebond/base.link) repo so we can
+parse into trees without any framework necessary.
+
 ## Specification
 
 Now we will go into the actual specification of the syntax. The Link
@@ -416,14 +420,14 @@ type LinkCull = {
 
 type LinkLine = {
   base?: LinkTree
-  list: Array<LinkCull | LinkNick | LinkKnit>
+  list: Array<LinkCull | LinkNick | LinkText>
   form: LinkName.Line
   rank: Rank
 }
 
 type LinkNick = {
   head?: LinkTree
-  base?: LinkLine | LinkKnit
+  base?: LinkLine | LinkText
   size: number
   form: LinkName.Nick
   rank: Rank
@@ -435,14 +439,14 @@ type LinkSideSize = {
   bond: number
 }
 
-type LinkText = {
+type LinkCord = {
   rank: Rank
   form: LinkName.Text
   bond: string
 }
 
-type LinkKnit = {
-  nest: Array<LinkText | LinkNick>
+type LinkText = {
+  nest: Array<LinkCord | LinkNick>
   form: LinkName.Knit
 }
 
@@ -453,20 +457,20 @@ type LinkSize = {
 
 type LinkBond =
   | LinkSize
-  | LinkKnit
+  | LinkText
   | LinkSideSize
   | LinkCode
   | LinkComb
   | LinkWave
-  | LinkText
+  | LinkCord
 
 type Link =
-  | LinkKnit
+  | LinkText
   | LinkTree
   | LinkSize
   | LinkSideSize
-  | LinkKnit
   | LinkText
+  | LinkCord
   | LinkNick
   | LinkCull
   | LinkComb
