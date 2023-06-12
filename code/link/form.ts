@@ -4,14 +4,12 @@ import haveHalt from '@tunebond/have/halt.js'
 export enum LinkHint {
   // Code = 'code',
   // nick == interpolated == dynamic
-  NickLine = 'nick-line',
-  NickTerm = 'nick-term',
+  NickKnit = 'nick-line',
   NickText = 'nick-text',
   Void = 'void',
   // Size = 'size',
   // SideSize = 'side-size',
-  Line = 'line',
-  Term = 'term',
+  Knit = 'line',
   Text = 'text',
 }
 
@@ -20,7 +18,7 @@ export enum LinkName {
   Comb = 'link-comb',
   Code = 'link-code',
   Cull = 'link-cull',
-  Line = 'link-line',
+  Knit = 'link-knit',
   Nick = 'link-nick',
   SideSize = 'link-side-size',
   Text = 'link-text',
@@ -34,7 +32,7 @@ export type LinkHash = {
   'link-comb': LinkComb
   'link-code': LinkCode
   'link-cull': LinkCull
-  'link-line': LinkLine
+  'link-knit': LinkKnit
   'link-nick': LinkNick
   'link-side-size': LinkSideSize
   'link-cord': LinkCord
@@ -48,7 +46,7 @@ export const LINK_TYPE = [
   LinkName.Comb,
   LinkName.Code,
   LinkName.Cull,
-  LinkName.Line,
+  LinkName.Knit,
   LinkName.Nick,
   LinkName.SideSize,
   LinkName.Text,
@@ -70,52 +68,52 @@ export type LinkTree = {
 export type LinkWave = {
   form: LinkName.Wave
   bond: boolean
-  rank: Rank
+  rank?: Rank
 }
 
 export type LinkComb = {
-  rank: Rank
+  rank?: Rank
   form: LinkName.Comb
   bond: number
 }
 
 export type LinkCode = {
   bond: string
-  rank: Rank
+  rank?: Rank
   mold: string
   form: LinkName.Code
 }
 
 export type LinkCull = {
   head?: LinkTree | LinkBond
-  base?: LinkLine
+  base?: LinkKnit
   form: LinkName.Cull
-  rank: Rank
+  rank?: Rank
 }
 
-export type LinkLine = {
+export type LinkKnit = {
   base?: LinkTree
-  list: Array<LinkCull | LinkNick | LinkText>
-  form: LinkName.Line
-  rank: Rank
+  list: Array<LinkCull | LinkNick | LinkCord>
+  form: LinkName.Knit
+  rank?: Rank
 }
 
 export type LinkNick = {
   head?: LinkTree
-  base?: LinkLine | LinkText
+  base?: LinkKnit | LinkText
   size: number
   form: LinkName.Nick
-  rank: Rank
+  rank?: Rank
 }
 
 export type LinkSideSize = {
-  rank: Rank
+  rank?: Rank
   form: LinkName.SideSize
   bond: number
 }
 
 export type LinkCord = {
-  rank: Rank
+  rank?: Rank
   form: LinkName.Cord
   bond: string
 }
@@ -123,6 +121,7 @@ export type LinkCord = {
 export type LinkText = {
   nest: Array<LinkCord | LinkNick>
   form: LinkName.Text
+  rank?: Rank
 }
 
 export type LinkSize = {
@@ -150,7 +149,7 @@ export type Link =
   | LinkCull
   | LinkComb
   | LinkCode
-  | LinkLine
+  | LinkKnit
   | LinkWave
 
 export function testLinkForm<N extends LinkName>(

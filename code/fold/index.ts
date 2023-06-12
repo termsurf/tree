@@ -2,19 +2,21 @@ import _ from 'lodash'
 
 import type {
   MarkCallCast,
+  MarkCode,
+  MarkComb,
   MarkFallCull,
+  MarkFallHold,
   MarkFallNick,
-  MarkLineSlot,
-  MarkRiseCull,
+  MarkFallText,
+  MarkKnit,
+  MarkLink,
   MarkRiseNick,
-  MarkRiseText,
-  MarkTermBase,
   MarkText,
 } from '../mark/index.js'
 import { MarkName } from '../mark/index.js'
 import { FoldName } from './form.js'
 import type { FoldCallCast, Fold } from './form.js'
-import { haveMesh, haveWave } from '@tunebond/have'
+import { haveMesh } from '@tunebond/have'
 
 export * from './form.js'
 
@@ -22,7 +24,7 @@ export type FoldCallLink = MarkCallCast
 
 enum Form {
   Card = 'card',
-  TermLine = 'term-line',
+  Knit = 'knit',
   Text = 'text',
   Nick = 'nick',
   Cull = 'cull',
@@ -31,691 +33,383 @@ enum Form {
   Tree = 'tree',
 }
 
-type FormBase = {
+type Head = {
   form: Form
   nest: number
-  nestTree: number
 }
 
 export default function makeFoldList(link: FoldCallLink): FoldCallCast {
-  const sizeList: Record<string, number> = {}
-
-  // console.log(
-  //   link.list.map(x => ({
-  //     text: x.text,
-  //     form: x.form,
-  //   })),
-  // )
-
-  function size(form: FoldName): number {
-    sizeList[form] = sizeList[form] || 1
-    return sizeList[form]++
-  }
-
-  function fold<T extends FoldName>(form: T) {
-    return {
-      code: size(form),
-      form,
-    }
-  }
-
-  const foldList: Array<Fold> = [fold(FoldName.RiseTree)]
-
-  let slot = 0
-
-  const formList: Array<FormBase> = [
-    { form: Form.Card, nest: 0, nestTree: 1 },
-  ]
+  const foldList: Array<Fold> = [{ form: FoldName.RiseTree }]
 
   const cast = {
     ...link,
     foldList,
   }
 
-  let textSlot = 0 // indent
-  let lastTextSlot = 0
-  let nestSlot = 0
-  let formBond = formList[0]
+  // console.log(link.list)
 
-  function diffTextSlot() {
-    if (lastTextSlot > textSlot) {
-      while (lastTextSlot > textSlot) {
-        lastTextSlot--
+  function head(form: Form, nest = 0) {
+    return { form, nest }
+  }
+
+  let slot = 0
+
+  const line: Array<Head> = [head(Form.Card)]
+
+  let textSlot = 0
+  let needSlot = true
+  // how far the start of the previous line is indented
+  let baseLastTextSlot = 0
+
+  const haltList = []
+
+  while (slot < link.list.length) {
+    const seed = link.list[slot++]
+    haveMesh(seed, 'seed')
+
+    switch (seed.form) {
+      case MarkName.RiseCull:
+        headTextSlot()
         foldList.push({
-          ...fold(FoldName.FallNest),
+          form: FoldName.RiseCull,
+          text: seed.text,
+          rank: seed.rank,
         })
-        // takeForm()
-      }
-    }
-  }
-
-  function readHead() {
-    while (textSlot-- >= 0) {
-      foldList.push({
-        ...fold(FoldName.FallNest),
-      })
-      // takeForm()
-    }
-  }
-
-  function readNestSlot() {
-    haveMesh(formBond, 'formBond')
-
-    while (formBond.nestTree-- > 0) {
-      foldList.push({
-        ...fold(FoldName.FallNest),
-      })
-      // takeForm()
-    }
-
-    formBond.nestTree = 0
-  }
-
-  function takeHeadForm() {
-    while (formList.length > 1) {
-      const base = takeForm()
-      haveMesh(base, 'base')
-      switch (base.form) {
-        case Form.Nest:
-          foldList.push({
-            ...fold(FoldName.FallNest),
-          })
-          break
-        case Form.Tree:
-          foldList.push({
-            ...fold(FoldName.FallTree),
-          })
-          break
-        case Form.TermLine:
-          foldList.push({
-            ...fold(FoldName.FallTermLine),
-          })
-          break
-          // case Form.Nick:
-          //   foldList.push({
-          //     ...fold(FoldName.FallNick),
-          //   })
-          break
-        default:
-          break
-      }
-    }
-  }
-
-  let formSlot = 0
-
-  castFold()
-
-  function saveForm(
-    form: Form,
-    nestText = textSlot,
-    nestTree = nestSlot,
-  ) {
-    const bond = {
-      form,
-      nest: nestText,
-      nestTree: nestTree,
-    }
-    formList.push(bond)
-
-    console.log(`${makeTextMove(formSlot++)}${form}+`)
-
-    formBond = bond
-  }
-
-  function readForm() {
-    const base = formList[formList.length - 1]
-
-    return base
-  }
-
-  function takeForm() {
-    const base = formList.pop()
-
-    console.log(`${makeTextMove(--formSlot)}${base?.form}-`)
-
-    formBond = base
-
-    readNestSlot()
-
-    return base
-  }
-
-  function castFold() {
-    while (slot < link.list.length) {
-      const seed = link.list[slot]
-      haveMesh(seed, 'seed')
-
-      console.log(seed.text, seed.form)
-
-      switch (seed.form) {
-        case MarkName.FallCull: {
-          castFallCull(seed)
-          break
-        }
-        case MarkName.FallNick: {
-          castFallNick(seed)
-          break
-        }
-        case MarkName.FallHold:
-          takeForm()
-          foldList.push({
-            ...fold(FoldName.FallNest),
-          })
-          slot++
-          break
-        case MarkName.FallLineText:
-          // console.log('fall line text')
-          slot++
-          break
-        case MarkName.FallText: {
-          const base = readForm()
-          takeForm()
-          haveMesh(base, 'base')
-          haveWave(base.nest === textSlot, 'equal')
-          slot++
-          foldList.push({
-            rank: seed.rank,
-            text: seed.text,
-            ...fold(FoldName.FallText),
-          })
-          break
-        }
-        case MarkName.Link:
-          slot++
-          const a = readForm()
-          if (a?.form === Form.TermLine) {
-            foldList.push({
-              ...fold(FoldName.FallTermLine),
-            })
-            takeForm()
-          }
-
-          const b = readForm()
-          if (b?.form === Form.Tree) {
-            foldList.push(fold(FoldName.FallTree))
-            takeForm()
-          }
-          break
-        case MarkName.Note:
-          slot++
-          break
-        case MarkName.Comb: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: parseFloat(seed.text),
-            ...fold(FoldName.Comb),
-          })
-          break
-        }
-        case MarkName.Code: {
-          slot++
-          const [hash, base = '', ...bond] = seed.text
-          foldList.push({
-            ...seed,
-            bond: bond.join(''),
-            base,
-            ...fold(FoldName.Code),
-          })
-          break
-        }
-        case MarkName.RiseCull: {
-          castRiseCull(seed)
-          break
-        }
-        case MarkName.RiseSlot:
-          textSlot++
-          slot++
-          foldList.push({
-            rank: seed.rank,
-            ...fold(FoldName.RiseNest),
-          })
-          saveForm(Form.Nest)
-          haveMesh(formBond, 'formBond')
-          formBond.nestTree++
-          break
-        case MarkName.RiseNick: {
-          castRiseNick(seed)
-          break
-        }
-        case MarkName.FallTerm: {
-          const a = readForm()
-          const b = readForm()
-
-          if (a?.form === Form.TermLine) {
-            takeForm()
-            foldList.push({
-              ...fold(FoldName.FallTermLine),
-            })
-          }
-
-          if (b?.form === Form.Tree) {
-            takeForm()
-            foldList.push({
-              ...fold(FoldName.FallTree),
-            })
-          }
-
-          slot++
-          break
-        }
-        case MarkName.RiseNest:
-          foldList.push({
-            rank: seed.rank,
-            ...fold(FoldName.RiseNest),
-          })
-          saveForm(Form.Nest)
-          haveMesh(formBond, 'formBond')
-          formBond.nestTree++
-          slot++
-          break
-        case MarkName.RiseHold:
-          foldList.push({
-            rank: seed.rank,
-            ...fold(FoldName.RiseNest),
-          })
-          slot++
-          break
-        case MarkName.RiseLineText:
-          slot++
-          break
-        case MarkName.RiseText: {
-          castRiseText(seed)
-          break
-        }
-        case MarkName.LineSlot: {
-          readLineSlot(seed)
-          break
-        }
-        case MarkName.SideSize: {
-          foldList.push({
-            rank: seed.rank,
-            bond: parseInt(seed.text, 10),
-            ...fold(FoldName.Comb),
-          })
-          slot++
-          const head = link.list[slot]
-          switch (head?.form) {
-            case MarkName.RiseNest:
-              throw new Error('Cant use numbers as terms.')
-              break
-            default:
-              break
-          }
-          break
-        }
-        case MarkName.Text: {
-          castText(seed)
-          break
-        }
-        case MarkName.TermBase: {
-          castTermBase(seed)
-          break
-        }
-        case MarkName.TermLink: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: seed.text,
-            ...fold(FoldName.TermText),
-          })
-          break
-        }
-        case MarkName.TermHead: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: seed.text,
-            ...fold(FoldName.TermText),
-          })
-          break
-        }
-        case MarkName.TermLineLink: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: seed.text,
-            ...fold(FoldName.TermText),
-          })
-          break
-        }
-        case MarkName.Size: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: parseInt(seed.text, 10),
-            ...fold(FoldName.Comb),
-          })
-          const head = link.list[slot]
-          switch (head?.form) {
-            case MarkName.RiseNest:
-              throw new Error('Cant use numbers as terms.')
-              break
-            default:
-              break
-          }
-          break
-        }
-        case MarkName.LineTextLink: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: seed.text,
-            ...fold(FoldName.Text),
-          })
-          break
-        }
-        case MarkName.LineTextSlot: {
-          slot++
-          foldList.push({
-            ...seed,
-            bond: seed.text,
-            ...fold(FoldName.Text),
-          })
-          break
-        }
-        default:
-          throw new Error('undefined')
-          break
-      }
-
-      function readLineSlot(seed: MarkLineSlot) {
-        let lastTextSlot = textSlot
-        while (lastTextSlot-- >= 0) {
-          const c = readForm()
-
-          if (c?.form === Form.Nest) {
-            foldList.push({
-              ...fold(FoldName.FallNest),
-            })
-            takeForm()
-          }
-
-          const a = readForm()
-          if (a?.form === Form.TermLine) {
-            takeForm()
-            foldList.push({
-              ...fold(FoldName.FallTermLine),
-            })
-          }
-
-          const b = readForm()
-          if (b?.form === Form.Tree) {
-            takeForm()
-            foldList.push({
-              ...fold(FoldName.FallTree),
-            })
-          }
-        }
-        textSlot = 0
-        slot++
-        walk: while (true) {
-          const head = link.list[slot]
-
-          switch (head?.form) {
-            case MarkName.RiseSlot:
-              slot++
-              textSlot++
-              foldList.push({
-                rank: seed.rank,
-                ...fold(FoldName.RiseNest),
-              })
-              break
-            default:
-              break walk
-          }
-        }
-
-        diffTextSlot()
-      }
-
-      function castTermBase(seed: MarkTermBase) {
-        const last = link.list[slot - 1]
-
-        switch (last?.form) {
-          case undefined:
-          case MarkName.RiseNest:
-          case MarkName.RiseSlot:
-          case MarkName.LineSlot:
-          case MarkName.RiseNick:
-          case MarkName.RiseCull:
-          case MarkName.Link:
-            foldList.push(fold(FoldName.RiseTree))
-            foldList.push({
-              rank: seed.rank,
-              ...fold(FoldName.RiseTermLine),
-            })
-            saveForm(Form.Tree)
-            saveForm(Form.TermLine)
-            break
-          default:
-            break
-        }
-
-        slot++
+        line.push(head(Form.Cull))
+        break
+      case MarkName.FallCull:
+        castFallCull(seed)
+        break
+      case MarkName.RiseNick:
+        castRiseNick(seed)
+        break
+      case MarkName.FallNick:
+        castFallNick(seed)
+        break
+      case MarkName.RiseText:
+        headTextSlot()
+        line.push(head(Form.Text))
+        break
+      case MarkName.FallText:
+        castFallText(seed)
+        break
+      case MarkName.RiseHold:
+        line.push(head(Form.Nest))
         foldList.push({
-          ...seed,
-          bond: seed.text,
-          ...fold(FoldName.TermText),
+          form: FoldName.RiseNest,
         })
-      }
-    }
-  }
-
-  function castFallCull(seed: MarkFallCull) {
-    slot++
-    const a = readForm()
-    if (a?.form === Form.TermLine) {
-      foldList.push({
-        ...fold(FoldName.FallTermLine),
-      })
-      takeForm()
-    }
-
-    const b = readForm()
-    if (b?.form === Form.Tree) {
-      foldList.push(fold(FoldName.FallTree))
-      takeForm()
-    }
-
-    const c = takeForm() // cull
-    if (c?.form === Form.Cull) {
-      // nestSlot = c.nestTree
-      // takeNestSlotBack()
-    }
-
-    foldList.push({
-      rank: seed.rank,
-      text: seed.text,
-      ...fold(FoldName.FallCull),
-    })
-
-    const headSlot = link.list[slot]
-    switch (headSlot?.form) {
-      case undefined:
-      case MarkName.RiseNest:
-      case MarkName.RiseSlot:
-      case MarkName.LineSlot:
+        break
+      case MarkName.FallHold:
+        castFallHold(seed)
+        break
       case MarkName.Link: {
-        const c = readForm()
-
-        if (c?.form === Form.TermLine) {
-          foldList.push({
-            ...fold(FoldName.FallTermLine),
-          })
-          takeForm()
-        }
-
-        const d = readForm()
-        if (d?.form === Form.Tree) {
-          foldList.push(fold(FoldName.FallTree))
-          takeForm()
-        }
+        castLink(seed)
+        break
       }
+      case MarkName.Note:
+        break
+      case MarkName.Comb:
+        headTextSlot()
+        castComb(seed)
+        break
+      case MarkName.Code:
+        headTextSlot()
+        castCode(seed)
+        break
+      case MarkName.Slot:
+        // if (seed.text.length !== 1) {
+        //   haltList.push(new Error('Invalid spacing'))
+        // }
+        break
+      case MarkName.RiseSlot: {
+        textSlot = seed.text.length / 2
+        if (textSlot % 2 !== 0) {
+          haltList.push(new Error('Invalid spacing'))
+          textSlot = Math.floor(textSlot)
+        }
+        break
+      }
+      case MarkName.FallSlot: {
+        // lint warning, trailing whitepsace
+        break
+      }
+      case MarkName.LineSlot:
+        textSlot = 0
+        needSlot = true
+        break
+      case MarkName.Text:
+        castText(seed)
+        break
+      // term templates
+      case MarkName.Knit:
+        castKnit(seed)
+        break
+      case MarkName.Size:
+        break
       default:
         break
     }
+  }
+
+  function castCode(seed: MarkCode) {
+    if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
+      const mold = RegExp.$1
+      const bond = readCode(RegExp.$2)
+      foldList.push({
+        form: FoldName.Code,
+        bond,
+        mold,
+        rank: seed.rank,
+      })
+    } else if (seed.text.match(/#(\d+)n(\w+)/)) {
+      const mold = RegExp.$1
+      const bond = parseInt(RegExp.$2, parseInt(mold, 10))
+      foldList.push({
+        form: FoldName.Code,
+        bond,
+        mold,
+        rank: seed.rank,
+      })
+    } else {
+      haltList.push(new Error('Invalid code'))
+    }
+  }
+
+  function castComb(seed: MarkComb) {
+    const bond = parseFloat(seed.text)
+    if (Number.isNaN(bond)) {
+      haltList.push(new Error('Invalid size'))
+    }
+    foldList.push({
+      form: FoldName.Size,
+      bond,
+      rank: seed.rank,
+    })
   }
 
   function castText(seed: MarkText) {
-    slot++
-    const base = formList[formList.length - 1]
-    haveMesh(base, 'base')
-
-    if (base.nest >= 0) {
-      haveWave(base.nest === seed.text.match(/^(  )+/)?.length, 'equal')
-    }
-
     foldList.push({
-      ...seed,
+      form: FoldName.Text,
       bond: seed.text,
-      ...fold(FoldName.Text),
+      rank: seed.rank,
     })
   }
 
-  function castRiseText(seed: MarkRiseText) {
-    slot++
-    foldList.push({
-      rank: seed.rank,
-      ...fold(FoldName.RiseText),
-    })
-    const head = link.list[slot]
-    switch (head?.text) {
-      case '\n':
-        slot++
-        saveForm(Form.Text, textSlot + 1, 0)
-        break
+  function castFallCull(seed: MarkFallCull) {
+    walk: while (true) {
+      const head = readHead()
+      // console.log(head)
+      switch (head?.form) {
+        case Form.Knit:
+          foldList.push({
+            form: FoldName.FallKnit,
+          })
+          line.pop()
+          break
+        case Form.Tree:
+          foldList.push({ form: FoldName.FallTree })
+          line.pop()
+          break
+        case Form.Cull:
+          foldList.push({
+            text: seed.text,
+            rank: seed.rank,
+            form: FoldName.FallCull,
+          })
+          line.pop()
+          break walk
+        default:
+          break walk
+      }
+    }
+
+    line.pop()
+  }
+
+  if (haltList.length) {
+    // console.log(haltList)
+  }
+
+  console.log(cast.foldList)
+
+  function readCode(mold: string) {
+    switch (mold) {
+      case 'b':
+        return parseInt(mold, 2)
+      case 'o':
+        return parseInt(mold, 8)
+      case 'x':
       default:
-        saveForm(Form.Text, 0, 0)
+        return parseInt(mold, 16)
+    }
+  }
+
+  function castLink(seed: MarkLink) {
+    const headMark = readMark()
+    if (headMark) {
+      if (headMark.form === MarkName.Slot) {
+        if (headMark.text.length !== 1) {
+          haltList.push(new Error('Invalid spacing'))
+        }
+
+        slot++
+      }
+    }
+  }
+
+  function castKnit(seed: MarkKnit) {
+    headTextSlot()
+
+    if (seed.text.match(/\/{2,}/)) {
+      haltList.push(new Error('Invalid path'))
+    }
+    if (!seed.text.match(/^[0-9a-z-\/]+$/)) {
+      haltList.push(new Error('Invalid term characters'))
+    }
+    if (!seed.text.match(/^[a-z]/)) {
+      haltList.push(new Error('Term must start with a-z'))
+    }
+
+    const last = readMark(-1)
+    switch (last?.form) {
+      case MarkName.Slot:
+      case MarkName.LineSlot:
+      case MarkName.RiseSlot:
+      case MarkName.Link:
+      case MarkName.RiseCull:
+      case MarkName.RiseNick:
+      case undefined: {
+        foldList.push({
+          form: FoldName.RiseTree,
+        })
+        line.push(head(Form.Tree))
+        foldList.push({
+          form: FoldName.RiseKnit,
+        })
+        line.push(head(Form.Knit))
+        break
+      }
+      default:
+        // console.log(last)
         break
     }
+
+    foldList.push({
+      form: FoldName.Text,
+      bond: seed.text,
+      rank: seed.rank,
+    })
+  }
+
+  return cast
+
+  function castRiseNick(seed: MarkRiseNick) {
+    headTextSlot()
+    line.push(head(Form.Nick))
+    foldList.push({
+      form: FoldName.RiseNick,
+      text: seed.text,
+      rank: seed.rank,
+      size: seed.text.length,
+    })
+  }
+
+  function castFallText(seed: MarkFallText) {
+    foldList.push({
+      text: seed.text,
+      rank: seed.rank,
+      form: FoldName.FallText,
+    })
+    line.pop()
+  }
+
+  function castFallHold(seed: MarkFallHold) {
+    walk: while (true) {
+      const head = readHead()
+      switch (head?.form) {
+        case Form.Nest:
+          foldList.push({ form: FoldName.FallNest })
+          line.pop()
+          break
+        default:
+          break walk
+      }
+    }
+  }
+
+  function readMark(move = 1) {
+    return link.list[slot + move - 1]
+  }
+
+  function readHead() {
+    return line[line.length - 1]
   }
 
   function castFallNick(seed: MarkFallNick) {
-    const a = readForm()
-
-    if (a?.form === Form.TermLine) {
-      foldList.push({
-        ...fold(FoldName.FallTermLine),
-      })
-      takeForm()
-    }
-
-    const b = readForm()
-    if (b?.form === Form.Tree) {
-      foldList.push(fold(FoldName.FallTree))
-      takeForm()
-    }
-
-    const c = takeForm() // nick
-    if (c?.form === Form.Nick) {
-      // nestSlot = c.nestTree
-      // takeNestSlotBack()
-    }
-
-    foldList.push({
-      rank: seed.rank,
-      text: seed.text,
-      ...fold(FoldName.FallNick),
-    })
-    const last = formList[formList.length - 1]
-    if (last) {
-      last.nest = -1
-    }
-    slot++
-
-    const headSlot = link.list[slot]
-    switch (headSlot?.form) {
-      case undefined:
-      case MarkName.RiseNest:
-      case MarkName.RiseSlot:
-      case MarkName.LineSlot:
-      case MarkName.Link: {
-        const c = readForm()
-
-        if (c?.form === Form.TermLine) {
+    walk: while (true) {
+      const head = readHead()
+      switch (head?.form) {
+        case Form.Knit:
           foldList.push({
-            ...fold(FoldName.FallTermLine),
+            form: FoldName.FallKnit,
           })
-          takeForm()
-        }
+          line.pop()
+          break
+        case Form.Tree:
+          foldList.push({ form: FoldName.FallTree })
+          line.pop()
+          break
+        case Form.Nick:
+          foldList.push({
+            text: seed.text,
+            rank: seed.rank,
+            form: FoldName.FallNick,
+          })
+          line.pop()
+          break walk
+        default:
+          break walk
+      }
+    }
 
-        const d = readForm()
-        if (d?.form === Form.Tree) {
-          foldList.push(fold(FoldName.FallTree))
-          takeForm()
+    line.pop()
+  }
+
+  // // close the parentheses
+  // function haltBond() {
+  //   const last = line[line.length - 1]
+  //   switch (last?.form) {
+  //     case Form.Nick:
+  //       foldList.push({
+  //         form: FoldName.FallNick,
+  //       })
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
+
+  function haltBondLine() {}
+
+  function headTextSlot() {
+    if (needSlot) {
+      needSlot = false
+
+      if (textSlot > baseLastTextSlot) {
+        if (textSlot > baseLastTextSlot + 1) {
+          haltList.push(new Error(`Too much indentation`))
+        } else {
+          // don't have to do anything
+        }
+      } else {
+        let diff = baseLastTextSlot - textSlot - 1
+        while (diff > 0) {
+          foldList.push({ form: FoldName.FallNest })
+          diff--
         }
       }
-      default:
-        break
     }
   }
-
-  function castRiseNick(seed: MarkRiseNick) {
-    slot++
-    foldList.push({
-      rank: seed.rank,
-      text: seed.text,
-      size: seed.text.length,
-      ...fold(FoldName.RiseNick),
-    })
-    const head = link.list[slot]
-    switch (head?.form) {
-      case MarkName.LineSlot:
-        slot++
-        saveForm(Form.Nick, textSlot + 1, 0)
-        haveMesh(formBond, 'formBond')
-        formBond.nestTree++
-        break
-      default:
-        saveForm(Form.Nick, textSlot, 0)
-        haveMesh(formBond, 'formBond')
-        formBond.nestTree++
-        break
-    }
-  }
-
-  function takeNestSlotBack() {
-    while (nestSlot-- >= 0) {
-      foldList.push({
-        ...fold(FoldName.FallNest),
-      })
-    }
-  }
-
-  function castRiseCull(seed: MarkRiseCull) {
-    slot++
-    foldList.push({
-      rank: seed.rank,
-      text: seed.text,
-      ...fold(FoldName.RiseCull),
-    })
-    const head = link.list[slot]
-    switch (head?.form) {
-      case MarkName.LineSlot:
-        slot++
-        saveForm(Form.Cull, textSlot + 1, 0)
-        haveMesh(formBond, 'formBond')
-        formBond.nestTree++
-        break
-      default:
-        saveForm(Form.Cull, textSlot, 0)
-        haveMesh(formBond, 'formBond')
-        formBond.nestTree++
-        break
-    }
-  }
-
-  readHead()
-
-  // takeHeadForm()
-
-  foldList.push(fold(FoldName.FallTree))
-
-  // console.log(JSON.stringify(cast.foldList, null, 2))
-
-  return cast
 }
 
 function makeTextMove(move: number) {

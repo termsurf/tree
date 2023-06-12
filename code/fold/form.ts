@@ -22,7 +22,10 @@ export enum FoldName {
   TermText = 'fold-term-text',
   Size = 'fold-size',
   RiseTree = 'fold-rise-tree',
-  FallTree = 'fold-rise-tree',
+  FallTree = 'fold-fall-tree',
+  Knit = 'fold-knit',
+  RiseKnit = 'fold-rise-knit',
+  FallKnit = 'fold-fall-knit',
 }
 
 export type FoldHash = {
@@ -47,11 +50,13 @@ export type FoldHash = {
   'fold-size': FoldSize
   'fold-rise-tree': FoldRiseTree
   'fold-fall-tree': FoldFallTree
+  'fold-knit': FoldKnit
+  'fold-rise-knit': FoldRiseKnit
+  'fold-fall-knit': FoldFallKnit
 }
 
 export type FoldBase = {
-  code: number
-  rank: Rank
+  rank?: Rank
 }
 
 export type FoldFallCull = FoldBase & {
@@ -66,6 +71,14 @@ export type FoldTermText = FoldBase & {
 
 export type FoldFallCard = FoldBase & {
   form: FoldName.FallCard
+}
+
+export type FoldRiseKnit = FoldBase & {
+  form: FoldName.RiseKnit
+}
+
+export type FoldFallKnit = FoldBase & {
+  form: FoldName.FallKnit
 }
 
 export type FoldRiseTree = Omit<FoldBase, 'rank'> & {
@@ -98,14 +111,19 @@ export type FoldNote = FoldBase & {
   form: FoldName.Note
 }
 
+export type FoldKnit = FoldBase & {
+  form: FoldName.Knit
+  // nest: Array<FoldText | FoldNic>
+}
+
 export type FoldComb = FoldBase & {
   form: FoldName.Comb
   bond: number
 }
 
 export type FoldCode = FoldBase & {
-  bond: string
-  base: string
+  bond: number
+  mold: string
   form: FoldName.Code
 }
 
@@ -131,6 +149,9 @@ export type Fold =
   | FoldSize
   | FoldRiseTree
   | FoldFallTree
+  | FoldKnit
+  | FoldRiseKnit
+  | FoldFallKnit
 
 export type FoldRiseCull = FoldBase & {
   form: FoldName.RiseCull
