@@ -56,6 +56,9 @@ export const MARK_NICK_TEST_LIST: Array<MarkName> = [
   MarkName.RiseText,
   MarkName.RiseNick,
   MarkName.RiseCull,
+  MarkName.Knit,
+  MarkName.Slot,
+  MarkName.FallSlot,
 ]
 
 export const MARK_TEXT_TEST_LIST: Array<MarkName> = [
@@ -67,6 +70,9 @@ export const MARK_TEXT_TEST_LIST: Array<MarkName> = [
 export const MARK_TERM_TEST_LIST: Array<MarkName> = [
   MarkName.RiseNick,
   MarkName.RiseCull,
+  MarkName.Knit,
+  MarkName.Line,
+  MarkName.FallSlot,
 ]
 
 export const MARK_CULL_TEST_LIST: Array<MarkName> = [
@@ -77,6 +83,9 @@ export const MARK_CULL_TEST_LIST: Array<MarkName> = [
   MarkName.RiseNick,
   MarkName.RiseCull,
   MarkName.LineSlot,
+  MarkName.Knit,
+  MarkName.Slot,
+  MarkName.FallSlot,
 ]
 
 export const MARK_NAME: Array<MarkName> = [
@@ -116,7 +125,7 @@ export const MARK_BASE_TEST_LIST: Array<MarkName> = [
   MarkName.RiseText,
   MarkName.Size,
   MarkName.FallSlot,
-  MarkName.RiseSlot,
+  MarkName.Slot,
   MarkName.Line,
   MarkName.Knit,
 ]
@@ -341,7 +350,7 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
 
   const nickList: Array<string> = []
 
-  for (let textLine of cast.lineText) {
+  walkBase: for (let textLine of cast.lineText) {
     // apphead `\n` so test matching works as expected
     textLine = `${textLine}\n`
 
@@ -370,6 +379,12 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
 
         move += slotTextSize
         mark += slotTextSize
+
+        textLine = textLine.slice(slotTextSize)
+
+        if (!textLine) {
+          break walkBase
+        }
       }
 
       const textForm: Form = formList[formList.length - 1] || Form.Base
@@ -388,6 +403,8 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
         haveMesh(seed, 'seed')
 
         let find = textLine.match(seed.test)
+
+        // console.log(form, textForm, find)
 
         if (!find) {
           continue
@@ -408,7 +425,7 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
               },
             },
             text: '',
-            form: form,
+            form: form as Mark['form'],
           }
           cast.list.push(stem)
         } else {
@@ -435,7 +452,7 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
               },
             },
             text: findText,
-            form: form,
+            form: form as Mark['form'],
           }
           cast.list.push(stem)
 
@@ -490,13 +507,14 @@ export default function makeTextList(link: MarkCallLink): MarkCallCast {
       if (!walk) {
         const last = cast.list[cast.list.length - 1]
         haveMesh(last, 'last')
-        // console.log(cast.list)
+        console.log(cast.list)
         throw generateSyntaxTokenError(cast, last)
       }
     }
 
     if (textLine.length) {
       const last = cast.list[cast.list.length - 1]
+      console.log(cast.list)
       haveMesh(last, 'last')
       throw generateSyntaxTokenError(cast, last)
     }

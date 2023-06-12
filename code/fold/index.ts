@@ -4,6 +4,7 @@ import type {
   MarkCallCast,
   MarkCode,
   MarkComb,
+  MarkFallCull,
   MarkFallHold,
   MarkFallNick,
   MarkFallText,
@@ -70,7 +71,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         line.push(head(Form.Cull))
         break
       case MarkName.FallCull:
-        line.pop()
+        castFallCull(seed)
         break
       case MarkName.RiseNick:
         castRiseNick(seed)
@@ -106,9 +107,9 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         castCode(seed)
         break
       case MarkName.Slot:
-        if (seed.text.length !== 1) {
-          haltList.push(new Error('Invalid spacing'))
-        }
+        // if (seed.text.length !== 1) {
+        //   haltList.push(new Error('Invalid spacing'))
+        // }
         break
       case MarkName.RiseSlot: {
         textSlot = seed.text.length / 2
@@ -183,6 +184,42 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       rank: seed.rank,
     })
   }
+
+  function castFallCull(seed: MarkFallCull) {
+    walk: while (true) {
+      const head = readHead()
+      switch (head?.form) {
+        case Form.Cull:
+          foldList.push({
+            text: seed.text,
+            rank: seed.rank,
+            form: FoldName.FallCull,
+          })
+          line.pop()
+          break
+        case Form.Knit:
+          foldList.push({
+            form: FoldName.FallTree,
+          })
+          line.pop()
+          break
+        case Form.Tree:
+          foldList.push({ form: FoldName.FallTree })
+          line.pop()
+          break
+        default:
+          break walk
+      }
+    }
+
+    line.pop()
+  }
+
+  if (haltList.length) {
+    console.log(haltList)
+  }
+
+  console.log(cast.foldList)
 
   function readCode(mold: string) {
     switch (mold) {
@@ -309,6 +346,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           break walk
       }
     }
+
+    line.pop()
   }
 
   // // close the parentheses
@@ -339,7 +378,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         }
       } else {
         let diff = baseLastTextSlot - textSlot - 1
-        while (diff) {
+        while (diff > 0) {
           foldList.push({ form: FoldName.FallNest })
           diff--
         }
