@@ -23,6 +23,7 @@ export enum FoldName {
   Size = 'fold-size',
   RiseTree = 'fold-rise-tree',
   FallTree = 'fold-rise-tree',
+  Knit = 'fold-knit',
 }
 
 export type FoldHash = {
@@ -47,6 +48,7 @@ export type FoldHash = {
   'fold-size': FoldSize
   'fold-rise-tree': FoldRiseTree
   'fold-fall-tree': FoldFallTree
+  'fold-knit': FoldKnit
 }
 
 export type FoldBase = {
@@ -98,6 +100,11 @@ export type FoldNote = FoldBase & {
   form: FoldName.Note
 }
 
+export type FoldKnit = FoldBase & {
+  form: FoldName.Knit
+  // nest: Array<FoldText | FoldNic>
+}
+
 export type FoldComb = FoldBase & {
   form: FoldName.Comb
   bond: number
@@ -131,6 +138,7 @@ export type Fold =
   | FoldSize
   | FoldRiseTree
   | FoldFallTree
+  | FoldKnit
 
 export type FoldRiseCull = FoldBase & {
   form: FoldName.RiseCull
