@@ -78,7 +78,7 @@ export type LinkComb = {
 }
 
 export type LinkCode = {
-  bond: string
+  bond: number
   rank?: Rank
   mold: string
   form: LinkName.Code
