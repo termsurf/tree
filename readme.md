@@ -366,9 +366,7 @@ text, allowing for template variables inside text, and for basic
 primitives. It is then up to you to figure out what you want to do with
 it. Take a look at the [`base.link`](https://github.com/tunebond/base)
 project for the work we are doing to build a programming language
-environment on top of Link Text. A primitive Link Text parser is
-[here](https://github.com/lancejpollard/link-parser.js), which converts
-it into a simple tree.
+environment on top of Link Text.
 
 ## Implementation Details
 
