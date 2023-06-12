@@ -77,10 +77,6 @@ function readFoldTree(link: FoldCallCast): LinkCallCast {
     const seed = link.foldList[hold.slot]
     haveMesh(seed, 'seed')
 
-    // console.log(JSON.stringify(hold.wall, null, 2))
-
-    console.log(seed.form, seed)
-
     switch (seed.form) {
       case FoldName.RiseKnit:
         readRiseKnit({
@@ -358,8 +354,6 @@ function readRiseTree(link: LinkCallLink<FoldName.RiseTree>): void {
       }
 
       linkBase(tree, ride)
-
-      console.log(link.seed)
 
       // throw new Error()
 

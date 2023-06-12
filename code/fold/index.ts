@@ -230,8 +230,6 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     // console.log(haltList)
   }
 
-  console.log(cast.foldList)
-
   function readCode(mold: string) {
     switch (mold) {
       case 'b':
