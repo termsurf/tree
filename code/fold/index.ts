@@ -1,19 +1,21 @@
 import _ from 'lodash'
 
 import type {
-  Mark,
   MarkCallCast,
+  MarkCode,
+  MarkComb,
   MarkFallHold,
   MarkFallNick,
   MarkFallText,
   MarkKnit,
   MarkLink,
   MarkRiseNick,
+  MarkText,
 } from '../mark/index.js'
 import { MarkName } from '../mark/index.js'
 import { FoldName } from './form.js'
 import type { FoldCallCast, Fold } from './form.js'
-import { haveMesh, haveWave } from '@tunebond/have'
+import { haveMesh } from '@tunebond/have'
 
 export * from './form.js'
 
@@ -36,21 +38,7 @@ type Head = {
 }
 
 export default function makeFoldList(link: FoldCallLink): FoldCallCast {
-  const sizeList: Record<string, number> = {}
-
-  function size(form: FoldName): number {
-    sizeList[form] = sizeList[form] || 1
-    return sizeList[form]++
-  }
-
-  function fold<T extends FoldName>(form: T) {
-    return {
-      code: size(form),
-      form,
-    }
-  }
-
-  const foldList: Array<Fold | Mark> = [fold(FoldName.RiseTree)]
+  const foldList: Array<Fold> = [{ form: FoldName.RiseTree }]
 
   const cast = {
     ...link,
@@ -110,8 +98,12 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       case MarkName.Note:
         break
       case MarkName.Comb:
+        headTextSlot()
+        castComb(seed)
         break
       case MarkName.Code:
+        headTextSlot()
+        castCode(seed)
         break
       case MarkName.Slot:
         if (seed.text.length !== 1) {
@@ -122,6 +114,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         textSlot = seed.text.length / 2
         if (textSlot % 2 !== 0) {
           haltList.push(new Error('Invalid spacing'))
+          textSlot = Math.floor(textSlot)
         }
         break
       }
@@ -134,6 +127,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         needSlot = true
         break
       case MarkName.Text:
+        castText(seed)
         break
       // term templates
       case MarkName.Knit:
@@ -143,6 +137,62 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
         break
       default:
         break
+    }
+  }
+
+  function castCode(seed: MarkCode) {
+    if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
+      const mold = RegExp.$1
+      const bond = readCode(RegExp.$2)
+      foldList.push({
+        form: FoldName.Code,
+        bond,
+        mold,
+        rank: seed.rank,
+      })
+    } else if (seed.text.match(/#(\d+)n(\w+)/)) {
+      const mold = RegExp.$1
+      const bond = parseInt(RegExp.$2, parseInt(mold, 10))
+      foldList.push({
+        form: FoldName.Code,
+        bond,
+        mold,
+        rank: seed.rank,
+      })
+    } else {
+      haltList.push(new Error('Invalid code'))
+    }
+  }
+
+  function castComb(seed: MarkComb) {
+    const bond = parseFloat(seed.text)
+    if (Number.isNaN(bond)) {
+      haltList.push(new Error('Invalid size'))
+    }
+    foldList.push({
+      form: FoldName.Size,
+      bond,
+      rank: seed.rank,
+    })
+  }
+
+  function castText(seed: MarkText) {
+    foldList.push({
+      form: FoldName.Text,
+      bond: seed.text,
+      rank: seed.rank,
+    })
+  }
+
+  function readCode(mold: string) {
+    switch (mold) {
+      case 'b':
+        return parseInt(mold, 2)
+      case 'o':
+        return parseInt(mold, 8)
+      case 'x':
+      default:
+        return parseInt(mold, 16)
     }
   }
 
@@ -172,12 +222,30 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       haltList.push(new Error('Term must start with a-z'))
     }
 
+    const last = readMark(-1)
+    switch (last?.form) {
+      case MarkName.Slot:
+      case undefined: {
+        foldList.push({
+          form: FoldName.RiseTree,
+        })
+        foldList.push({
+          form: FoldName.Knit,
+        })
+        break
+      }
+      default:
+        break
+    }
+
     foldList.push({
-      text: seed.text,
+      form: FoldName.Text,
+      bond: seed.text,
       rank: seed.rank,
-      form: FoldName.Knit,
     })
   }
+
+  return cast
 
   function castRiseNick(seed: MarkRiseNick) {
     headTextSlot()
@@ -188,7 +256,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     foldList.push({
       text: seed.text,
       rank: seed.rank,
-      ...fold(FoldName.FallText),
+      form: FoldName.FallText,
     })
     line.pop()
   }
@@ -198,7 +266,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       const head = readHead()
       switch (head?.form) {
         case Form.Nest:
-          foldList.push(fold(FoldName.FallNest))
+          foldList.push({ form: FoldName.FallNest })
           line.pop()
           break
         default:
@@ -207,10 +275,8 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     }
   }
 
-  return cast
-
-  function readMark() {
-    return link.list[slot + 1]
+  function readMark(move = 1) {
+    return link.list[slot + move]
   }
 
   function readHead() {
@@ -225,20 +291,18 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
           foldList.push({
             text: seed.text,
             rank: seed.rank,
-            ...fold(FoldName.FallNick),
+            form: FoldName.FallNick,
           })
           line.pop()
           break
         case Form.Knit:
           foldList.push({
-            text: seed.text,
-            rank: seed.rank,
-            ...fold(FoldName.Knit),
+            form: FoldName.FallTree,
           })
           line.pop()
           break
         case Form.Tree:
-          foldList.push(fold(FoldName.FallTree))
+          foldList.push({ form: FoldName.FallTree })
           line.pop()
           break
         default:
@@ -247,17 +311,19 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
     }
   }
 
-  // close the parentheses
-  function haltBond() {
-    const last = line[line.length - 1]
-    switch (last?.form) {
-      case Form.Nick:
-        foldList.push(fold(FoldName.FallNick))
-        break
-      default:
-        break
-    }
-  }
+  // // close the parentheses
+  // function haltBond() {
+  //   const last = line[line.length - 1]
+  //   switch (last?.form) {
+  //     case Form.Nick:
+  //       foldList.push({
+  //         form: FoldName.FallNick,
+  //       })
+  //       break
+  //     default:
+  //       break
+  //   }
+  // }
 
   function haltBondLine() {}
 
@@ -274,7 +340,7 @@ export default function makeFoldList(link: FoldCallLink): FoldCallCast {
       } else {
         let diff = baseLastTextSlot - textSlot - 1
         while (diff) {
-          foldList.push(fold(FoldName.FallNest))
+          foldList.push({ form: FoldName.FallNest })
           diff--
         }
       }

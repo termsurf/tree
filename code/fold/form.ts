@@ -52,8 +52,7 @@ export type FoldHash = {
 }
 
 export type FoldBase = {
-  code: number
-  rank: Rank
+  rank?: Rank
 }
 
 export type FoldFallCull = FoldBase & {
@@ -111,8 +110,8 @@ export type FoldComb = FoldBase & {
 }
 
 export type FoldCode = FoldBase & {
-  bond: string
-  base: string
+  bond: number
+  mold: string
   form: FoldName.Code
 }
 
