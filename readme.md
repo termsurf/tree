@@ -317,23 +317,10 @@ that way.
 get foo/bar
 ```
 
-You can interpolate on these as well, like doing array index lookup.
-
-```link
-get node/children[i]/name
-```
-
-The interpolations can be nested as well, and chained. Here is a complex
-example:
-
-```link
-get foo/bar[x][o/children[i]/name]/value
-```
-
 Finally, you can do actual interpolations beyond property/array lookups:
 
 ```link
-get foo{bar}{{baz}}{{{bing}}}boop
+get foo{bar}{{baz}}/{{{bing}}}boop
 ```
 
 In theory, the number of brackets means the number of passes the
