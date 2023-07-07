@@ -366,7 +366,7 @@ a little more complex to parse. As such we divide it into 3 phases:
 2. **`fold`**: This phase takes the `mark` tokens and converts them into
    a set of _instructions_ for folding them into a tree.
 3. **`link`**: This phase takes the `fold` instructions and converts
-   them into the "link tree".
+   them into the Link Tree.
 
 Here is the basic set of TypeScript types for Link Text:
 
@@ -418,12 +418,6 @@ type LinkNick = {
   rank: Rank
 }
 
-type LinkSideSize = {
-  rank: Rank
-  form: LinkName.SideSize
-  bond: number
-}
-
 type LinkCord = {
   rank: Rank
   form: LinkName.Cord
@@ -443,7 +437,6 @@ type LinkSize = {
 type LinkBond =
   | LinkSize
   | LinkText
-  | LinkSideSize
   | LinkCode
   | LinkComb
   | LinkWave
@@ -453,7 +446,6 @@ type Link =
   | LinkText
   | LinkTree
   | LinkSize
-  | LinkSideSize
   | LinkText
   | LinkCord
   | LinkNick
@@ -479,8 +471,8 @@ complicated.
 y{x}z-/{foo{{bar(baz)}-boom[beep]}}
 ```
 
-You should really write code like this, but the compiler should be able
-to probably handle most of it.
+You should not write code like this, but the compiler should be able to
+handle it anyways.
 
 ## Syntax Highlighter Installation
 
