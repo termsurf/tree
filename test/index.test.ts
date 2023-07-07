@@ -5,7 +5,7 @@ import { dirname } from 'path'
 import stripAnsi from 'strip-ansi'
 import { fileURLToPath } from 'url'
 
-import makeLinkTree, { showLinkTree } from '../code/link/index.js'
+import makeLinkTree, { showLinkTree } from '../code/tree/index.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)

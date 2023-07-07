@@ -53,19 +53,23 @@ A package definition:
 
 ```link
 deck @tunebond/base
-  head <Link Text Compiler>
-  make <Link Text>
-  make <Computation>
-  make <Philosophy>
-  make <Information>
-  make <Platform>
-  make <White Label>
-  mate <Lance Pollard>, site <lp@elk.fm>
   mark <0.0.1>
-  dock head
-  dock task
-  read book
-  term <Apache 2.0>
+  head <A Link Text Package Manager>
+  term link-text
+  term computation
+  term philosophy
+  term information
+  term platform
+  term white-label
+  term compiler
+  face <Lance Pollard>, site <lp@elk.fm>
+  task ./task
+  read ./note
+  lock apache-2
+  sort tool
+  link @tunebond/bolt, mark <0.x.x>
+  link @tunebond/nest, mark <0.x.x>
+  link @tunebond/crow, mark <0.x.x>
 ```
 
 The first block of the Tao Te Ching:
@@ -112,19 +116,23 @@ import read from '@tunebond/link'
 console.log(
   read(`
 deck @tunebond/base
-  head <Link Text Compiler>
-  make <Link Text>
-  make <Computation>
-  make <Philosophy>
-  make <Information>
-  make <Platform>
-  make <White Label>
-  mate <Lance Pollard>, site <lp@elk.fm>
   mark <0.0.1>
-  dock head
-  dock task
-  read book
-  term <Apache 2.0>
+  head <A Link Text Package Manager>
+  term link-text
+  term computation
+  term philosophy
+  term information
+  term platform
+  term white-label
+  term compiler
+  face <Lance Pollard>, site <lp@elk.fm>
+  task ./task
+  read ./note
+  lock apache-2
+  sort tool
+  link @tunebond/bolt, mark <0.x.x>
+  link @tunebond/nest, mark <0.x.x>
+  link @tunebond/crow, mark <0.x.x>
 `),
 )
 ```
@@ -360,100 +368,113 @@ environment on top of Link Text.
 Since this an _indentation-based_ language, it is context sensitive and
 a little more complex to parse. As such we divide it into 3 phases:
 
-1. **`mark`**: This phase marks each token with a type in a somewhat
+1. **`list`**: This phase marks each token with a type in a somewhat
    straightforward way, taking into consideration some basic context
    such as whether it is part of `text` or a `term`.
-2. **`fold`**: This phase takes the `mark` tokens and converts them into
+2. **`sift`**: This phase takes the `list` tokens and converts them into
    a set of _instructions_ for folding them into a tree.
-3. **`link`**: This phase takes the `fold` instructions and converts
+3. **`tree`**: This phase takes the `fold` instructions and converts
    them into the Link Tree.
+
+The parser goes through the text, and first looks for obvious syntax
+errors. These are reported back in a JSON object without any styling as
+to the display of the error. It just gives you the line/column
+information. Then on the CLI, it takes this error JSON and renders it to
+a human readable CLI message. This is just for the `list` phase.
+
+Likewise, for the `fold` phase, it will "throw" errors if no closing
+brackets are found.
+
+The `tree` phase will throw "unimplemented" errors. This project is all
+about syntax errors, as it doesn't have any knowledge of the meaning of
+the constructs you are using.
 
 Here is the basic set of TypeScript types for Link Text:
 
 ```ts
-type LinkTree = {
-  nest: Array<Link>
-  base?: LinkTree | LinkNick | LinkCull
-  form: LinkName.Tree
+type LinkTreeNest = {
+  nest: Array<LinkTree>
+  base?: LinkTreeNest | LinkTreeNick | LinkTreeCull
+  form: LinkTreeName.Tree
 }
 
-type LinkWave = {
-  form: LinkName.Wave
+type LinkTreeWave = {
+  form: LinkTreeName.Wave
   bond: boolean
   rank: Rank
 }
 
-type LinkComb = {
+type LinkTreeComb = {
   rank: Rank
-  form: LinkName.Comb
+  form: LinkTreeName.Comb
   bond: number
 }
 
-type LinkCode = {
+type LinkTreeCode = {
   bond: string
   rank: Rank
   mold: string
-  form: LinkName.Code
+  form: LinkTreeName.Code
 }
 
-type LinkCull = {
-  head?: LinkTree | LinkBond
-  base?: LinkLine
-  form: LinkName.Cull
+type LinkTreeCull = {
+  head?: LinkTreeNest | LinkTreeBond
+  base?: LinkTreeLine
+  form: LinkTreeName.Cull
   rank: Rank
 }
 
-type LinkLine = {
-  base?: LinkTree
-  list: Array<LinkCull | LinkNick | LinkText>
-  form: LinkName.Line
+type LinkTreeLine = {
+  base?: LinkTreeNest
+  list: Array<LinkTreeCull | LinkTreeNick | LinkTreeText>
+  form: LinkTreeName.Line
   rank: Rank
 }
 
-type LinkNick = {
-  head?: LinkTree
-  base?: LinkLine | LinkText
+type LinkTreeNick = {
+  head?: LinkTreeNest
+  base?: LinkTreeLine | LinkTreeText
   size: number
-  form: LinkName.Nick
+  form: LinkTreeName.Nick
   rank: Rank
 }
 
-type LinkCord = {
+type LinkTreeCord = {
   rank: Rank
-  form: LinkName.Cord
+  form: LinkTreeName.Cord
   bond: string
 }
 
-type LinkText = {
-  nest: Array<LinkCord | LinkNick>
-  form: LinkName.Cord
+type LinkTreeText = {
+  nest: Array<LinkTreeCord | LinkTreeNick>
+  form: LinkTreeName.Cord
 }
 
-type LinkSize = {
-  form: LinkName.Size
+type LinkTreeSize = {
+  form: LinkTreeName.Size
   bond: number
 }
 
-type LinkBond =
-  | LinkSize
-  | LinkText
-  | LinkCode
-  | LinkComb
-  | LinkWave
-  | LinkCord
+type LinkTreeBond =
+  | LinkTreeSize
+  | LinkTreeText
+  | LinkTreeCode
+  | LinkTreeComb
+  | LinkTreeWave
+  | LinkTreeCord
 
-type Link =
-  | LinkText
-  | LinkTree
-  | LinkSize
-  | LinkText
-  | LinkCord
-  | LinkNick
-  | LinkCull
-  | LinkComb
-  | LinkCode
-  | LinkLine
-  | LinkWave
+type LinkTree =
+  | LinkTreeText
+  | LinkTreeNest
+  | LinkTreeSize
+  | LinkTreeText
+  | LinkTreeCord
+  | LinkTreeNick
+  | LinkTreeCull
+  | LinkTreeComb
+  | LinkTreeCode
+  | LinkTreeLine
+  | LinkTreeWave
 ```
 
 Some other notes... Terms are tricky in the implementation because you

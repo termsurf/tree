@@ -1,4 +1,4 @@
-import type { MarkCallCast, Rank } from '../mark/form.js'
+import type { MarkCallCast, Rank } from '../list/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
 export enum FoldName {

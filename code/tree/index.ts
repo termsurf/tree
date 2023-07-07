@@ -2,9 +2,9 @@ import makeFoldList, {
   FoldCallCast,
   FoldHash,
   FoldName,
-} from '../fold/index.js'
-import makeTextList from '../mark/index.js'
-import { MarkCallLink } from '../mark/form.js'
+} from '../sift/index.js'
+import makeTextList from '../list/index.js'
+import { MarkCallLink } from '../list/form.js'
 import {
   Link,
   LinkCallCast,
@@ -21,8 +21,8 @@ import {
 import { haltNotImplemented } from '../halt.js'
 import { haveMesh } from '@tunebond/have'
 
-export * from '../fold/index.js'
-export * from '../mark/index.js'
+export * from '../sift/index.js'
+export * from '../list/index.js'
 export * from './form.js'
 
 type LinkWall = {

@@ -1,38 +1,22 @@
 import Halt, { Link } from '@tunebond/halt'
 import { TONE } from '@tunebond/halt-text'
 import tint from '@tunebond/tint'
-import { Mark, MarkCallCast, MarkName, Rank } from './mark/form.js'
-import { haveMesh, haveText } from '@tunebond/have'
-import { FoldCallCast } from './fold'
-
-type WithName = {
-  name: string
-}
-
-type WithBase = WithName & {
-  base: string
-}
-
-type WithText = {
-  text: string
-}
+import { CallCast, Rank, Hunk } from './list/form.js'
+import { haveText } from '@tunebond/have'
 
 const host = '@tunebond/link'
 
+type HaveCastBack = {
+  cast: CallCast
+  back: Hunk
+}
+
 const base = {
-  not_implemented: {
+  text: {
     code: 1,
-    note: ({ name, base }: WithBase) =>
-      `We have not yet implemented '${name}' in ${base}. Please reach out.`,
-  },
-  syntax_error: {
-    code: 2,
-    note: ({ text }: WithText) =>
-      `Error in the structure of the link text tree.`,
-  },
-  invalid_whitespace: {
-    code: 3,
-    note: ({ text }: WithText) => `Invalid whitespace.`,
+    link: (link: HaveCastBack) => link,
+    note: (link: HaveCastBack) =>
+      `Error in the structure of the Link Text tree.`,
   },
 }
 
@@ -44,13 +28,9 @@ export default function halt(form: Name, link: Link<Base, Name>) {
   return new Halt({ base, form, host, link })
 }
 
-export function haltNotImplemented(name: string, base: string) {
-  return halt('not_implemented', { name, base })
-}
-
-export function generateSyntaxTokenError(
-  cast: MarkCallCast,
-  last: Mark,
+export function makeTextHalt(
+  cast: CallCast,
+  back: Hunk,
 ) {
   const rank: Rank = {
     head: {
@@ -63,14 +43,14 @@ export function generateSyntaxTokenError(
     },
   }
 
-  rank.base.line = last.rank.base.line
-  rank.head.line = last.rank.head.line
-  rank.base.mark = last.rank.base.mark
-  rank.head.mark = last.rank.head.mark
+  rank.base.line = back.rank.base.line
+  rank.head.line = back.rank.head.line
+  rank.base.mark = back.rank.base.mark
+  rank.head.mark = back.rank.head.mark
 
-  const text = generateHighlightedErrorText(cast.lineText, rank)
+  const hint = generateHighlightedErrorText(cast.lineText, rank)
 
-  return halt('syntax_error', { text })
+  return halt('text', { cast, back })
 }
 
 export function generateHighlightedErrorText(
@@ -139,73 +119,4 @@ export function makeRankText(
   lineList.push(tint(`${defaultIndent} |`, W))
 
   return lineList.join('\n')
-}
-
-export function generateInvalidWhitespaceError(
-  cast: FoldCallCast,
-  slot: number,
-) {
-  const seed = cast.list[slot]
-  haveMesh(seed, 'seed')
-
-  const rank = getCursorRangeForTextWhitespaceToken(cast, slot)
-  const text = generateHighlightedErrorText(cast.lineText, rank)
-
-  return halt('invalid_whitespace', { text })
-}
-
-export function getCursorRangeForTextWhitespaceToken(
-  call: FoldCallCast,
-  slot: number,
-) {
-  let seedList: Array<Mark> = []
-  let i = slot
-
-  loop: while (i < call.list.length) {
-    let t = call.list[i]
-    haveMesh(t, 't')
-    switch (t.form) {
-      case MarkName.RiseSlot:
-      case MarkName.RiseNest:
-        seedList.push(t)
-        break
-      default:
-        break loop
-    }
-    i++
-  }
-
-  const base = seedList[0]
-  const head = seedList[seedList.length - 1]
-
-  haveMesh(base, 'base')
-  haveMesh(head, 'head')
-
-  return {
-    head: {
-      mark: head.rank.head.mark,
-      line: head.rank.head.line,
-    },
-    base: {
-      mark: base.rank.base.mark,
-      line: base.rank.base.line,
-    },
-  }
-}
-
-export function generateInvalidCompilerStateError(
-  hint?: string,
-  path?: string,
-) {
-  return {
-    code: `0028`,
-    file: path,
-    hint: [
-      hint,
-      `This is some bug with the budding compiler. Check the stack trace to see where the error occurred.`,
-    ]
-      .filter(x => x)
-      .join(' '),
-    note: `Invalid compiler state`,
-  }
 }
