@@ -28,15 +28,9 @@ export enum Name {
   Knit = 'knit',
 }
 
-// rank
-export type RankSlot = {
-  mark: number
-  line: number
-}
-
 export type Rank = {
-  base: RankSlot
-  head: RankSlot
+  base: number
+  head: number
 }
 
 export type FallCull = Base & {

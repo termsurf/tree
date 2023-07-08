@@ -177,8 +177,7 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
 
   let formList = [Form.Base]
 
-  let line = 0
-  let mark = 0
+  let slot = 0
 
   let back: Hunk | undefined = undefined
 
@@ -223,14 +222,8 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
 
         const stem: Hunk = {
           rank: {
-            head: {
-              mark: mark + findSize,
-              line,
-            },
-            base: {
-              mark,
-              line,
-            },
+            base: slot,
+            head: slot + findSize,
           },
           text: findText,
           form: form as Hunk['form'],
@@ -238,14 +231,9 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
         save(stem)
 
         textLine = textLine.slice(findSize)
-        mark += findSize
+        slot += findSize
 
         switch (form) {
-          case Name.SlotLine: {
-            line++
-            mark = 0
-            break
-          }
           case Name.RiseNick: {
             formList.push(Form.Nick)
             break
