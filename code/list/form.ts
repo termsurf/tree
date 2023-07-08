@@ -28,9 +28,14 @@ export enum Name {
   Knit = 'knit',
 }
 
-export type Rank = {
-  base: number
-  head: number
+export type BandSlot = {
+  mark: number
+  line: number
+}
+
+export type Band = {
+  base: BandSlot
+  head: BandSlot
 }
 
 export type FallCull = Base & {
@@ -106,17 +111,12 @@ export type Knit = Base & {
 }
 
 export type CallLink = {
-  link: string
+  file: string
   text: string
 }
 
-// export type Rank = {
-//   mark: number
-//   line: number
-// }
-
 export type Base = {
-  rank: Rank
+  band: Band
   text: string
   // linked list
   back?: Hunk
@@ -156,7 +156,5 @@ export type Hunk =
   | Text
   | Size
   | Slot
-  | RiseSlot
-  | FallSlot
   | Knit
   | Line

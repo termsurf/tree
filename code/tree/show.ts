@@ -1,9 +1,8 @@
 import { Link, LinkName } from './form.js'
 import tint from '@tunebond/tint'
-import { TONE } from '@tunebond/halt-text'
-import { haltNotImplemented } from '../halt.js'
+import kink from '../kink.js'
 
-const G = { tone: TONE.fall.green }
+const G = { tone: 'green' }
 
 export function showLinkTree(base: Link): string {
   const list: Array<string> = ['']
@@ -155,7 +154,7 @@ function showLinkTreeBase(
       break
     }
     default:
-      throw haltNotImplemented(node.form, JSON.stringify(node))
+      throw new Error()
   }
 
   return list
@@ -254,8 +253,8 @@ function showLinkTreeBase(
 //       break
 //     }
 //     default:
-//       throw haltNotImplemented(undefined)
-//   }
+//       throw kink('not_implemented', { form: undefined)
+//   file: }
 
 //   return list
 // }

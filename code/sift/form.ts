@@ -1,216 +1,217 @@
-import type { MarkCallCast, Rank } from '../list/form.js'
+import type { CallCast, Band, Hunk } from '../list/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
-export enum FoldName {
-  FallCull = 'fold-fall-cull',
-  FallCard = 'fold-fall-card',
-  FallNest = 'fold-fall-nest',
-  FallNick = 'fold-fall-nick',
-  FallTermLine = 'fold-fall-term-line',
-  FallText = 'fold-fall-text',
-  Note = 'fold-note',
-  Comb = 'fold-comb',
-  Code = 'fold-code',
-  RiseCull = 'fold-rise-cull',
-  RiseCard = 'fold-rise-card',
-  RiseNest = 'fold-rise-nest',
-  RiseNick = 'fold-rise-nick',
-  RiseTermLine = 'fold-rise-term-line',
-  RiseText = 'fold-rise-text',
-  SideSize = 'fold-side-size',
-  Text = 'fold-text',
-  TermText = 'fold-term-text',
-  Size = 'fold-size',
-  RiseTree = 'fold-rise-tree',
-  FallTree = 'fold-fall-tree',
-  Knit = 'fold-knit',
-  RiseKnit = 'fold-rise-knit',
-  FallKnit = 'fold-fall-knit',
+export enum SiftName {
+  FallCull = 'fall-cull',
+  FallCard = 'fall-card',
+  FallNest = 'fall-nest',
+  FallNick = 'fall-nick',
+  FallTermLine = 'fall-term-line',
+  FallText = 'fall-text',
+  Note = 'note',
+  Comb = 'comb',
+  Code = 'code',
+  RiseCull = 'rise-cull',
+  RiseCard = 'rise-card',
+  RiseNest = 'rise-nest',
+  RiseNick = 'rise-nick',
+  RiseTermLine = 'rise-term-line',
+  RiseText = 'rise-text',
+  SideSize = 'side-size',
+  Text = 'text',
+  TermText = 'term-text',
+  Size = 'size',
+  RiseTree = 'rise-tree',
+  FallTree = 'fall-tree',
+  Knit = 'knit',
+  RiseKnit = 'rise-knit',
+  FallKnit = 'fall-knit',
 }
 
-export type FoldHash = {
-  'fold-fall-cull': FoldFallCull
-  'fold-fall-card': FoldFallCard
-  'fold-fall-nest': FoldFallNest
-  'fold-fall-nick': FoldFallNick
-  'fold-fall-term-line': FoldFallTermLine
-  'fold-fall-text': FoldFallText
-  'fold-note': FoldNote
-  'fold-comb': FoldComb
-  'fold-code': FoldCode
-  'fold-rise-cull': FoldRiseCull
-  'fold-rise-card': FoldRiseCard
-  'fold-rise-nest': FoldRiseNest
-  'fold-rise-nick': FoldRiseNick
-  'fold-rise-term-line': FoldRiseTermLine
-  'fold-rise-text': FoldRiseText
-  'fold-side-size': FoldSideSize
-  'fold-text': FoldText
-  'fold-term-text': FoldTermText
-  'fold-size': FoldSize
-  'fold-rise-tree': FoldRiseTree
-  'fold-fall-tree': FoldFallTree
-  'fold-knit': FoldKnit
-  'fold-rise-knit': FoldRiseKnit
-  'fold-fall-knit': FoldFallKnit
+export type SiftHash = {
+  'fall-cull': SiftFallCull
+  'fall-card': SiftFallCard
+  'fall-nest': SiftFallNest
+  'fall-nick': SiftFallNick
+  'fall-term-line': SiftFallTermLine
+  'fall-text': SiftFallText
+  note: SiftNote
+  comb: SiftComb
+  code: SiftCode
+  'rise-cull': SiftRiseCull
+  'rise-card': SiftRiseCard
+  'rise-nest': SiftRiseNest
+  'rise-nick': SiftRiseNick
+  'rise-term-line': SiftRiseTermLine
+  'rise-text': SiftRiseText
+  'side-size': SiftSideSize
+  text: SiftText
+  'term-text': SiftTermText
+  size: SiftSize
+  'rise-tree': SiftRiseTree
+  'fall-tree': SiftFallTree
+  knit: SiftKnit
+  'rise-knit': SiftRiseKnit
+  'fall-knit': SiftFallKnit
 }
 
-export type FoldBase = {
-  rank?: Rank
+export type SiftBase = {
+  band?: Band
+  list?: Hunk
 }
 
-export type FoldFallCull = FoldBase & {
-  form: FoldName.FallCull
+export type SiftFallCull = SiftBase & {
+  form: SiftName.FallCull
   text: string
 }
 
-export type FoldTermText = FoldBase & {
-  form: FoldName.TermText
+export type SiftTermText = SiftBase & {
+  form: SiftName.TermText
   bond: string
 }
 
-export type FoldFallCard = FoldBase & {
-  form: FoldName.FallCard
+export type SiftFallCard = SiftBase & {
+  form: SiftName.FallCard
 }
 
-export type FoldRiseKnit = FoldBase & {
-  form: FoldName.RiseKnit
+export type SiftRiseKnit = SiftBase & {
+  form: SiftName.RiseKnit
 }
 
-export type FoldFallKnit = FoldBase & {
-  form: FoldName.FallKnit
+export type SiftFallKnit = SiftBase & {
+  form: SiftName.FallKnit
 }
 
-export type FoldRiseTree = Omit<FoldBase, 'rank'> & {
-  form: FoldName.RiseTree
+export type SiftRiseTree = Omit<SiftBase, 'band'> & {
+  form: SiftName.RiseTree
 }
 
-export type FoldFallTree = Omit<FoldBase, 'rank'> & {
-  form: FoldName.FallTree
+export type SiftFallTree = Omit<SiftBase, 'band'> & {
+  form: SiftName.FallTree
 }
 
-export type FoldFallNest = Omit<FoldBase, 'rank'> & {
-  form: FoldName.FallNest
+export type SiftFallNest = Omit<SiftBase, 'band'> & {
+  form: SiftName.FallNest
 }
 
-export type FoldFallNick = FoldBase & {
-  form: FoldName.FallNick
+export type SiftFallNick = SiftBase & {
+  form: SiftName.FallNick
   text: string
 }
 
-export type FoldFallTermLine = Omit<FoldBase, 'rank'> & {
-  form: FoldName.FallTermLine
+export type SiftFallTermLine = Omit<SiftBase, 'band'> & {
+  form: SiftName.FallTermLine
 }
 
-export type FoldFallText = FoldBase & {
-  form: FoldName.FallText
+export type SiftFallText = SiftBase & {
+  form: SiftName.FallText
   text: string
 }
 
-export type FoldNote = FoldBase & {
-  form: FoldName.Note
+export type SiftNote = SiftBase & {
+  form: SiftName.Note
 }
 
-export type FoldKnit = FoldBase & {
-  form: FoldName.Knit
-  // nest: Array<FoldText | FoldNic>
+export type SiftKnit = SiftBase & {
+  form: SiftName.Knit
+  // nest: Array<SiftText | SiftNic>
 }
 
-export type FoldComb = FoldBase & {
-  form: FoldName.Comb
+export type SiftComb = SiftBase & {
+  form: SiftName.Comb
   bond: number
 }
 
-export type FoldCode = FoldBase & {
+export type SiftCode = SiftBase & {
   bond: number
   mold: string
-  form: FoldName.Code
+  form: SiftName.Code
 }
 
-export type Fold =
-  | FoldFallCull
-  | FoldFallCard
-  | FoldFallNick
-  | FoldFallTermLine
-  | FoldTermText
-  | FoldRiseNest
-  | FoldFallNest
-  | FoldFallText
-  | FoldNote
-  | FoldComb
-  | FoldCode
-  | FoldRiseCull
-  | FoldRiseCard
-  | FoldRiseNick
-  | FoldRiseTermLine
-  | FoldRiseText
-  | FoldSideSize
-  | FoldText
-  | FoldSize
-  | FoldRiseTree
-  | FoldFallTree
-  | FoldKnit
-  | FoldRiseKnit
-  | FoldFallKnit
+export type Sift =
+  | SiftFallCull
+  | SiftFallCard
+  | SiftFallNick
+  | SiftFallTermLine
+  | SiftTermText
+  | SiftRiseNest
+  | SiftFallNest
+  | SiftFallText
+  | SiftNote
+  | SiftComb
+  | SiftCode
+  | SiftRiseCull
+  | SiftRiseCard
+  | SiftRiseNick
+  | SiftRiseTermLine
+  | SiftRiseText
+  | SiftSideSize
+  | SiftText
+  | SiftSize
+  | SiftRiseTree
+  | SiftFallTree
+  | SiftKnit
+  | SiftRiseKnit
+  | SiftFallKnit
 
-export type FoldRiseCull = FoldBase & {
-  form: FoldName.RiseCull
+export type SiftRiseCull = SiftBase & {
+  form: SiftName.RiseCull
   text: string
 }
 
-export type FoldRiseCard = FoldBase & {
-  form: FoldName.RiseCard
+export type SiftRiseCard = SiftBase & {
+  form: SiftName.RiseCard
 }
 
-export type FoldRiseNest = FoldBase & {
-  form: FoldName.RiseNest
+export type SiftRiseNest = SiftBase & {
+  form: SiftName.RiseNest
 }
 
-export type FoldRiseNick = FoldBase & {
+export type SiftRiseNick = SiftBase & {
   size: number
-  form: FoldName.RiseNick
+  form: SiftName.RiseNick
   text: string
 }
 
-export type FoldRiseTermLine = FoldBase & {
-  form: FoldName.RiseTermLine
+export type SiftRiseTermLine = SiftBase & {
+  form: SiftName.RiseTermLine
 }
 
-export type FoldRiseText = FoldBase & {
-  form: FoldName.RiseText
+export type SiftRiseText = SiftBase & {
+  form: SiftName.RiseText
 }
 
-export type FoldCallCast = MarkCallCast & {
-  foldList: Array<Fold>
+export type SiftCallCast = CallCast & {
+  siftList: Array<Sift>
 }
 
-export type FoldSideSize = FoldBase & {
-  form: FoldName.SideSize
+export type SiftSideSize = SiftBase & {
+  form: SiftName.SideSize
   bond: number
 }
 
-export type FoldText = FoldBase & {
-  form: FoldName.Text
+export type SiftText = SiftBase & {
+  form: SiftName.Text
   bond: string
 }
 
-export type FoldSize = FoldBase & {
-  form: FoldName.Size
+export type SiftSize = SiftBase & {
+  form: SiftName.Size
   bond: number
 }
 
-export function testFoldForm<N extends FoldName>(
+export function testSiftForm<N extends SiftName>(
   lead: unknown,
   name: N,
-): lead is FoldHash[N] {
-  return (lead as Fold).form === name
+): lead is SiftHash[N] {
+  return (lead as Sift).form === name
 }
 
-export function haveFoldForm<N extends FoldName>(
+export function haveSiftForm<N extends SiftName>(
   lead: unknown,
   name: N,
-): asserts lead is FoldHash[N] {
-  if (!testFoldForm(lead, name)) {
-    throw haveHalt('form_miss', { call: name, need: 'fold' })
+): asserts lead is SiftHash[N] {
+  if (!testSiftForm(lead, name)) {
+    throw haveHalt('form_miss', { call: name, need: 'sift' })
   }
 }

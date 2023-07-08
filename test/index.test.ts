@@ -52,9 +52,15 @@ async function start() {
 
 start()
 
-function assertParse(link: string, provided: string, expected: string) {
-  const data = makeLinkTree({ link, text: provided })
-  const output = trimLines(showLinkTree(data.linkTree))
+function assertParse(file: string, provided: string, expected: string) {
+  const lead = makeLinkTree({ file, text: provided })
+
+  if (Array.isArray(lead)) {
+    console.log(lead)
+    throw new Error('Error')
+  }
+
+  const output = trimLines(showLinkTree(lead.linkTree))
 
   const a = String(stripAnsi(output)).trim()
   const b = String(stripAnsi(expected)).trim()
@@ -67,12 +73,12 @@ function assertParse(link: string, provided: string, expected: string) {
 }
 
 function assertParseKink(
-  link: string,
+  file: string,
   provided: string,
   expected: string,
 ) {
   try {
-    const data = makeLinkTree({ link, text: provided })
+    const data = makeLinkTree({ file, text: provided })
   } catch (e) {
     if (e instanceof Error) {
       if (e.message != expected) {

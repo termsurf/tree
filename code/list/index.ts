@@ -1,14 +1,7 @@
-import { HaltMesh } from '@tunebond/halt'
+import Kink from '@tunebond/kink'
 import { haveMesh } from '@tunebond/have'
-import halt from '../halt.js'
-import {
-  Form,
-  Hunk,
-  CallCast,
-  CallLink,
-  Name,
-  Seed,
-} from './form.js'
+import kink from '../kink.js'
+import { Form, Hunk, CallCast, CallLink, Name, Seed } from './form.js'
 
 export const LINE_TEST_LIST: Array<Name> = [Name.RiseNick]
 
@@ -169,7 +162,9 @@ const TEST: Record<Name, Seed> = {
  * helpful error messages if you forget the proper case and such.
  */
 
-export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh> {
+export default function makeTextList(
+  link: CallLink,
+): CallCast | Array<Kink> {
   const cast: CallCast = {
     ...link,
     lineText: link.text.split('\n'),
@@ -177,7 +172,8 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
 
   let formList = [Form.Base]
 
-  let slot = 0
+  let line = 0
+  let mark = 0
 
   let back: Hunk | undefined = undefined
 
@@ -187,7 +183,6 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
     } else if (back) {
       hunk.back = back
       back.head = hunk
-      back = hunk
     }
   }
 
@@ -221,19 +216,32 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
         const findText = textLine.slice(0, findSize)
 
         const stem: Hunk = {
-          rank: {
-            base: slot,
-            head: slot + findSize,
+          band: {
+            head: {
+              mark: mark + findSize,
+              line,
+            },
+            base: {
+              mark,
+              line,
+            },
           },
           text: findText,
           form: form as Hunk['form'],
         }
         save(stem)
 
+        back = stem
+
         textLine = textLine.slice(findSize)
-        slot += findSize
+        mark += findSize
 
         switch (form) {
+          case Name.SlotLine: {
+            line++
+            mark = 0
+            break
+          }
           case Name.RiseNick: {
             formList.push(Form.Nick)
             break
@@ -265,15 +273,26 @@ export default function makeTextList(link: CallLink): CallCast | Array<HaltMesh>
         break walk
       }
 
-      if (!move) {
+      if (!move && back) {
         haveMesh(back, 'back')
-        return [halt('text', { cast, back }).toJSON()]
+        return [
+          kink('syntax_error', {
+            text: cast.lineText,
+            band: back.band,
+            file: link.file,
+          }),
+        ]
       }
     }
 
-    if (textLine.length) {
-      haveMesh(back, 'back')
-      return [halt('text', { cast, back }).toJSON()]
+    if (textLine.length && back) {
+      return [
+        kink('syntax_error', {
+          text: cast.lineText,
+          band: back.band,
+          file: link.file,
+        }),
+      ]
     }
   }
 

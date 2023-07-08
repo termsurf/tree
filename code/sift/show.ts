@@ -1,6 +1,6 @@
-import { Fold } from './form.js'
+import { Sift } from './form.js'
 
-export default function show(foldList: Array<Fold>) {
+export default function show(foldList: Array<Sift>) {
   const list: Array<string> = []
 
   let move = 0
@@ -8,15 +8,21 @@ export default function show(foldList: Array<Fold>) {
   foldList.forEach(fold => {
     if (fold.form.match('rise')) {
       list.push(
-        `${makeTextMove(move++)}${fold.form}+ ${fold.text ?? ''}`,
+        `${makeTextMove(move++)}${fold.form}+ ${
+          ('text' in fold && fold.text) ?? ''
+        }`,
       )
     } else if (fold.form.match('fall')) {
       list.push(
-        `${makeTextMove(--move)}${fold.form}- ${fold.text ?? ''}`,
+        `${makeTextMove(--move)}${fold.form}- ${
+          ('text' in fold && fold.text) ?? ''
+        }`,
       )
     } else {
       list.push(
-        `${makeTextMove(move)}[${fold.form}] ${fold.text ?? ''}`,
+        `${makeTextMove(move)}[${fold.form}] ${
+          ('text' in fold && fold.text) ?? ''
+        }`,
       )
     }
   })

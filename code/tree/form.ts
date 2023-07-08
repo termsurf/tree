@@ -1,4 +1,4 @@
-import type { Rank } from '../list/form.js'
+import type { Band } from '../list/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
 export enum LinkHint {
@@ -68,18 +68,18 @@ export type LinkTree = {
 export type LinkWave = {
   form: LinkName.Wave
   bond: boolean
-  rank?: Rank
+  band?: Band
 }
 
 export type LinkComb = {
-  rank?: Rank
+  band?: Band
   form: LinkName.Comb
   bond: number
 }
 
 export type LinkCode = {
   bond: number
-  rank?: Rank
+  band?: Band
   mold: string
   form: LinkName.Code
 }
@@ -88,14 +88,14 @@ export type LinkCull = {
   head?: LinkTree | LinkBond | LinkKnit
   base?: LinkKnit
   form: LinkName.Cull
-  rank?: Rank
+  band?: Band
 }
 
 export type LinkKnit = {
   base?: LinkTree
   list: Array<LinkCull | LinkNick | LinkCord>
   form: LinkName.Knit
-  rank?: Rank
+  band?: Band
 }
 
 export type LinkNick = {
@@ -103,17 +103,17 @@ export type LinkNick = {
   base?: LinkKnit | LinkText
   size: number
   form: LinkName.Nick
-  rank?: Rank
+  band?: Band
 }
 
 export type LinkSideSize = {
-  rank?: Rank
+  band?: Band
   form: LinkName.SideSize
   bond: number
 }
 
 export type LinkCord = {
-  rank?: Rank
+  band?: Band
   form: LinkName.Cord
   bond: string
 }
@@ -121,7 +121,7 @@ export type LinkCord = {
 export type LinkText = {
   nest: Array<LinkCord | LinkNick>
   form: LinkName.Text
-  rank?: Rank
+  band?: Band
 }
 
 export type LinkSize = {
