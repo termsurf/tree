@@ -27,9 +27,9 @@ language. It is a way to model information and computation in an easy to
 read and write format, suitable for hierarchical note taking and other
 means of capturing data down into structured form.
 
-Check out the [Base Link Book](note/readme.md) for the most up-to-date
-info on the project! Specifically the pages on Syntax, for a detailed
-spec on Link Text.
+Check out the [Base Link Book](https://github.com/tunebond/base.link)
+for the most up-to-date info on the project! Specifically the pages on
+Syntax, for a detailed spec on Link Text.
 
 ## License
 
