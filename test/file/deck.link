@@ -2,11 +2,11 @@
 deck <@tunebond/wolf>
   bear ./code
   test ./test
-  mint <0.0.1>
+  mark <0.0.1>
 
 deck @tunebond/wolf
   bear ./code
-  mint <0.0.1>
+  mark <0.0.1>
   test ./test{{{another 12}}}two/one
 
 ---

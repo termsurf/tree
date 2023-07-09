@@ -1,4 +1,4 @@
-import type { Band } from '../list/form.js'
+import type { Leaf } from '../leaf/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
 export enum LinkHint {
@@ -14,143 +14,156 @@ export enum LinkHint {
 }
 
 export enum LinkName {
-  Wave = 'link-wave',
   Comb = 'link-comb',
   Code = 'link-code',
   Cull = 'link-cull',
   Knit = 'link-knit',
   Nick = 'link-nick',
-  SideSize = 'link-side-size',
   Text = 'link-text',
   Cord = 'link-cord',
-  Tree = 'link-tree',
+  Fork = 'link-fork',
   Size = 'link-size',
+  Tree = 'link-tree',
 }
 
 export type LinkHash = {
-  'link-wave': LinkWave
   'link-comb': LinkComb
   'link-code': LinkCode
   'link-cull': LinkCull
   'link-knit': LinkKnit
   'link-nick': LinkNick
-  'link-side-size': LinkSideSize
   'link-cord': LinkCord
   'link-text': LinkText
-  'link-tree': LinkTree
+  'link-fork': LinkFork
   'link-size': LinkSize
+  'link-tree': LinkTree
 }
 
 export const LINK_TYPE = [
-  LinkName.Wave,
   LinkName.Comb,
   LinkName.Code,
   LinkName.Cull,
   LinkName.Knit,
   LinkName.Nick,
-  LinkName.SideSize,
   LinkName.Text,
   LinkName.Cord,
-  LinkName.Tree,
+  LinkName.Fork,
   LinkName.Size,
+  LinkName.Tree,
 ]
 
 export type LinkCallCast = {
-  linkTree: LinkTree
+  tree: LinkTree
+}
+
+export type LinkLeaf = {
+  base?: Leaf
+  head?: Leaf
 }
 
 export type LinkTree = {
-  nest: Array<Link>
-  base?: LinkTree | LinkNick | LinkCull
+  nest: LinkFork
   form: LinkName.Tree
 }
 
-export type LinkWave = {
-  form: LinkName.Wave
-  bond: boolean
-  band?: Band
+export type LinkFork = {
+  leaf?: LinkLeaf
+  nest: Array<
+    | LinkText
+    | LinkFork
+    | LinkSize
+    | LinkText
+    | LinkCord
+    | LinkNick
+    | LinkCull
+    | LinkComb
+    | LinkCode
+    | LinkKnit
+  >
+  base?: LinkFork | LinkNick | LinkCull
+  form: LinkName.Fork
 }
 
 export type LinkComb = {
-  band?: Band
   form: LinkName.Comb
   bond: number
+  base?: LinkCull | LinkFork
+  leaf: Leaf
 }
 
 export type LinkCode = {
   bond: number
-  band?: Band
   mold: string
+  base?: LinkCull | LinkFork
   form: LinkName.Code
+  leaf: Leaf
 }
 
 export type LinkCull = {
-  head?: LinkTree | LinkBond | LinkKnit
+  nest?: LinkFork | LinkBond | LinkKnit
   base?: LinkKnit
   form: LinkName.Cull
-  band?: Band
+  leaf?: LinkLeaf
 }
 
 export type LinkKnit = {
-  base?: LinkTree
-  list: Array<LinkCull | LinkNick | LinkCord>
+  base?: LinkFork
+  nest: Array<LinkCull | LinkNick | LinkCord>
   form: LinkName.Knit
-  band?: Band
+  leaf?: LinkLeaf
 }
 
 export type LinkNick = {
-  head?: LinkTree
+  nest?: LinkFork
   base?: LinkKnit | LinkText
   size: number
   form: LinkName.Nick
-  band?: Band
-}
-
-export type LinkSideSize = {
-  band?: Band
-  form: LinkName.SideSize
-  bond: number
+  leaf?: LinkLeaf
 }
 
 export type LinkCord = {
-  band?: Band
   form: LinkName.Cord
-  bond: string
+  base?: LinkText
+  leaf: Leaf
 }
+
+/**
+ * This gets a base and head leaf,
+ * so we know where it starts and ends easily.
+ */
 
 export type LinkText = {
   nest: Array<LinkCord | LinkNick>
   form: LinkName.Text
-  band?: Band
+  base?: LinkCull | LinkFork
+  leaf?: LinkLeaf
 }
 
 export type LinkSize = {
   form: LinkName.Size
   bond: number
+  base?: LinkCull | LinkFork
+  leaf: Leaf
 }
 
 export type LinkBond =
   | LinkSize
   | LinkText
-  | LinkSideSize
   | LinkCode
   | LinkComb
-  | LinkWave
   | LinkCord
 
 export type Link =
-  | LinkText
-  | LinkTree
-  | LinkSize
-  | LinkSideSize
-  | LinkText
-  | LinkCord
-  | LinkNick
-  | LinkCull
   | LinkComb
   | LinkCode
+  | LinkCull
   | LinkKnit
-  | LinkWave
+  | LinkNick
+  | LinkCord
+  | LinkText
+  | LinkFork
+  | LinkSize
+  | LinkTree
 
 export function testLinkForm<N extends LinkName>(
   lead: unknown,

@@ -1,7 +1,7 @@
 import Kink from '@tunebond/kink'
 import { makeKinkText } from '@tunebond/kink-text'
 import tint from '@tunebond/tint-text'
-import { Band } from './list/form.js'
+import { Band } from './leaf/form.js'
 import { haveText } from '@tunebond/have'
 import { isNode } from 'browser-or-node'
 

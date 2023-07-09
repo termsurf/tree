@@ -1,29 +1,28 @@
 import _ from 'lodash'
 
 import type {
-  CallCast,
-  Code,
-  Comb,
-  FallCull,
-  FallHold,
-  FallNick,
-  FallText,
-  Hunk,
-  Knit,
-  Line,
-  Link,
-  RiseNick,
-  Text,
-} from '../list/form.js'
-import { Name } from '../list/form.js'
+  LeafCallCast,
+  LeafCode,
+  LeafComb,
+  LeafFallCull,
+  LeafFallHold,
+  LeafFallNick,
+  LeafFallText,
+  Leaf,
+  LeafKnit,
+  LeafLine,
+  LeafLink,
+  LeafRiseNick,
+  LeafCord,
+} from '../leaf/form.js'
+import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
 import { haveMesh } from '@tunebond/have'
-import show from './show.js'
 
 export * from './form.js'
 
-export type SiftCallLink = CallCast
+export type SiftCallLink = LeafCallCast
 
 enum Form {
   Card = 'card',
@@ -38,11 +37,11 @@ enum Form {
 
 type Head = {
   form: Form
-  seed?: Hunk
+  seed?: Leaf
 }
 
 export default function makeSiftList(link: SiftCallLink): SiftCallCast {
-  const siftList: Array<Sift> = [{ form: SiftName.RiseTree }]
+  const siftList: Array<Sift> = [{ form: SiftName.RiseFork }]
 
   const cast = {
     ...link,
@@ -51,7 +50,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   // console.log(link.list)
 
-  function head(form: Form, seed?: Hunk) {
+  function head(form: Form, seed?: Leaf) {
     return { form, seed }
   }
 
@@ -64,7 +63,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     }
   }
 
-  let hunk: Hunk | undefined = link.head
+  let leaf: Leaf | undefined = link.head
 
   const line: Array<Array<Head>> = [[head(Form.Card)]]
 
@@ -75,102 +74,101 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   const haltList = []
 
-  if (hunk) {
+  if (leaf) {
     do {
-      // console.log(hunk.form, hunk.text)
+      // console.log(leaf.form, leaf.text)
 
-      switch (hunk.form) {
-        case Name.RiseCull:
+      switch (leaf.form) {
+        case LeafName.RiseCull:
           headTextSlot()
           siftList.push({
             form: SiftName.RiseCull,
-            text: hunk.text,
-            band: hunk.band,
+            leaf: leaf,
           })
-          saveHead(head(Form.Cull, hunk), true)
+          saveHead(head(Form.Cull, leaf), true)
           break
-        case Name.FallCull:
-          castFallCull(hunk)
+        case LeafName.FallCull:
+          castFallCull(leaf)
           break
-        case Name.RiseNick:
-          castRiseNick(hunk)
+        case LeafName.RiseNick:
+          castRiseNick(leaf)
           break
-        case Name.FallNick:
-          castFallNick(hunk)
+        case LeafName.FallNick:
+          castFallNick(leaf)
           break
-        case Name.RiseText:
+        case LeafName.RiseText:
           headTextSlot()
           saveHead(head(Form.Text), true)
           break
-        case Name.FallText:
-          castFallText(hunk)
+        case LeafName.FallText:
+          castFallText(leaf)
           break
-        case Name.RiseHold:
+        case LeafName.RiseHold:
           saveHead(head(Form.Nest))
           siftList.push({
             form: SiftName.RiseNest,
           })
           break
-        case Name.FallHold:
-          castFallHold(hunk)
+        case LeafName.FallHold:
+          castFallHold(leaf)
           break
-        case Name.Link: {
-          castLink(hunk)
+        case LeafName.Link: {
+          castLink(leaf)
           break
         }
-        case Name.Note:
+        case LeafName.Note:
           break
-        case Name.Comb:
+        case LeafName.Comb:
           headTextSlot()
-          castComb(hunk)
+          castComb(leaf)
           break
-        case Name.Code:
+        case LeafName.Code:
           headTextSlot()
-          castCode(hunk)
+          castCode(leaf)
           break
-        case Name.Slot:
-          // if (hunk.text.length !== 1) {
+        case LeafName.Slot:
+          // if (leaf.text.length !== 1) {
           //   haltList.push(new Error('Invalid spacing'))
           // }
           break
-        // case Name.RiseSlot: {
-        //   textSlot = hunk.text.length / 2
+        // case LeafName.RiseSlot: {
+        //   textSlot = leaf.text.length / 2
         //   if (textSlot % 2 !== 0) {
         //     haltList.push(new Error('Invalid spacing'))
         //     textSlot = Math.floor(textSlot)
         //   }
         //   break
         // }
-        // case Name.FallSlot: {
+        // case LeafName.FallSlot: {
         //   // lint warning, trailing whitepsace
         //   break
         // }
-        case Name.SlotLine:
+        case LeafName.SlotLine:
           textSlot = 0
           needSlot = true
           fallBond()
           break
-        case Name.Text:
-          castText(hunk)
+        case LeafName.Cord:
+          castCord(leaf)
           break
-        case Name.Line:
-          castLine(hunk)
+        case LeafName.Line:
+          castLine(leaf)
           break
         // term templates
-        case Name.Knit:
-          castKnit(hunk)
+        case LeafName.Knit:
+          castKnit(leaf)
           break
-        case Name.Size:
+        case LeafName.Size:
           break
         default:
           break
       }
-    } while ((hunk = hunk.head))
+    } while ((leaf = leaf.head))
   }
 
   fallBond()
 
-  function castCode(seed: Code) {
+  function castCode(seed: LeafCode) {
     if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
       const mold = RegExp.$1
       const bond = readCode(RegExp.$2)
@@ -178,7 +176,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
         form: SiftName.Code,
         bond,
         mold,
-        band: seed.band,
+        leaf: seed,
       })
     } else if (seed.text.match(/#(\d+)n(\w+)/)) {
       const mold = RegExp.$1
@@ -187,42 +185,46 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
         form: SiftName.Code,
         bond,
         mold,
-        band: seed.band,
+        leaf: seed,
       })
     } else {
       haltList.push(new Error('Invalid code'))
     }
   }
 
-  function castComb(seed: Comb) {
+  function castComb(seed: LeafComb) {
     const bond = parseFloat(seed.text)
     if (Number.isNaN(bond)) {
       haltList.push(new Error('Invalid size'))
     }
     siftList.push({
-      form: SiftName.Size,
+      form: SiftName.Comb,
       bond,
-      band: seed.band,
+      leaf: seed,
     })
   }
 
-  function castText(seed: Text) {
+  function castCord(seed: LeafCord) {
     siftList.push({
-      form: SiftName.Text,
-      bond: seed.text,
-      band: seed.band,
+      form: SiftName.Cord,
+      leaf: seed,
     })
   }
 
-  function castLine(seed: Line) {
+  function castLine(seed: LeafLine) {
     siftList.push({
-      form: SiftName.Text,
-      bond: seed.text,
-      band: seed.band,
+      form: SiftName.Cord,
+      leaf: {
+        form: LeafName.Cord,
+        band: seed.band,
+        text: seed.text,
+        back: seed.back,
+        head: seed.head,
+      },
     })
   }
 
-  function castFallCull(seed: FallCull) {
+  function castFallCull(seed: LeafFallCull) {
     walk: while (true) {
       const { head, find } = readHead()
       // console.log('fall cull', head)
@@ -234,13 +236,12 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           tossHead()
           break
         case Form.Tree:
-          siftList.push({ form: SiftName.FallTree })
+          siftList.push({ form: SiftName.FallFork })
           tossHead()
           break
         case Form.Cull:
           siftList.push({
-            text: seed.text,
-            band: seed.band,
+            leaf: seed,
             form: SiftName.FallCull,
           })
           tossHead()
@@ -275,20 +276,20 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     }
   }
 
-  function castLink(seed: Link) {
+  function castLink(seed: LeafLink) {
     const head = seed.head
     if (head) {
-      if (head.form === Name.Slot) {
+      if (head.form === LeafName.Slot) {
         if (head.text.length !== 1) {
           haltList.push(new Error('Invalid spacing'))
         }
 
-        hunk = head
+        leaf = head
       }
     }
   }
 
-  function castKnit(seed: Knit) {
+  function castKnit(seed: LeafKnit) {
     headTextSlot()
 
     if (seed.text.match(/\/{2,}/)) {
@@ -303,14 +304,14 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
     const last = seed.back
     switch (last?.form) {
-      case Name.Slot:
-      case Name.SlotLine:
-      case Name.Link:
-      case Name.RiseCull:
-      case Name.RiseNick:
+      case LeafName.Slot:
+      case LeafName.SlotLine:
+      case LeafName.Link:
+      case LeafName.RiseCull:
+      case LeafName.RiseNick:
       case undefined: {
         siftList.push({
-          form: SiftName.RiseTree,
+          form: SiftName.RiseFork,
         })
         saveHead(head(Form.Tree))
         siftList.push({
@@ -325,9 +326,14 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     }
 
     siftList.push({
-      form: SiftName.Text,
-      bond: seed.text,
-      band: seed.band,
+      form: SiftName.Cord,
+      leaf: {
+        form: LeafName.Cord,
+        band: seed.band,
+        text: seed.text,
+        back: seed.back,
+        head: seed.head,
+      },
     })
   }
 
@@ -335,27 +341,25 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   return cast
 
-  function castRiseNick(seed: RiseNick) {
+  function castRiseNick(seed: LeafRiseNick) {
     headTextSlot()
     saveHead(head(Form.Nick, seed), true)
     siftList.push({
       form: SiftName.RiseNick,
-      text: seed.text,
-      band: seed.band,
+      leaf: seed,
       size: seed.text.length,
     })
   }
 
-  function castFallText(seed: FallText) {
+  function castFallText(seed: LeafFallText) {
     siftList.push({
-      text: seed.text,
-      band: seed.band,
+      leaf: seed,
       form: SiftName.FallText,
     })
     tossHead()
   }
 
-  function castFallHold(seed: FallHold) {
+  function castFallHold(seed: LeafFallHold) {
     walk: while (true) {
       const { head, find } = readHead()
       switch (head?.form) {
@@ -419,7 +423,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     }
   }
 
-  function castFallNick(seed: FallNick) {
+  function castFallNick(seed: LeafFallNick) {
     walk: while (true) {
       const { head, find } = readHead()
       switch (head?.form) {
@@ -430,13 +434,12 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           tossHead()
           break
         case Form.Tree:
-          siftList.push({ form: SiftName.FallTree })
+          siftList.push({ form: SiftName.FallFork })
           tossHead()
           break
         case Form.Nick:
           siftList.push({
-            text: seed.text,
-            band: seed.band,
+            leaf: seed,
             form: SiftName.FallNick,
           })
           tossHead()
@@ -459,7 +462,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       switch (head?.form) {
         case Form.Tree:
           siftList.push({
-            form: SiftName.FallTree,
+            form: SiftName.FallFork,
           })
           tossHead(true)
           break
@@ -473,8 +476,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           haveMesh(head.seed, 'seed')
           siftList.push({
             form: SiftName.FallNick,
-            band: head.seed.band,
-            text: head.seed.text,
+            leaf: head.seed,
           })
           tossHead(true)
           break
@@ -482,8 +484,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           haveMesh(head.seed, 'seed')
           siftList.push({
             form: SiftName.FallCull,
-            band: head.seed.band,
-            text: head.seed.text,
+            leaf: head.seed,
           })
           tossHead(true)
           break
@@ -519,8 +520,4 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       }
     }
   }
-}
-
-function makeTextMove(move: number) {
-  return new Array(move + 1).join('  ')
 }

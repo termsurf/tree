@@ -1,139 +1,117 @@
-import type { CallCast, Band, Hunk } from '../list/form.js'
+import type {
+  LeafCallCast,
+  Leaf,
+  LeafFallCull,
+  LeafFallNick,
+  LeafFallText,
+  LeafNote,
+  LeafComb,
+  LeafCode,
+  LeafRiseCull,
+  LeafRiseNick,
+  LeafRiseText,
+  LeafCord,
+  LeafSize,
+} from '../leaf/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
 export enum SiftName {
-  FallCull = 'fall-cull',
-  FallCard = 'fall-card',
-  FallNest = 'fall-nest',
-  FallNick = 'fall-nick',
-  FallTermLine = 'fall-term-line',
-  FallText = 'fall-text',
-  Note = 'note',
-  Comb = 'comb',
-  Code = 'code',
-  RiseCull = 'rise-cull',
-  RiseCard = 'rise-card',
-  RiseNest = 'rise-nest',
-  RiseNick = 'rise-nick',
-  RiseTermLine = 'rise-term-line',
-  RiseText = 'rise-text',
-  SideSize = 'side-size',
-  Text = 'text',
-  TermText = 'term-text',
-  Size = 'size',
-  RiseTree = 'rise-tree',
-  FallTree = 'fall-tree',
-  Knit = 'knit',
-  RiseKnit = 'rise-knit',
-  FallKnit = 'fall-knit',
+  FallCull = 'sift-fall-cull',
+  FallNest = 'sift-fall-nest',
+  FallNick = 'sift-fall-nick',
+  FallText = 'sift-fall-text',
+  Note = 'sift-note',
+  Comb = 'sift-comb',
+  Code = 'sift-code',
+  RiseCull = 'sift-rise-cull',
+  RiseNest = 'sift-rise-nest',
+  RiseNick = 'sift-rise-nick',
+  RiseText = 'sift-rise-text',
+  Cord = 'sift-cord',
+  Size = 'sift-size',
+  RiseFork = 'sift-rise-fork',
+  FallFork = 'sift-fall-fork',
+  RiseKnit = 'sift-rise-knit',
+  FallKnit = 'sift-fall-knit',
 }
 
 export type SiftHash = {
-  'fall-cull': SiftFallCull
-  'fall-card': SiftFallCard
-  'fall-nest': SiftFallNest
-  'fall-nick': SiftFallNick
-  'fall-term-line': SiftFallTermLine
-  'fall-text': SiftFallText
-  note: SiftNote
-  comb: SiftComb
-  code: SiftCode
-  'rise-cull': SiftRiseCull
-  'rise-card': SiftRiseCard
-  'rise-nest': SiftRiseNest
-  'rise-nick': SiftRiseNick
-  'rise-term-line': SiftRiseTermLine
-  'rise-text': SiftRiseText
-  'side-size': SiftSideSize
-  text: SiftText
-  'term-text': SiftTermText
-  size: SiftSize
-  'rise-tree': SiftRiseTree
-  'fall-tree': SiftFallTree
-  knit: SiftKnit
-  'rise-knit': SiftRiseKnit
-  'fall-knit': SiftFallKnit
+  'sift-fall-cull': SiftFallCull
+  'sift-fall-nest': SiftFallNest
+  'sift-fall-nick': SiftFallNick
+  'sift-fall-text': SiftFallText
+  'sift-note': SiftNote
+  'sift-comb': SiftComb
+  'sift-code': SiftCode
+  'sift-rise-cull': SiftRiseCull
+  'sift-rise-nest': SiftRiseNest
+  'sift-rise-nick': SiftRiseNick
+  'sift-rise-text': SiftRiseText
+  'sift-cord': SiftCord
+  'sift-size': SiftSize
+  // this should be called fork
+  'sift-rise-fork': SiftRiseFork
+  'sift-fall-fork': SiftFallFork
+  'sift-rise-knit': SiftRiseKnit
+  'sift-fall-knit': SiftFallKnit
 }
 
-export type SiftBase = {
-  band?: Band
-  list?: Hunk
-}
-
-export type SiftFallCull = SiftBase & {
+export type SiftFallCull = {
   form: SiftName.FallCull
-  text: string
+  leaf: LeafFallCull
 }
 
-export type SiftTermText = SiftBase & {
-  form: SiftName.TermText
-  bond: string
-}
-
-export type SiftFallCard = SiftBase & {
-  form: SiftName.FallCard
-}
-
-export type SiftRiseKnit = SiftBase & {
+export type SiftRiseKnit = {
   form: SiftName.RiseKnit
 }
 
-export type SiftFallKnit = SiftBase & {
+export type SiftFallKnit = {
   form: SiftName.FallKnit
 }
 
-export type SiftRiseTree = Omit<SiftBase, 'band'> & {
-  form: SiftName.RiseTree
+export type SiftRiseFork = {
+  form: SiftName.RiseFork
 }
 
-export type SiftFallTree = Omit<SiftBase, 'band'> & {
-  form: SiftName.FallTree
+export type SiftFallFork = {
+  form: SiftName.FallFork
 }
 
-export type SiftFallNest = Omit<SiftBase, 'band'> & {
+export type SiftFallNest = {
   form: SiftName.FallNest
 }
 
-export type SiftFallNick = SiftBase & {
+export type SiftFallNick = {
   form: SiftName.FallNick
-  text: string
+  leaf: LeafFallNick
 }
 
-export type SiftFallTermLine = Omit<SiftBase, 'band'> & {
-  form: SiftName.FallTermLine
-}
-
-export type SiftFallText = SiftBase & {
+export type SiftFallText = {
   form: SiftName.FallText
-  text: string
+  leaf: LeafFallText
 }
 
-export type SiftNote = SiftBase & {
+export type SiftNote = {
   form: SiftName.Note
+  leaf: LeafNote
 }
 
-export type SiftKnit = SiftBase & {
-  form: SiftName.Knit
-  // nest: Array<SiftText | SiftNic>
-}
-
-export type SiftComb = SiftBase & {
+export type SiftComb = {
   form: SiftName.Comb
   bond: number
+  leaf: LeafComb
 }
 
-export type SiftCode = SiftBase & {
+export type SiftCode = {
   bond: number
   mold: string
   form: SiftName.Code
+  leaf: LeafCode
 }
 
 export type Sift =
   | SiftFallCull
-  | SiftFallCard
   | SiftFallNick
-  | SiftFallTermLine
-  | SiftTermText
   | SiftRiseNest
   | SiftFallNest
   | SiftFallText
@@ -141,63 +119,48 @@ export type Sift =
   | SiftComb
   | SiftCode
   | SiftRiseCull
-  | SiftRiseCard
   | SiftRiseNick
-  | SiftRiseTermLine
   | SiftRiseText
-  | SiftSideSize
-  | SiftText
+  | SiftCord
   | SiftSize
-  | SiftRiseTree
-  | SiftFallTree
-  | SiftKnit
+  | SiftRiseFork
+  | SiftFallFork
   | SiftRiseKnit
   | SiftFallKnit
 
-export type SiftRiseCull = SiftBase & {
+export type SiftRiseCull = {
   form: SiftName.RiseCull
-  text: string
+  leaf: LeafRiseCull
 }
 
-export type SiftRiseCard = SiftBase & {
-  form: SiftName.RiseCard
-}
-
-export type SiftRiseNest = SiftBase & {
+export type SiftRiseNest = {
   form: SiftName.RiseNest
 }
 
-export type SiftRiseNick = SiftBase & {
+export type SiftRiseNick = {
   size: number
   form: SiftName.RiseNick
-  text: string
+  leaf: LeafRiseNick
 }
 
-export type SiftRiseTermLine = SiftBase & {
-  form: SiftName.RiseTermLine
-}
-
-export type SiftRiseText = SiftBase & {
+export type SiftRiseText = {
   form: SiftName.RiseText
+  leaf: LeafRiseText
 }
 
-export type SiftCallCast = CallCast & {
+export type SiftCallCast = LeafCallCast & {
   siftList: Array<Sift>
 }
 
-export type SiftSideSize = SiftBase & {
-  form: SiftName.SideSize
-  bond: number
+export type SiftCord = {
+  form: SiftName.Cord
+  leaf: LeafCord
 }
 
-export type SiftText = SiftBase & {
-  form: SiftName.Text
-  bond: string
-}
-
-export type SiftSize = SiftBase & {
+export type SiftSize = {
   form: SiftName.Size
   bond: number
+  leaf: LeafSize
 }
 
 export function testSiftForm<N extends SiftName>(
