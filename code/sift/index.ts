@@ -474,18 +474,22 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           break
         case Form.Nick:
           haveMesh(head.seed, 'seed')
-          siftList.push({
-            form: SiftName.FallNick,
-            leaf: head.seed,
-          })
+          if (head.seed.form === LeafName.FallNick) {
+            siftList.push({
+              form: SiftName.FallNick,
+              leaf: head.seed,
+            })
+          }
           tossHead(true)
           break
         case Form.Cull:
           haveMesh(head.seed, 'seed')
-          siftList.push({
-            form: SiftName.FallCull,
-            leaf: head.seed,
-          })
+          if (head.seed.form === LeafName.FallCull) {
+            siftList.push({
+              form: SiftName.FallCull,
+              leaf: head.seed,
+            })
+          }
           tossHead(true)
           break
         case Form.Card:
