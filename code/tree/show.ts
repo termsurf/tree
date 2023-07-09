@@ -36,6 +36,10 @@ function showLinkTreeBase(
   const list: Array<string> = []
 
   switch (seed.form) {
+    case LinkName.Tree: {
+      list.push(...showLinkTreeBase(seed.nest))
+      break
+    }
     case LinkName.Cord: {
       console.log(`${move(nestSize)}cord`, seed.leaf.text)
       list.push(seed.leaf.text)

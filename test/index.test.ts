@@ -67,7 +67,7 @@ function assertParse(file: string, provided: string, expected: string) {
     throw lead[0]
   }
 
-  const output = trimLines(showLinkTree(lead.linkTree))
+  const output = trimLines(showLinkTree(lead.tree))
 
   const a = String(stripAnsi(output)).trim()
   const b = String(stripAnsi(expected)).trim()

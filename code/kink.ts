@@ -1,7 +1,7 @@
 import Kink from '@tunebond/kink'
 import { makeKinkText } from '@tunebond/kink-text'
 import tint from '@tunebond/tint-text'
-import { Band } from './leaf/form.js'
+import { LeafBand } from './leaf/form.js'
 import { haveText } from '@tunebond/have'
 import { isNode } from 'browser-or-node'
 
@@ -14,11 +14,11 @@ type Base = {
     take: {
       file: string
       text: Array<string>
-      band: Band
+      band: LeafBand
     }
     base: {
       file: string
-      band: Band
+      band: LeafBand
       hint?: string
     }
     fill: {
@@ -101,14 +101,14 @@ export { makeKinkText }
 
 export function generateHighlightedErrorText(
   lineText: Array<string>,
-  band: Band,
+  band: LeafBand,
 ): string {
   const headLine = Math.min(band.base.line + 2, lineText.length - 1)
   const headLineString = lineText[headLine]
   haveText(headLineString, `text[${headLine}]`)
 
   const headMark = headLineString.length - 1
-  const bindBand: Band = {
+  const bindBand: LeafBand = {
     head: {
       mark: headMark,
       line: headLine,
@@ -125,9 +125,9 @@ export function generateHighlightedErrorText(
 }
 
 export function makeBandText(
-  bond: Band,
+  bond: LeafBand,
   lineText: Array<string>,
-  band: Band,
+  band: LeafBand,
 ): string {
   const lineList: Array<string> = []
   let i = bond.base.line
