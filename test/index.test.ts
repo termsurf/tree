@@ -3,7 +3,7 @@ import { promises as fs } from 'fs'
 import { dirname } from 'path'
 import stripAnsi from 'strip-ansi'
 import { fileURLToPath } from 'url'
-import Kink from '@tunebond/kink'
+import Kink, { KinkList } from '@tunebond/kink'
 import { makeBaseKinkText, makeKinkText } from '@tunebond/kink-text'
 
 import makeLinkTree, { showLinkTree } from '../code/tree/index.js'
@@ -14,7 +14,23 @@ const __dirname = dirname(__filename)
 const FIND = process.env.FIND
 
 process.on('uncaughtException', kink => {
-  if (kink instanceof Kink) {
+  console.log(``)
+  if (kink instanceof KinkList) {
+    if (kink.list.length === 1) {
+      const k = kink.list[0]
+      if (k) {
+        Kink.saveFill(k)
+        console.log(makeKinkText(k))
+      }
+    } else {
+      console.log(makeKinkText(kink))
+      kink.list.forEach(kink => {
+        console.log(``)
+        Kink.saveFill(kink)
+        console.log(makeKinkText(kink))
+      })
+    }
+  } else if (kink instanceof Kink) {
     Kink.saveFill(kink)
     console.log(makeKinkText(kink))
   } else if (kink instanceof Error) {
@@ -22,6 +38,7 @@ process.on('uncaughtException', kink => {
   } else {
     console.log(kink)
   }
+  console.log(``)
 })
 
 async function start() {
@@ -32,6 +49,7 @@ async function start() {
 
   for (const path of fixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
+    console.log(localPath)
     const content = await fs.readFile(path, 'utf-8')
     const [provided, expected] = content
       .split(/\n---\n/)
@@ -64,7 +82,7 @@ function assertParse(file: string, provided: string, expected: string) {
   const lead = makeLinkTree({ file, text: provided })
 
   if (Array.isArray(lead)) {
-    throw lead[0]
+    throw new KinkList(lead)
   }
 
   const output = trimLines(showLinkTree(lead.tree))
