@@ -380,7 +380,7 @@ function readRiseNick(link: LinkCallLink<SiftName.RiseNick>): void {
       const nick: LinkNick = {
         form: LinkName.Nick,
         size: link.seed.size,
-        leaf: link.seed.leaf,
+        // fold: link.seed.leaf,
       }
       ride.nest.push(nick)
 
