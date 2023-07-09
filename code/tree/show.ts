@@ -1,5 +1,5 @@
 import { Link, LinkName } from './form.js'
-import tint from '@tunebond/tint'
+import tint from '@tunebond/tint-text'
 import kink from '../kink.js'
 
 const G = { tone: 'green' }

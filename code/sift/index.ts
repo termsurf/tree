@@ -77,7 +77,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   if (hunk) {
     do {
-      console.log(hunk.form, hunk.text)
+      // console.log(hunk.form, hunk.text)
 
       switch (hunk.form) {
         case Name.RiseCull:
@@ -261,7 +261,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     // console.log(haltList)
   }
 
-  console.log(siftList.slice(50))
+  // console.log(siftList.slice(50))
 
   function readCode(mold: string) {
     switch (mold) {
@@ -331,7 +331,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     })
   }
 
-  console.log(show(cast.siftList))
+  // console.log(show(cast.siftList))
 
   return cast
 

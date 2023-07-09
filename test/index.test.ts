@@ -1,9 +1,10 @@
 import assert from 'assert'
 import { promises as fs } from 'fs'
-import test from 'node:test'
 import { dirname } from 'path'
 import stripAnsi from 'strip-ansi'
 import { fileURLToPath } from 'url'
+import Kink from '@tunebond/kink'
+import { makeBaseKinkText, makeKinkText } from '@tunebond/kink-text'
 
 import makeLinkTree, { showLinkTree } from '../code/tree/index.js'
 
@@ -11,6 +12,17 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
 const FIND = process.env.FIND
+
+process.on('uncaughtException', kink => {
+  if (kink instanceof Kink) {
+    Kink.saveFill(kink)
+    console.log(makeKinkText(kink))
+  } else if (kink instanceof Error) {
+    console.log(makeBaseKinkText(kink))
+  } else {
+    console.log(kink)
+  }
+})
 
 async function start() {
   const fixtures = (await fs.readdir(`${__dirname}/file`))
@@ -20,15 +32,13 @@ async function start() {
 
   for (const path of fixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
-    test(`make ${localPath}`, async () => {
-      const content = await fs.readFile(path, 'utf-8')
-      const [provided, expected] = content
-        .split(/\n---\n/)
-        .map(x => x.trim())
-      assert(provided, 'Should have defined provided input')
-      assert(expected, 'Should have defined expected output')
-      assertParse(path, provided, expected)
-    })
+    const content = await fs.readFile(path, 'utf-8')
+    const [provided, expected] = content
+      .split(/\n---\n/)
+      .map(x => x.trim())
+    assert(provided, 'Should have defined provided input')
+    assert(expected, 'Should have defined expected output')
+    assertParse(path, provided, expected)
   }
 
   const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
@@ -38,15 +48,13 @@ async function start() {
 
   for (const path of kinkFixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
-    test(`make ${localPath}`, async () => {
-      const content = await fs.readFile(path, 'utf-8')
-      const [provided, expected] = content
-        .split(/\n---\n/)
-        .map(x => x.trim())
-      assert(provided, 'Should have defined provided input')
-      assert(expected, 'Should have defined expected output')
-      assertParseKink(path, provided, expected)
-    })
+    const content = await fs.readFile(path, 'utf-8')
+    const [provided, expected] = content
+      .split(/\n---\n/)
+      .map(x => x.trim())
+    assert(provided, 'Should have defined provided input')
+    assert(expected, 'Should have defined expected output')
+    assertParseKink(path, provided, expected)
   }
 }
 
@@ -56,8 +64,7 @@ function assertParse(file: string, provided: string, expected: string) {
   const lead = makeLinkTree({ file, text: provided })
 
   if (Array.isArray(lead)) {
-    console.log(lead)
-    throw new Error('Error')
+    throw lead[0]
   }
 
   const output = trimLines(showLinkTree(lead.linkTree))
@@ -66,7 +73,7 @@ function assertParse(file: string, provided: string, expected: string) {
   const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
-    console.log(a)
+    // console.log(a)
     throw new Error(`${a} != ${b}`)
     // code.throwError(code.generateStringMismatchError(data, a, b))
   }
