@@ -99,6 +99,13 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
           seed,
         })
         break
+      case SiftName.FallFork:
+        readFallFork({
+          ...link,
+          hold,
+          seed,
+        })
+        break
       case SiftName.RiseNick:
         readRiseNick({
           ...link,
