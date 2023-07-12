@@ -188,10 +188,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           slotLine = false
           castCord(leaf)
           break
-        case LeafName.Line:
-          slotLine = false
-          castLine(leaf)
-          break
         // term templates
         case LeafName.Knit:
           slotLine = false
@@ -454,32 +450,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       form: SiftName.Size,
       leaf: seed,
       bond: parseInt(seed.text),
-    })
-  }
-
-  function castLine(seed: LeafLine) {
-    const head = readHead()
-
-    // if we are not already creating a "line",
-    // then push one onto the stack.
-    if (head?.form !== Form.Line) {
-      testBaseLine()
-
-      saveHead(makeHead(Form.Line, seed))
-      siftList.push({
-        form: SiftName.RiseLine,
-      })
-    }
-
-    siftList.push({
-      form: SiftName.Cord,
-      leaf: {
-        form: LeafName.Cord,
-        band: seed.band,
-        text: seed.text,
-        back: seed.back,
-        head: seed.head,
-      },
     })
   }
 

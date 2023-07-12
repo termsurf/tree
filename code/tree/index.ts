@@ -19,7 +19,6 @@ import {
   haveLink,
   haveLinkForm,
   LinkText,
-  LinkLine,
   LinkSize,
   LinkComb,
   LinkCode,
@@ -27,7 +26,6 @@ import {
 import kink from '../kink.js'
 import { haveMesh } from '@tunebond/have'
 import Kink from '@tunebond/kink'
-import { showLinkTree } from './show.js'
 
 export * from '../sift/index.js'
 export * from '../leaf/index.js'
@@ -195,20 +193,6 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
           seed,
         })
         break
-      case SiftName.RiseLine:
-        readRiseLine({
-          ...link,
-          wall,
-          seed,
-        })
-        break
-      case SiftName.FallLine:
-        readFallLine({
-          ...link,
-          wall,
-          seed,
-        })
-        break
       default:
         throw kink('not_implemented', {
           form: seed.form,
@@ -247,11 +231,6 @@ function readFallNest(link: LinkCallLink<SiftName.FallNest>): void {
 
 function readFallNick(link: LinkCallLink<SiftName.FallNick>): void {
   link.wall.pop()
-}
-
-function readFallLine(link: LinkCallLink<SiftName.FallLine>): void {
-  const slab = link.wall[link.wall.length - 1]
-  slab?.line.pop()
 }
 
 function readFallFork(link: LinkCallLink<SiftName.FallFork>): void {
@@ -423,51 +402,11 @@ function readRiseCull(link: LinkCallLink<SiftName.RiseCull>): void {
   }
 }
 
-function readRiseLine(link: LinkCallLink<SiftName.RiseLine>): void {
-  const { base, slab } = readBase(link)
-
-  switch (base.form) {
-    case LinkName.Fork: {
-      const line: LinkLine = {
-        form: LinkName.Line,
-        nest: [],
-      }
-
-      linkBase(line, base)
-
-      base.nest.push(line)
-
-      slab.line.push(line) // add it to the context
-      break
-    }
-    default:
-      haveLink(base, 'base')
-      throw kink('not_implemented', {
-        form: base.form,
-        file: link.file,
-      })
-  }
-}
-
 function readRiseNick(link: LinkCallLink<SiftName.RiseNick>): void {
   const { base, wall } = readBase(link)
 
   switch (base.form) {
     case LinkName.Knit: {
-      const nick: LinkNick = {
-        form: LinkName.Nick,
-        size: link.seed.size,
-        // fold: link.seed.leaf,
-      }
-      base.nest.push(nick)
-      // slab.line.push(nick)
-
-      makeSlab(wall, nick)
-
-      linkBase(nick, base)
-      break
-    }
-    case LinkName.Line: {
       const nick: LinkNick = {
         form: LinkName.Nick,
         size: link.seed.size,
@@ -569,17 +508,6 @@ function readCord(link: LinkCallLink<SiftName.Cord>): void {
       break
     }
     case LinkName.Text: {
-      const cord: LinkCord = {
-        form: LinkName.Cord,
-        leaf: link.seed.leaf,
-      }
-
-      base.nest.push(cord)
-
-      linkBase(cord, base)
-      break
-    }
-    case LinkName.Line: {
       const cord: LinkCord = {
         form: LinkName.Cord,
         leaf: link.seed.leaf,

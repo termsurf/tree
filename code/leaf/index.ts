@@ -28,7 +28,6 @@ export const NICK_TEST_LIST: Array<LeafName> = [
   LeafName.RiseText,
   LeafName.Knit,
   LeafName.Size,
-  LeafName.Line,
   LeafName.Slot,
 ]
 
@@ -42,7 +41,6 @@ export const KNIT_TEST_LIST: Array<LeafName> = [
   LeafName.RiseNick,
   LeafName.RiseCull,
   LeafName.Knit,
-  LeafName.Line,
 ]
 
 export const CULL_TEST_LIST: Array<LeafName> = [
@@ -62,7 +60,6 @@ export const CULL_TEST_LIST: Array<LeafName> = [
   LeafName.Size,
   LeafName.Slot,
   LeafName.Knit,
-  LeafName.Line,
 ]
 
 export const NAME: Array<LeafName> = [
@@ -81,7 +78,6 @@ export const NAME: Array<LeafName> = [
   LeafName.RiseText,
   LeafName.Cord,
   LeafName.Size,
-  LeafName.Line,
   LeafName.Knit,
 ]
 
@@ -102,7 +98,6 @@ export const BASE_TEST_LIST: Array<LeafName> = [
   LeafName.Size,
   LeafName.Slot,
   LeafName.Knit,
-  LeafName.Line,
 ]
 
 export const FORM: Record<LeafForm, Array<LeafName>> = {
@@ -163,9 +158,6 @@ const TEST: Record<LeafName, LeafSeed> = {
   },
   [LeafName.Slot]: {
     test: /^ +/,
-  },
-  [LeafName.Line]: {
-    test: /^[@~$%^&\w:\-\*'"\/\.,_]+/,
   },
   [LeafName.Knit]: {
     test: /^[@~$%^&\*'":\.a-z0-9A-Z_\-\?\/]+/,

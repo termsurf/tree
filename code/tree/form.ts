@@ -24,7 +24,6 @@ export enum LinkName {
   Fork = 'link-fork',
   Size = 'link-size',
   Tree = 'link-tree',
-  Line = 'link-line',
 }
 
 export type LinkHash = {
@@ -38,7 +37,6 @@ export type LinkHash = {
   'link-fork': LinkFork
   'link-size': LinkSize
   'link-tree': LinkTree
-  'link-line': LinkLine
 }
 
 export const LINK_TYPE = [
@@ -52,7 +50,6 @@ export const LINK_TYPE = [
   LinkName.Fork,
   LinkName.Size,
   LinkName.Tree,
-  LinkName.Line,
 ]
 
 export type LinkCallCast = {
@@ -82,7 +79,6 @@ export type LinkFork = {
     | LinkComb
     | LinkCode
     | LinkKnit
-    | LinkLine
   >
   base?: LinkFork | LinkNick | LinkCull
   form: LinkName.Fork
@@ -143,13 +139,6 @@ export type LinkText = {
   fold?: LinkFold
 }
 
-export type LinkLine = {
-  nest: Array<LinkCord | LinkNick>
-  form: LinkName.Line
-  base?: LinkFork
-  fold?: LinkFold
-}
-
 export type LinkSize = {
   form: LinkName.Size
   bond: number
@@ -168,7 +157,6 @@ export type Link =
   | LinkFork
   | LinkSize
   | LinkTree
-  | LinkLine
 
 export function testLinkForm<N extends LinkName>(
   lead: unknown,

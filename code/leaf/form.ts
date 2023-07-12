@@ -24,7 +24,6 @@ export enum LeafName {
   Cord = 'leaf-cord',
   Size = 'leaf-size',
   Slot = 'leaf-slot',
-  Line = 'leaf-line',
   Knit = 'leaf-knit',
 }
 
@@ -98,10 +97,6 @@ export type LeafSlotLine = LeafBase & {
   form: LeafName.SlotLine
 }
 
-export type LeafLine = LeafBase & {
-  form: LeafName.Line
-}
-
 export type LeafCord = LeafBase & {
   form: LeafName.Cord
 }
@@ -150,4 +145,3 @@ export type Leaf =
   | LeafSize
   | LeafSlot
   | LeafKnit
-  | LeafLine
