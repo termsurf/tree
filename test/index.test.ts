@@ -7,6 +7,10 @@ import Kink, { KinkList } from '@tunebond/kink'
 import { makeBaseKinkText, makeKinkText } from '@tunebond/kink-text'
 
 import makeLinkTree, { showLinkTree } from '../code/tree/index.js'
+import show from 'code/sift/show.js'
+import makeSiftList, { SiftCallCast } from 'code/sift/index.js'
+import makeTextList from 'code/leaf/index.js'
+import { LeafCallCast } from 'code/leaf/form.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -59,21 +63,21 @@ async function start() {
     assertParse(path, provided, expected)
   }
 
-  // const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
-  //   .filter(x => x.endsWith('.link'))
-  //   .map(x => `${__dirname}/file/kink/${x}`)
-  //   .filter(x => !FIND || x.match(FIND))
+  const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
+    .filter(x => x.endsWith('.link'))
+    .map(x => `${__dirname}/file/kink/${x}`)
+    .filter(x => !FIND || x.match(FIND))
 
-  // for (const path of kinkFixtures) {
-  //   const localPath = path.replace(`${__dirname}/`, '')
-  //   const content = await fs.readFile(path, 'utf-8')
-  //   const [provided, expected] = content
-  //     .split(/\n---\n/)
-  //     .map(x => x.trim())
-  //   assert(provided, 'Should have defined provided input')
-  //   assert(expected, 'Should have defined expected output')
-  //   assertParseKink(path, provided, expected)
-  // }
+  for (const path of kinkFixtures) {
+    const localPath = path.replace(`${__dirname}/`, '')
+    const content = await fs.readFile(path, 'utf-8')
+    const [provided, expected] = content
+      .split(/\n---\n/)
+      .map(x => x.trim())
+    assert(provided, 'Should have defined provided input')
+    assert(expected, 'Should have defined expected output')
+    assertParseKink(path, provided, expected)
+  }
 }
 
 start()
@@ -102,15 +106,31 @@ function assertParseKink(
   provided: string,
   expected: string,
 ) {
-  try {
-    const data = makeLinkTree({ file, text: provided })
-  } catch (e) {
-    if (e instanceof Error) {
-      if (e.message != expected) {
-        throw e
-      }
+  const lead = makeLinkTree({ file, text: provided })
+
+  if (Array.isArray(lead)) {
+    const noteList = lead.map(x => x.note).join('\n')
+
+    if (expected !== noteList) {
+      // console.log(a)
+      throw new Error(`\n${noteList} !=\n${expected}\n\nfor ${file}`)
+      // code.throwError(code.generateStringMismatchError(data, a, b))
     }
+    // throw new KinkList(lead)
+  } else {
+    const siftLead = makeSiftList(
+      makeTextList({ file, text: provided }) as LeafCallCast,
+    ) as SiftCallCast
+    console.log(show(siftLead.siftList))
+    throw new Error(`No error thrown for ${file}`)
   }
+  // } catch (e) {
+  //   if (e instanceof Error) {
+  //     if (e.message != expected) {
+  //       throw e
+  //     }
+  //   }
+  // }
 }
 
 function trimLines(text: string): string {

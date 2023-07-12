@@ -32,6 +32,7 @@ export * from './form.js'
 type LinkCallLink<T extends SiftName> = SiftCallCast & {
   wall: Array<Slab>
   seed: SiftHash[T]
+  kinkList: Array<Kink>
 }
 
 type Slab = {
@@ -40,7 +41,7 @@ type Slab = {
   slot: number
 }
 
-function readSiftTree(link: SiftCallCast): LinkCallCast {
+function readSiftTree(link: SiftCallCast): LinkCallCast | Array<Kink> {
   const tree: LinkTree = {
     form: LinkName.Tree,
     nest: [],
@@ -55,6 +56,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
   }
 
   const wall: Array<Slab> = [slab]
+  const kinkList: Array<Kink> = []
 
   let tick = 0
 
@@ -69,6 +71,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readRiseKnit({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -76,6 +79,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readFallKnit({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -83,6 +87,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readRiseFork({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -90,6 +95,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readFallFork({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -97,6 +103,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readRiseNick({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -104,6 +111,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readFallNick({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -111,6 +119,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readSize({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -118,6 +127,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readRiseText({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -125,6 +135,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readFallText({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -132,6 +143,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readCord({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -139,6 +151,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readComb({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -146,6 +159,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readCode({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -153,6 +167,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readRiseNest({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -160,6 +175,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
         readFallNest({
           ...link,
           wall,
+          kinkList,
           seed,
         })
         break
@@ -173,10 +189,12 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
     tick++
   }
 
-  return {
-    ...link,
-    tree,
-  }
+  return kinkList.length
+    ? kinkList
+    : {
+        ...link,
+        tree,
+      }
 }
 
 function readRiseNest(link: LinkCallLink<SiftName.RiseNest>): void {
@@ -312,7 +330,6 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
 
       base.nest = fork
       slab.line.push(fork)
-      // makeSlab(wall, fork)
 
       linkBase(fork, base)
 
@@ -469,6 +486,17 @@ function readSize(link: LinkCallLink<SiftName.Size>): void {
       linkBase(size, base)
       break
     }
+    case LinkName.Tree: {
+      link.kinkList.push(
+        kink('invalid_nesting', {
+          file: link.file,
+          band: link.seed.leaf.band,
+          text: link.lineText,
+          hint: `Size values (numbers) shouldn't be used as terms.`,
+        }),
+      )
+      break
+    }
     default:
       haveLink(base, 'base')
       throw kink('not_implemented', {
@@ -494,7 +522,11 @@ export default function makeLinkFork(
   if (Array.isArray(lead)) {
     return lead
   } else {
-    return readSiftTree(makeSiftList(lead))
+    const siftLead = makeSiftList(lead)
+    if (Array.isArray(siftLead)) {
+      return siftLead
+    }
+    return readSiftTree(siftLead)
   }
 }
 

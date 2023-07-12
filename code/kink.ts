@@ -31,6 +31,22 @@ type Base = {
       form: string
     }
   }
+  invalid_nesting: {
+    take: {
+      file: string
+      text: Array<string>
+      band: LeafBand
+      hint?: string
+    }
+    base: {
+      file: string
+      band: LeafBand
+      hint?: string
+    }
+    fill: {
+      text: string
+    }
+  }
 }
 
 type Name = keyof Base
@@ -40,7 +56,7 @@ Kink.base(
   'syntax_error',
   (take: Base['syntax_error']['take']) => ({
     code: 1,
-    note: 'Error in the structure of the text tree',
+    note: 'Error in the structure of the Link Text Tree',
   }),
 )
 
@@ -64,6 +80,40 @@ Kink.fill(
       base.band.base.mark + 1
     }`,
     text: generateHighlightedErrorText(take.text, take.band),
+  }),
+)
+
+Kink.base(
+  host,
+  'invalid_nesting',
+  (take: Base['invalid_nesting']['take']) => ({
+    code: 1,
+    note: 'The Link Tree has invalid nesting',
+  }),
+)
+
+Kink.load(
+  host,
+  'invalid_nesting',
+  (take: Base['invalid_nesting']['take']) => ({
+    file: take.file,
+    band: take.band,
+    hint: take.hint,
+  }),
+)
+
+Kink.fill(
+  host,
+  'invalid_nesting',
+  (
+    take: Base['invalid_nesting']['take'],
+    base: Base['invalid_nesting']['base'],
+  ) => ({
+    file: `${base.file}:${base.band.base.line + 1}:${
+      base.band.base.mark + 1
+    }`,
+    text: generateHighlightedErrorText(take.text, take.band),
+    hint: take.hint,
   }),
 )
 
@@ -150,7 +200,10 @@ export function makeBandText(
       let size = z.length + 3 + line.length
       let diff = size > VIEW_SIZE ? size - VIEW_SIZE : 0
       line = line.slice(0, line.length - diff)
-      lineList.push(tint(`${z} | ${line}`, WB))
+      const a = line.slice(0, band.base.mark)
+      const b = line.slice(band.base.mark, band.head.mark)
+      const c = line.slice(band.head.mark)
+      lineList.push(tint(`${z} | ${a}${tint(b, R)}${c}`, WB))
       const indentA = new Array(z.length + 1).join(' ')
       const indentB = new Array(band.base.mark + 1).join(' ')
       let haltText = new Array(

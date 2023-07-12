@@ -21,6 +21,8 @@ import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
 import show from './show.js'
+import Kink from '@tunebond/kink'
+import kink from '../kink.js'
 
 export * from './form.js'
 
@@ -47,7 +49,9 @@ type Head = {
   seed?: Leaf
 }
 
-export default function makeSiftList(link: SiftCallLink): SiftCallCast {
+export default function makeSiftList(
+  link: SiftCallLink,
+): SiftCallCast | Array<Kink> {
   const siftList: Array<Sift> = []
 
   const cast = {
@@ -90,6 +94,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
   let lastTick = 0
 
   const haltList = []
+  const kinkList: Array<Kink> = []
 
   function saveReadNote(move = 0) {
     readNoteList.push({
@@ -200,7 +205,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
   // console.log(show(cast.siftList))
   // process.exit()
 
-  return cast
+  return kinkList.length ? kinkList : cast
 
   /**
    * Handle if it's the first item in the line.
@@ -313,6 +318,20 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       //   form: SiftName.RiseNest,
       //   // TODO: add new leaf here
       // })
+
+      switch (seed.back?.form) {
+        case LeafName.Size:
+          kinkList.push(
+            kink('invalid_nesting', {
+              band: seed.band,
+              text: link.lineText,
+              file: link.file,
+            }),
+          )
+          break
+        default:
+          break
+      }
     }
   }
 

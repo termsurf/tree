@@ -4,12 +4,11 @@ import haveHalt from '@tunebond/have/halt.js'
 export enum LinkHint {
   // Code = 'code',
   // nick == interpolated == dynamic
-  NickKnit = 'nick-line',
+  NickKnit = 'nick-knit',
   NickText = 'nick-text',
   Void = 'void',
   // Size = 'size',
-  // SideSize = 'side-size',
-  Knit = 'line',
+  Knit = 'knit',
   Text = 'text',
 }
 
