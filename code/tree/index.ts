@@ -80,7 +80,7 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
     let seed = link.siftList[tick]
     haveMesh(seed, 'seed')
 
-    console.log(seed)
+    // console.log(seed)
 
     switch (seed.form) {
       case SiftName.RiseKnit:

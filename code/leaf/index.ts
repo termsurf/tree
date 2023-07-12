@@ -168,7 +168,7 @@ const TEST: Record<LeafName, LeafSeed> = {
     test: /^[@~$%^&\w:\-\*'"\/\.,_]+/,
   },
   [LeafName.Knit]: {
-    test: /^[@~$%^&\*'"\.a-z0-9A-Z_\-\?\/]+/,
+    test: /^[@~$%^&\*'":\.a-z0-9A-Z_\-\?\/]+/,
   },
   [LeafName.Size]: {
     test: /^-?\d+(?=\b)/,

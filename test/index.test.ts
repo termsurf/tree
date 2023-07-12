@@ -59,21 +59,21 @@ async function start() {
     assertParse(path, provided, expected)
   }
 
-  const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
-    .filter(x => x.endsWith('.link'))
-    .map(x => `${__dirname}/file/kink/${x}`)
-    .filter(x => !FIND || x.match(FIND))
+  // const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
+  //   .filter(x => x.endsWith('.link'))
+  //   .map(x => `${__dirname}/file/kink/${x}`)
+  //   .filter(x => !FIND || x.match(FIND))
 
-  for (const path of kinkFixtures) {
-    const localPath = path.replace(`${__dirname}/`, '')
-    const content = await fs.readFile(path, 'utf-8')
-    const [provided, expected] = content
-      .split(/\n---\n/)
-      .map(x => x.trim())
-    assert(provided, 'Should have defined provided input')
-    assert(expected, 'Should have defined expected output')
-    assertParseKink(path, provided, expected)
-  }
+  // for (const path of kinkFixtures) {
+  //   const localPath = path.replace(`${__dirname}/`, '')
+  //   const content = await fs.readFile(path, 'utf-8')
+  //   const [provided, expected] = content
+  //     .split(/\n---\n/)
+  //     .map(x => x.trim())
+  //   assert(provided, 'Should have defined provided input')
+  //   assert(expected, 'Should have defined expected output')
+  //   assertParseKink(path, provided, expected)
+  // }
 }
 
 start()

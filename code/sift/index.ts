@@ -211,7 +211,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   // siftList.push({ form: SiftName.FallNest })
 
-  console.log(show(cast.siftList))
+  // console.log(show(cast.siftList))
   // process.exit()
 
   return cast
