@@ -112,7 +112,7 @@ export type LinkNick = {
 
 export type LinkCord = {
   form: LinkName.Cord
-  base?: LinkText
+  base?: LinkText | LinkKnit
   leaf: Leaf
 }
 

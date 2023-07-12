@@ -56,24 +56,10 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
 
   const wall: Array<Slab> = [slab]
 
-  // console.log(
-  //   link.siftList.map(x => ({
-  //     form: x.form,
-  //     text: x.text,
-  //   })),
-  // )
-
-  // // console.log(
-  //   link.wall.map(x => ({
-  //     form: x.form,
-  //     text: x.text,
-  //   })),
-  // )
-
   let tick = 0
 
   while (tick < link.siftList.length) {
-    let seed = link.siftList[tick]
+    const seed = link.siftList[tick]
     haveMesh(seed, 'seed')
 
     // console.log(seed)
