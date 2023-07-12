@@ -14,7 +14,8 @@ x
   a/b/c/d
   {{a}}/{b}x/x{c}/x{{d}}x/g
   {{a}}/{b}-x/x-{c}/x-{{d}}-x/g
-  <./foo/bar/baz>
-  </a/b/c/../d>
-  <@another/thing.link>
-  </{a}/{b}{c}>
+  ./foo/bar/baz
+  ./{{a}}/{b}-x/x-{c}/x-{{d}}-x/g
+  /a/b/c/../d
+  @another/thing.link
+  /{a}/{b}{c}

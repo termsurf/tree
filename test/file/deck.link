@@ -14,16 +14,16 @@ deck @tunebond/wolf
 deck
   <@tunebond/wolf>
   bear
-    <./code>
+    ./code
   test
-    <./test>
-  mint
+    ./test
+  mark
     <0.0.1>
 deck
-  <@tunebond/wolf>
+  @tunebond/wolf
   bear
-    <./code>
-  mint
+    ./code
+  mark
     <0.0.1>
   test
-    <./test{{{another(12)}}}two/one>
+    ./test{{{another(12)}}}two/one

@@ -2,12 +2,9 @@
 task x
   call name{{
     something random{
-      <here>
+      here
     }
-      another there
-  }}, bind foo, text {
-    bar
-  }
+  }}
 
 boom baz
   foo hello{{
@@ -21,4 +18,8 @@ boom baz
 task
   x
   call
-    name{{something(random{<here>})}}
+    name{{something(random{here})}}
+boom
+  baz
+  foo
+    hello{{world(bar(baz(bing, boop)))}}

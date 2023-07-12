@@ -85,14 +85,14 @@ function assertParse(file: string, provided: string, expected: string) {
     throw new KinkList(lead)
   }
 
-  const output = trimLines(showLinkTree(lead.tree))
+  const output = showLinkTree(lead.tree)
 
   const a = String(stripAnsi(output)).trim()
   const b = String(stripAnsi(expected)).trim()
 
   if (a !== b) {
     // console.log(a)
-    throw new Error(`${a} != ${b}`)
+    throw new Error(`\n${a} !=\n${b}\n`)
     // code.throwError(code.generateStringMismatchError(data, a, b))
   }
 }

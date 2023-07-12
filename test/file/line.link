@@ -3,4 +3,5 @@ deck @tunebond/wolf
 
 ---
 
-deck @tunebond/wolf
+deck
+  @tunebond/wolf

@@ -23,7 +23,6 @@ import type {
 import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
-import { haveMesh } from '@tunebond/have'
 import show from './show.js'
 
 export * from './form.js'
@@ -53,7 +52,7 @@ type Head = {
 }
 
 export default function makeSiftList(link: SiftCallLink): SiftCallCast {
-  const siftList: Array<Sift> = [{ form: SiftName.RiseNest }]
+  const siftList: Array<Sift> = []
 
   const cast = {
     ...link,
@@ -210,10 +209,11 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   fallBond()
 
-  siftList.push({ form: SiftName.FallNest })
-  console.log(show(cast.siftList))
+  // siftList.push({ form: SiftName.FallNest })
 
-  process.exit()
+  console.log(show(cast.siftList))
+  // process.exit()
+
   return cast
 
   /**
@@ -265,10 +265,10 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       })
     }
 
-    saveHead(makeHead(Form.Nest))
-    siftList.push({
-      form: SiftName.RiseNest,
-    })
+    // saveHead(makeHead(Form.Nest))
+    // siftList.push({
+    //   form: SiftName.RiseNest,
+    // })
   }
 
   function castRiseCull(seed: LeafRiseCull) {
@@ -331,12 +331,11 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
       lastTick = tick
     } else {
-      saveHead(makeHead(Form.Nest))
-
-      siftList.push({
-        form: SiftName.RiseNest,
-        // TODO: add new leaf here
-      })
+      // saveHead(makeHead(Form.Nest))
+      // siftList.push({
+      //   form: SiftName.RiseNest,
+      //   // TODO: add new leaf here
+      // })
     }
   }
 
@@ -376,9 +375,9 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
   function castCode(seed: LeafCode) {
     testBaseLine()
 
-    if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
+    if (seed.text.match(/#([xbo])([0-9a-f]+)/i)) {
       const mold = RegExp.$1
-      const bond = readCode(RegExp.$2)
+      const bond = readCode(mold, RegExp.$2)
       siftList.push({
         form: SiftName.Code,
         bond,
@@ -424,6 +423,8 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
     const last = siftList[siftList.length - 1]
 
+    // merge with last to keep things cleaner
+    // keep multiline
     if (last?.form === SiftName.Cord && readNote.line) {
       if (seed.text) {
         if (last.leaf.text) {
@@ -435,7 +436,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
         } else {
           last.leaf.text = seed.text
         }
-      } else {
+      } else if (seed.head && seed.head.form === LeafName.Cord) {
         last.leaf.text += '\n\n'
       }
     } else {
@@ -519,15 +520,15 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     tossReadNote()
   }
 
-  function readCode(mold: string) {
+  function readCode(mold: string, bond: string) {
     switch (mold) {
       case 'b':
-        return parseInt(mold, 2)
+        return parseInt(bond, 2)
       case 'o':
-        return parseInt(mold, 8)
+        return parseInt(bond, 8)
       case 'x':
       default:
-        return parseInt(mold, 16)
+        return parseInt(bond, 16)
     }
   }
 
@@ -640,6 +641,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       // we are starting a fresh interpolation
       case LeafName.Slot:
       case LeafName.SlotLine:
+      case undefined:
         saveHead(makeHead(Form.Fork))
         siftList.push({
           form: SiftName.RiseFork,
@@ -763,4 +765,16 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       }
     }
   }
+}
+
+function saveBond(
+  mesh: Record<string, unknown>,
+  name: string,
+  bond: unknown,
+) {
+  Object.defineProperty(mesh, name, {
+    value: bond,
+    enumerable: false,
+    writable: true,
+  })
 }

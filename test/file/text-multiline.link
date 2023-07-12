@@ -15,7 +15,8 @@ two
       {{
         some tree code
           too
-      }} or {{
+      }}
+      or {{
         like this
       }}
     >
@@ -25,7 +26,8 @@ two
 details
   bind
     data
+    text
+      <some multiline text>
+two
   text
-    <some
-multiline
-text>
+    <some multline text{{some(tree(code), too)}}or{{like(this)}}>

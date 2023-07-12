@@ -164,11 +164,11 @@ const TEST: Record<LeafName, LeafSeed> = {
   [LeafName.Slot]: {
     test: /^ +/,
   },
-  [LeafName.Knit]: {
-    test: /^[a-z0-9A-Z][a-z0-9A-Z_\-\?\/]*/,
-  },
   [LeafName.Line]: {
     test: /^[@~$%^&\w:\-\*'"\/\.,_]+/,
+  },
+  [LeafName.Knit]: {
+    test: /^[@~$%^&\*'"\.a-z0-9A-Z_\-\?\/]+/,
   },
   [LeafName.Size]: {
     test: /^-?\d+(?=\b)/,
@@ -201,10 +201,10 @@ export default function makeTextList(
 
   function save(hunk: Leaf) {
     if (!cast.head) {
-      cast.head = hunk
+      saveBond(cast, 'head', hunk)
     } else if (back) {
-      hunk.back = back
-      back.head = hunk
+      saveBond(hunk, 'back', back)
+      saveBond(back, 'head', hunk)
     }
   }
 
@@ -334,4 +334,16 @@ export default function makeTextList(
   }
 
   return cast
+}
+
+function saveBond(
+  mesh: Record<string, unknown>,
+  name: string,
+  bond: unknown,
+) {
+  Object.defineProperty(mesh, name, {
+    value: bond,
+    enumerable: false,
+    writable: true,
+  })
 }

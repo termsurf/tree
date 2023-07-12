@@ -5,6 +5,6 @@ bear ./mark
 ---
 
 bear
-  <./mark>
+  ./mark
   {{something}}-strange
     here

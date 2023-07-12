@@ -10,9 +10,10 @@ export function showLinkTree(base: Link): string {
     list.push(`${line}`)
   })
 
+  // console.log(JSON.stringify(base, null, 2))
+
   list.push('')
 
-  console.log(list)
   return list.join('\n')
 }
 
@@ -37,36 +38,40 @@ function showLinkTreeBase(
 
   switch (seed.form) {
     case LinkName.Tree: {
-      list.push(...showLinkTreeBase(seed.nest))
+      seed.nest.forEach(seed => {
+        list.push(...showLinkTreeBase(seed))
+      })
       break
     }
     case LinkName.Cord: {
-      console.log(`${move(nestSize)}cord`, seed.leaf.text)
       list.push(seed.leaf.text)
       break
     }
     case LinkName.Fork: {
-      console.log(`${move(nestSize)}tree`)
       const head: Array<string> = []
-      // if (seed.head) {
-      //   showLinkTreeBase(seed.head, flat).forEach(line => {
-      //     head.push(`${line}`)
-      //   })
-      // }
+      const nestHead = seed.nest[0]
+      if (nestHead) {
+        showLinkTreeBase(nestHead, true, nestSize).forEach(line => {
+          head.push(`${line}`)
+        })
+      }
+
       const nest: Array<string> = []
-      seed.nest.forEach(el => {
+      seed.nest.slice(1).forEach(el => {
         showLinkTreeBase(el, flat, nestSize + 1).forEach(line => {
           nest.push(`${line}`)
         })
       })
 
       if (flat) {
-        const text = nest.join(', ')
+        const text = nest.join(', ').trim()
         if (text) {
-          list.push(`${text}`)
+          list.push(`${head.join('')}(${text})`)
+        } else {
+          list.push(`${head.join('')}`)
         }
       } else {
-        // list.push(`${head.join('')}`)
+        list.push(...head)
         nest.forEach(line => {
           if (line) {
             list.push(`  ${line}`)
@@ -76,12 +81,10 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Size: {
-      console.log(`${move(nestSize)}size`)
-      list.push(tint(`${seed.bond}`, G))
+      list.push(`${seed.bond}`)
       break
     }
     case LinkName.Text: {
-      console.log(`${move(nestSize)}text`)
       const string: Array<string> = []
       seed.nest.forEach(seg => {
         showLinkTreeBase(seg, true, nestSize + 1).forEach(line => {
@@ -92,7 +95,6 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Nick: {
-      console.log(`${move(nestSize)}nick`)
       if (seed.nest) {
         const plugin: Array<string> = []
         showLinkTreeBase(seed.nest, true, nestSize + 1).forEach(
@@ -110,7 +112,6 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Cull: {
-      console.log(`${move(nestSize)}cull`)
       const slot: Array<string> = []
       if (seed.nest) {
         showLinkTreeBase(seed.nest, true, nestSize + 1).forEach(
@@ -126,17 +127,29 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Comb: {
-      console.log(`${move(nestSize)}comb`)
       list.push(`${seed.bond}`)
       break
     }
     case LinkName.Code: {
-      console.log(`${move(nestSize)}code`)
-      list.push(`#${seed.mold}${seed.bond}`)
+      switch (seed.mold) {
+        case 'b':
+          list.push(`#${seed.mold}${seed.bond.toString(2)}`)
+          break
+        case 'o':
+          list.push(`#${seed.mold}${seed.bond.toString(8)}`)
+          break
+        case 'x':
+          list.push(`#${seed.mold}${seed.bond.toString(16)}`)
+          break
+        default:
+          list.push(
+            `#${seed.mold}${seed.bond.toString(parseInt(seed.mold))}`,
+          )
+          break
+      }
       break
     }
     case LinkName.Knit: {
-      console.log(`${move(nestSize)}knit`)
       const line: Array<string> = []
       seed.nest.forEach((seg, i) => {
         showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
@@ -145,6 +158,22 @@ function showLinkTreeBase(
             seg.form !== LinkName.Cull &&
             seg.form !== LinkName.Nick
           ) {
+            line.push('')
+          }
+          line.push(l)
+        })
+      })
+      const text = line.join('')
+      if (text) {
+        list.push(text)
+      }
+      break
+    }
+    case LinkName.Line: {
+      const line: Array<string> = []
+      seed.nest.forEach((seg, i) => {
+        showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
+          if (i > 0 && seg.form !== LinkName.Nick) {
             line.push('')
           }
           line.push(l)

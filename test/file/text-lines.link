@@ -15,3 +15,14 @@ i
   am
     a
       term
+      another
+        nested
+          term
+  some
+    text
+      <here is some text>
+  some
+    multiline-text
+    <I am some text. I am concatenated to the first line with a space.
+
+I have a new line between me and the rest.>
