@@ -14,11 +14,17 @@ import type {
   LeafLink,
   LeafRiseNick,
   LeafCord,
+  LeafRiseText,
+  LeafSlot,
+  LeafSize,
+  LeafRiseCull,
+  LeafRiseHold,
 } from '../leaf/form.js'
 import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
 import { haveMesh } from '@tunebond/have'
+import show from './show.js'
 
 export * from './form.js'
 
@@ -30,9 +36,15 @@ enum Form {
   Text = 'text',
   Nick = 'nick',
   Cull = 'cull',
-  Nest = 'nest',
   Line = 'line',
-  Tree = 'tree',
+  Fork = 'fork',
+  Nest = 'nest',
+}
+
+type ReadNote = {
+  tick: number
+  line?: boolean
+  have: boolean
 }
 
 type Head = {
@@ -41,7 +53,7 @@ type Head = {
 }
 
 export default function makeSiftList(link: SiftCallLink): SiftCallCast {
-  const siftList: Array<Sift> = [{ form: SiftName.RiseFork }]
+  const siftList: Array<Sift> = [{ form: SiftName.RiseNest }]
 
   const cast = {
     ...link,
@@ -50,29 +62,75 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   // console.log(link.list)
 
-  function head(form: Form, seed?: Leaf) {
+  function makeHead(form: Form, seed?: Leaf) {
     return { form, seed }
   }
 
-  function saveHead(head: Head, list = false) {
-    if (list) {
-      line.push([head])
-    } else {
-      const last = line[line.length - 1]
-      last?.push(head)
-    }
+  function saveHead(head: Head) {
+    headList.push(head)
+  }
+
+  function readHead() {
+    return headList[headList.length - 1]
+  }
+
+  function tossHead() {
+    headList.pop()
   }
 
   let leaf: Leaf | undefined = link.head
 
-  const line: Array<Array<Head>> = [[head(Form.Card)]]
+  const headList: Array<Head> = [makeHead(Form.Card)]
+  const readNoteList: Array<ReadNote> = [
+    {
+      tick: 0,
+      have: true,
+      line: true,
+    },
+  ]
 
   let textSlot = 0
-  let needSlot = true
+  let slotLine = true
   // how far the start of the previous line is indented
-  let baseLastTextSlot = 0
+  let lastTick = 0
 
   const haltList = []
+
+  function saveReadNote(move = 0) {
+    readNoteList.push({
+      tick: lastTick + move,
+      have: true,
+      line: true,
+    })
+  }
+
+  function tossReadNote() {
+    const readNote = loadReadNote()
+    if (readNote.line) {
+      if (readNote.tick !== lastTick) {
+        haltList.push(`Invalid indentation`)
+      }
+    }
+    readNoteList.pop()
+  }
+
+  // function saveReadNoteLine(bond: boolean) {
+  //   const last = loadReadNote()
+  //   if (last) {
+  //     last.line = bond
+  //   }
+  // }
+
+  // function saveReadNoteHave(bond: boolean) {
+  //   const last = loadReadNote()
+  //   if (last) {
+  //     last.have = bond
+  //   }
+  // }
+
+  function loadReadNote() {
+    return readNoteList[readNoteList.length - 1] as ReadNote
+  }
 
   if (leaf) {
     do {
@@ -80,12 +138,7 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
       switch (leaf.form) {
         case LeafName.RiseCull:
-          headTextSlot()
-          siftList.push({
-            form: SiftName.RiseCull,
-            leaf: leaf,
-          })
-          saveHead(head(Form.Cull, leaf), true)
+          castRiseCull(leaf)
           break
         case LeafName.FallCull:
           castFallCull(leaf)
@@ -97,17 +150,14 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           castFallNick(leaf)
           break
         case LeafName.RiseText:
-          headTextSlot()
-          saveHead(head(Form.Text), true)
+          slotLine = false
+          castRiseText(leaf)
           break
         case LeafName.FallText:
           castFallText(leaf)
           break
         case LeafName.RiseHold:
-          saveHead(head(Form.Nest))
-          siftList.push({
-            form: SiftName.RiseNest,
-          })
+          castRiseHold(leaf)
           break
         case LeafName.FallHold:
           castFallHold(leaf)
@@ -117,48 +167,40 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           break
         }
         case LeafName.Note:
+          slotLine = false
           break
         case LeafName.Comb:
-          headTextSlot()
+          slotLine = false
           castComb(leaf)
           break
         case LeafName.Code:
-          headTextSlot()
+          slotLine = false
           castCode(leaf)
           break
         case LeafName.Slot:
-          // if (leaf.text.length !== 1) {
-          //   haltList.push(new Error('Invalid spacing'))
-          // }
+          castSlot(leaf)
           break
-        // case LeafName.RiseSlot: {
-        //   textSlot = leaf.text.length / 2
-        //   if (textSlot % 2 !== 0) {
-        //     haltList.push(new Error('Invalid spacing'))
-        //     textSlot = Math.floor(textSlot)
-        //   }
-        //   break
-        // }
-        // case LeafName.FallSlot: {
-        //   // lint warning, trailing whitepsace
-        //   break
-        // }
         case LeafName.SlotLine:
-          textSlot = 0
-          needSlot = true
           fallBond()
+          textSlot = 0
+          slotLine = true
           break
         case LeafName.Cord:
+          slotLine = false
           castCord(leaf)
           break
         case LeafName.Line:
+          slotLine = false
           castLine(leaf)
           break
         // term templates
         case LeafName.Knit:
+          slotLine = false
           castKnit(leaf)
           break
         case LeafName.Size:
+          slotLine = false
+          castSize(leaf)
           break
         default:
           break
@@ -168,7 +210,172 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
 
   fallBond()
 
+  siftList.push({ form: SiftName.FallNest })
+  console.log(show(cast.siftList))
+
+  process.exit()
+  return cast
+
+  /**
+   * Handle if it's the first item in the line.
+   *
+   * Call this for every _content_ node (i.e. not punctuation).
+   */
+
+  function testBaseLine() {
+    const readNote = loadReadNote()
+    // if we are the first item on a new line...
+    if (slotLine) {
+      slotLine = false
+
+      // we started on the same line as the opening context
+      // so no indentation allowed then.
+      if (readNote.line === false) {
+        haltList.push(new Error('Invalid indentation'))
+      } else {
+        // we are multiple lines
+        readNote.line = true
+      }
+
+      // if the content is not one greater
+      // than the context wrapper indentation,
+      // then that's an issue.
+      if (lastTick < readNote.tick + 1) {
+        haltList.push(new Error('Invalid indentation'))
+      }
+
+      // otherwise we are not in a new line.
+    } else {
+      // if we are the first item
+      if (!readNote.have) {
+        readNote.line = false
+      }
+    }
+
+    readNote.have = true
+  }
+
+  function castRiseHold(seed: LeafRiseHold) {
+    const head = readHead()
+
+    if (head?.form === Form.Knit) {
+      tossHead()
+      siftList.push({
+        form: SiftName.FallKnit,
+      })
+    }
+
+    saveHead(makeHead(Form.Nest))
+    siftList.push({
+      form: SiftName.RiseNest,
+    })
+  }
+
+  function castRiseCull(seed: LeafRiseCull) {
+    siftList.push({
+      form: SiftName.RiseCull,
+      leaf: seed,
+    })
+    saveHead(makeHead(Form.Cull, leaf))
+    saveReadNote(1)
+  }
+
+  function castSlot(seed: LeafSlot) {
+    // close the knit, if present
+    walk: while (true) {
+      const head = readHead()
+
+      switch (head?.form) {
+        case Form.Knit:
+          siftList.push({
+            form: SiftName.FallKnit,
+          })
+          tossHead()
+          break
+        default:
+          break walk
+      }
+    }
+
+    if (slotLine) {
+      slotLine = false
+
+      const readNote = loadReadNote()
+
+      let tick = Math.floor(seed.text.length / 2)
+
+      if (seed.text.length % 2 !== 0) {
+        haltList.push(new Error('Invalid indentation'))
+        // try fixing the code and seeing what happens
+        tick = readNote.tick + 1
+      } else if (tick > lastTick + 1) {
+        haltList.push(new Error('Invalid indentation'))
+        // try fixing the code and seeing what happens
+        tick = lastTick + 1
+      } else if (tick < readNote.tick) {
+        haltList.push(new Error('Invalid indentation'))
+        // try fixing the code and seeing what happens
+        tick = readNote.tick + 1
+      }
+
+      let diff = tick - readNote.tick
+
+      while (diff-- > 0) {
+        saveHead(makeHead(Form.Nest))
+
+        siftList.push({
+          form: SiftName.RiseNest,
+          // TODO: add new leaf here
+        })
+      }
+
+      lastTick = tick
+    } else {
+      saveHead(makeHead(Form.Nest))
+
+      siftList.push({
+        form: SiftName.RiseNest,
+        // TODO: add new leaf here
+      })
+    }
+  }
+
+  function castRiseText(seed: LeafRiseText) {
+    saveReadNote(1)
+    saveHead(makeHead(Form.Text))
+    siftList.push({
+      form: SiftName.RiseText,
+      leaf: seed,
+    })
+    const readNote = loadReadNote()
+    if (tailSlot(seed)) {
+      readNote.line = true
+    } else {
+      readNote.line = false
+    }
+  }
+
+  function tailSlot(seed: Leaf): boolean {
+    if (seed.head) {
+      if (seed.head.form === LeafName.Cord) {
+        return Boolean(seed.head.text.match(/^\s*\n$/))
+      }
+    }
+    return false
+  }
+
+  function castFallText(seed: LeafFallText) {
+    siftList.push({
+      leaf: seed,
+      form: SiftName.FallText,
+    })
+    tossHead()
+    tossReadNote()
+  }
+
   function castCode(seed: LeafCode) {
+    testBaseLine()
+
     if (seed.text.match(/#(xbo)([0-9a-f]+)/i)) {
       const mold = RegExp.$1
       const bond = readCode(RegExp.$2)
@@ -193,6 +400,8 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
   }
 
   function castComb(seed: LeafComb) {
+    testBaseLine()
+
     const bond = parseFloat(seed.text)
     if (Number.isNaN(bond)) {
       haltList.push(new Error('Invalid size'))
@@ -205,13 +414,62 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
   }
 
   function castCord(seed: LeafCord) {
+    const readNote = loadReadNote()
+
+    if (readNote.line) {
+      // TODO: create a new seed
+      // remove the indentation
+      seed.text = seed.text.slice(readNote.tick * 2).trimEnd()
+    }
+
+    const last = siftList[siftList.length - 1]
+
+    if (last?.form === SiftName.Cord && readNote.line) {
+      if (seed.text) {
+        if (last.leaf.text) {
+          if (last.leaf.text.endsWith('\n')) {
+            last.leaf.text = `${last.leaf.text}${seed.text}`
+          } else {
+            last.leaf.text = `${last.leaf.text} ${seed.text}`
+          }
+        } else {
+          last.leaf.text = seed.text
+        }
+      } else {
+        last.leaf.text += '\n\n'
+      }
+    } else {
+      siftList.push({
+        form: SiftName.Cord,
+        leaf: seed,
+      })
+    }
+  }
+
+  function castSize(seed: LeafSize) {
+    testBaseLine()
+
     siftList.push({
-      form: SiftName.Cord,
+      form: SiftName.Size,
       leaf: seed,
+      bond: parseInt(seed.text),
     })
   }
 
   function castLine(seed: LeafLine) {
+    const head = readHead()
+
+    // if we are not already creating a "line",
+    // then push one onto the stack.
+    if (head?.form !== Form.Line) {
+      testBaseLine()
+
+      saveHead(makeHead(Form.Line, seed))
+      siftList.push({
+        form: SiftName.RiseLine,
+      })
+    }
+
     siftList.push({
       form: SiftName.Cord,
       leaf: {
@@ -224,9 +482,13 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     })
   }
 
+  /**
+   * Close the cull form.
+   */
+
   function castFallCull(seed: LeafFallCull) {
     walk: while (true) {
-      const { head, find } = readHead()
+      const head = readHead()
       // console.log('fall cull', head)
       switch (head?.form) {
         case Form.Knit:
@@ -235,7 +497,11 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           })
           tossHead()
           break
-        case Form.Tree:
+        case Form.Nest:
+          siftList.push({ form: SiftName.FallNest })
+          tossHead()
+          break
+        case Form.Fork:
           siftList.push({ form: SiftName.FallFork })
           tossHead()
           break
@@ -249,20 +515,9 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
         default:
           break walk
       }
-
-      if (!find) {
-        break walk
-      }
     }
-
-    tossHead()
+    tossReadNote()
   }
-
-  if (haltList.length) {
-    // console.log(haltList)
-  }
-
-  // console.log(siftList.slice(50))
 
   function readCode(mold: string) {
     switch (mold) {
@@ -276,53 +531,56 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     }
   }
 
+  /**
+   * Handle the comma in Link Text.
+   */
+
   function castLink(seed: LeafLink) {
     const head = seed.head
     if (head) {
-      if (head.form === LeafName.Slot) {
+      if (head.form !== LeafName.Slot) {
+        haltList.push(new Error('Invalid character'))
+      } else {
         if (head.text.length !== 1) {
           haltList.push(new Error('Invalid spacing'))
         }
-
-        leaf = head
       }
     }
-  }
 
-  function castKnit(seed: LeafKnit) {
-    headTextSlot()
-
-    if (seed.text.match(/\/{2,}/)) {
-      haltList.push(new Error('Invalid path'))
-    }
-    if (!seed.text.match(/^[0-9a-z-\/]+$/)) {
-      haltList.push(new Error('Invalid term characters'))
-    }
-    if (!seed.text.match(/^[a-z]/)) {
-      haltList.push(new Error('Term must start with a-z'))
-    }
-
-    const last = seed.back
-    switch (last?.form) {
-      case LeafName.Slot:
-      case LeafName.SlotLine:
-      case LeafName.Link:
-      case LeafName.RiseCull:
-      case LeafName.RiseNick:
-      case undefined: {
-        siftList.push({
-          form: SiftName.RiseFork,
-        })
-        saveHead(head(Form.Tree))
-        siftList.push({
-          form: SiftName.RiseKnit,
-        })
-        saveHead(head(Form.Knit))
+    // close potential open knit.
+    const find = readHead()
+    switch (find?.form) {
+      case Form.Knit: {
+        castFallKnit()
+        castFallFork()
         break
       }
       default:
-        // console.log(last)
         break
+    }
+  }
+
+  function castFallFork() {
+    tossHead()
+    siftList.push({
+      form: SiftName.FallFork,
+    })
+  }
+
+  function castFallKnit() {
+    tossHead()
+    siftList.push({
+      form: SiftName.FallKnit,
+    })
+  }
+
+  function castKnit(seed: LeafKnit) {
+    castRiseKnit(seed)
+
+    if (seed.text.match(/\/{2,}/)) {
+      haltList.push(new Error('Invalid knit'))
+    } else if (!seed.text.match(/^[0-9a-z-\/]+$/)) {
+      haltList.push(new Error('Invalid knit'))
     }
 
     siftList.push({
@@ -337,95 +595,110 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     })
   }
 
-  // console.log(show(cast.siftList))
+  function castRiseKnit(seed: LeafKnit) {
+    const last = seed.back
+    switch (last?.form) {
+      case LeafName.SlotLine:
+      case LeafName.Link:
+      case LeafName.RiseCull:
+      case LeafName.RiseNick:
+      case LeafName.RiseHold:
+      case LeafName.Slot:
+      case undefined: {
+        siftList.push({
+          form: SiftName.RiseFork,
+        })
+        saveHead(makeHead(Form.Fork))
+        break
+      }
+      default:
+        break
+    }
 
-  return cast
+    switch (last?.form) {
+      case LeafName.Slot:
+      case LeafName.SlotLine:
+      case LeafName.Link:
+      case LeafName.RiseCull:
+      case LeafName.RiseNick:
+      case LeafName.RiseHold:
+      case undefined: {
+        testBaseLine()
+        siftList.push({
+          form: SiftName.RiseKnit,
+        })
+        saveHead(makeHead(Form.Knit))
+        break
+      }
+      default:
+        break
+    }
+  }
 
   function castRiseNick(seed: LeafRiseNick) {
-    headTextSlot()
-    saveHead(head(Form.Nick, seed), true)
+    switch (seed.back?.form) {
+      // we are starting a fresh interpolation
+      case LeafName.Slot:
+      case LeafName.SlotLine:
+        saveHead(makeHead(Form.Fork))
+        siftList.push({
+          form: SiftName.RiseFork,
+        })
+        saveHead(makeHead(Form.Knit))
+        siftList.push({
+          form: SiftName.RiseKnit,
+        })
+        break
+      default:
+        break
+    }
+
+    saveHead(makeHead(Form.Nick, seed))
     siftList.push({
       form: SiftName.RiseNick,
       leaf: seed,
       size: seed.text.length,
     })
+    saveReadNote(1)
   }
 
-  function castFallText(seed: LeafFallText) {
-    siftList.push({
-      leaf: seed,
-      form: SiftName.FallText,
-    })
-    tossHead()
-  }
+  /**
+   * Handle close parenthesis.
+   *
+   * Parentheses can only be on one line.
+   */
 
   function castFallHold(seed: LeafFallHold) {
     walk: while (true) {
-      const { head, find } = readHead()
+      const head = readHead()
       switch (head?.form) {
         case Form.Nest:
           siftList.push({ form: SiftName.FallNest })
           tossHead()
           break
+        case Form.Fork:
+          siftList.push({ form: SiftName.FallFork })
+          tossHead()
+          break
+        case Form.Knit:
+          siftList.push({ form: SiftName.FallKnit })
+          tossHead()
+          break
         default:
           break walk
       }
-
-      if (!find) {
-        break walk
-      }
     }
   }
 
-  function readHead(fill = false) {
-    const list = line[line.length - 1]
-    if (list) {
-      const head = list[list.length - 1]
-      const find = list.length > 1
-      if (!head) {
-        line.pop()
-      }
-      if (!head && fill) {
-        const list = line[line.length - 1]
-        if (list) {
-          const head = list[list.length - 1]
-          const find = list.length > 1
-          return { head, find }
-        }
-      }
-      return { head, find }
-    }
-    return {}
-  }
-
-  function tossHead(fill = false) {
-    const list = line[line.length - 1]
-    // console.log(fill,line)
-    if (list) {
-      const last = list[list.length - 1]
-      if (last) {
-        list.pop()
-      } else if (!last && fill) {
-        line.pop()
-        const list = line[line.length - 1]
-        if (list) {
-          list.pop()
-          if (!list.length) {
-            line.pop()
-          }
-        }
-      } else {
-        list.pop()
-        if (!list.length) {
-          line.pop()
-        }
-      }
-    }
-  }
+  /**
+   * Close interpolation.
+   *
+   * Can be on a separate line.
+   */
 
   function castFallNick(seed: LeafFallNick) {
     walk: while (true) {
-      const { head, find } = readHead()
+      const head = readHead()
       switch (head?.form) {
         case Form.Knit:
           siftList.push({
@@ -433,7 +706,11 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
           })
           tossHead()
           break
-        case Form.Tree:
+        case Form.Nest:
+          siftList.push({ form: SiftName.FallNest })
+          tossHead()
+          break
+        case Form.Fork:
           siftList.push({ form: SiftName.FallFork })
           tossHead()
           break
@@ -443,84 +720,46 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
             form: SiftName.FallNick,
           })
           tossHead()
-          break
+          break walk
         default:
           break walk
       }
-      if (!find) {
-        break walk
-      }
     }
 
-    tossHead()
+    tossReadNote()
   }
 
   // // close the parentheses
   function fallBond() {
     walk: while (true) {
-      const { head, find } = readHead(true)
-      switch (head?.form) {
-        case Form.Tree:
+      const head = readHead()
+      tick: switch (head?.form) {
+        case Form.Fork:
           siftList.push({
             form: SiftName.FallFork,
           })
-          tossHead(true)
-          break
+          tossHead()
+          break tick
+        case Form.Nest:
+          siftList.push({ form: SiftName.FallNest })
+          tossHead()
+          break tick
         case Form.Knit:
           siftList.push({
             form: SiftName.FallKnit,
           })
-          tossHead(true)
-          break
-        case Form.Nick:
-          haveMesh(head.seed, 'seed')
-          if (head.seed.form === LeafName.FallNick) {
-            siftList.push({
-              form: SiftName.FallNick,
-              leaf: head.seed,
-            })
-          }
-          tossHead(true)
-          break
-        case Form.Cull:
-          haveMesh(head.seed, 'seed')
-          if (head.seed.form === LeafName.FallCull) {
-            siftList.push({
-              form: SiftName.FallCull,
-              leaf: head.seed,
-            })
-          }
-          tossHead(true)
-          break
+          tossHead()
+          break tick
+        case Form.Line:
+          siftList.push({
+            form: SiftName.FallLine,
+          })
+          tossHead()
+          break tick
         case Form.Card:
           break walk
         default:
-          break
-      }
-      if (!find) {
-        break walk
-      }
-    }
-  }
-
-  function haltBondLine() {}
-
-  function headTextSlot() {
-    if (needSlot) {
-      needSlot = false
-
-      if (textSlot > baseLastTextSlot) {
-        if (textSlot > baseLastTextSlot + 1) {
-          haltList.push(new Error(`Too much indentation`))
-        } else {
-          // don't have to do anything
-        }
-      } else {
-        let diff = baseLastTextSlot - textSlot - 1
-        while (diff > 0) {
-          siftList.push({ form: SiftName.FallNest })
-          diff--
-        }
+          break walk
       }
     }
   }

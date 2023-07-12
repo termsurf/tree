@@ -1,6 +1,5 @@
 import type {
   LeafCallCast,
-  Leaf,
   LeafFallCull,
   LeafFallNick,
   LeafFallText,
@@ -12,6 +11,8 @@ import type {
   LeafRiseText,
   LeafCord,
   LeafSize,
+  LeafSlot,
+  LeafSlotLine,
 } from '../leaf/form.js'
 import haveHalt from '@tunebond/have/halt.js'
 
@@ -20,6 +21,7 @@ export enum SiftName {
   FallNest = 'sift-fall-nest',
   FallNick = 'sift-fall-nick',
   FallText = 'sift-fall-text',
+  FallLine = 'sift-fall-line',
   Note = 'sift-note',
   Comb = 'sift-comb',
   Code = 'sift-code',
@@ -27,6 +29,7 @@ export enum SiftName {
   RiseNest = 'sift-rise-nest',
   RiseNick = 'sift-rise-nick',
   RiseText = 'sift-rise-text',
+  RiseLine = 'sift-rise-line',
   Cord = 'sift-cord',
   Size = 'sift-size',
   RiseFork = 'sift-rise-fork',
@@ -54,11 +57,21 @@ export type SiftHash = {
   'sift-fall-fork': SiftFallFork
   'sift-rise-knit': SiftRiseKnit
   'sift-fall-knit': SiftFallKnit
+  'sift-rise-line': SiftRiseLine
+  'sift-fall-line': SiftFallLine
 }
 
 export type SiftFallCull = {
   form: SiftName.FallCull
   leaf: LeafFallCull
+}
+
+export type SiftRiseLine = {
+  form: SiftName.RiseLine
+}
+
+export type SiftFallLine = {
+  form: SiftName.FallLine
 }
 
 export type SiftRiseKnit = {
@@ -71,6 +84,7 @@ export type SiftFallKnit = {
 
 export type SiftRiseFork = {
   form: SiftName.RiseFork
+  leaf?: LeafSlot | LeafSlotLine
 }
 
 export type SiftFallFork = {
@@ -112,6 +126,7 @@ export type SiftCode = {
 export type Sift =
   | SiftFallCull
   | SiftFallNick
+  // can get rid of nest, and use fork instead
   | SiftRiseNest
   | SiftFallNest
   | SiftFallText
@@ -127,6 +142,8 @@ export type Sift =
   | SiftFallFork
   | SiftRiseKnit
   | SiftFallKnit
+  | SiftRiseLine
+  | SiftFallLine
 
 export type SiftRiseCull = {
   form: SiftName.RiseCull

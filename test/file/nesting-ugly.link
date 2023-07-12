@@ -9,8 +9,16 @@ task x
     bar
   }
 
-foo hello{{
-  world
-    bar
-      baz(bing, boop)
-}}
+boom baz
+  foo hello{{
+    world
+      bar
+        baz(bing, boop)
+  }}
+
+---
+
+task
+  x
+  call
+    name{{something(random{<here>})}}

@@ -13,16 +13,22 @@ import {
 export const LINE_TEST_LIST: Array<LeafName> = [LeafName.RiseNick]
 
 export const NICK_TEST_LIST: Array<LeafName> = [
+  LeafName.FallCull,
   LeafName.FallNick,
-  LeafName.SlotLine,
-  LeafName.Size,
+  LeafName.FallHold,
+  LeafName.FallText,
+  LeafName.Link,
+  LeafName.Note,
   LeafName.Comb,
   LeafName.Code,
-  LeafName.Link,
-  LeafName.RiseText,
-  LeafName.RiseNick,
+  LeafName.SlotLine,
   LeafName.RiseCull,
+  LeafName.RiseNick,
+  LeafName.RiseHold,
+  LeafName.RiseText,
   LeafName.Knit,
+  LeafName.Size,
+  LeafName.Line,
   LeafName.Slot,
 ]
 
@@ -32,7 +38,7 @@ export const TEXT_TEST_LIST: Array<LeafName> = [
   LeafName.Cord,
 ]
 
-export const TERM_TEST_LIST: Array<LeafName> = [
+export const KNIT_TEST_LIST: Array<LeafName> = [
   LeafName.RiseNick,
   LeafName.RiseCull,
   LeafName.Knit,
@@ -40,15 +46,23 @@ export const TERM_TEST_LIST: Array<LeafName> = [
 ]
 
 export const CULL_TEST_LIST: Array<LeafName> = [
-  LeafName.Size,
+  LeafName.FallCull,
+  LeafName.FallNick,
+  LeafName.FallHold,
+  LeafName.FallText,
+  LeafName.Link,
+  LeafName.Note,
   LeafName.Comb,
   LeafName.Code,
-  LeafName.FallCull,
-  LeafName.RiseNick,
-  LeafName.RiseCull,
   LeafName.SlotLine,
-  LeafName.Knit,
+  LeafName.RiseCull,
+  LeafName.RiseNick,
+  LeafName.RiseHold,
+  LeafName.RiseText,
+  LeafName.Size,
   LeafName.Slot,
+  LeafName.Knit,
+  LeafName.Line,
 ]
 
 export const NAME: Array<LeafName> = [
@@ -96,7 +110,7 @@ export const FORM: Record<LeafForm, Array<LeafName>> = {
   [LeafForm.Text]: TEXT_TEST_LIST,
   [LeafForm.Nick]: NICK_TEST_LIST,
   [LeafForm.Cull]: CULL_TEST_LIST,
-  [LeafForm.Term]: TERM_TEST_LIST,
+  [LeafForm.Term]: KNIT_TEST_LIST,
   [LeafForm.Base]: BASE_TEST_LIST,
 }
 
@@ -150,11 +164,11 @@ const TEST: Record<LeafName, LeafSeed> = {
   [LeafName.Slot]: {
     test: /^ +/,
   },
+  [LeafName.Knit]: {
+    test: /^[a-z0-9A-Z][a-z0-9A-Z_\-\?\/]*/,
+  },
   [LeafName.Line]: {
     test: /^[@~$%^&\w:\-\*'"\/\.,_]+/,
-  },
-  [LeafName.Knit]: {
-    test: /^[a-z0-0A-Z_\-\?]+/,
   },
   [LeafName.Size]: {
     test: /^-?\d+(?=\b)/,
@@ -176,6 +190,7 @@ export default function makeTextList(
     ...link,
     lineText: link.text.split('\n'),
   }
+  const nickList: Array<string> = []
 
   let formList = [LeafForm.Base]
 
@@ -220,8 +235,16 @@ export default function makeTextList(
 
         move = true
 
-        const findSize = find[0].length
-        const findText = textLine.slice(0, findSize)
+        let findSize = find[0].length
+        let findText = textLine.slice(0, findSize)
+
+        if (form === LeafName.FallNick) {
+          const last = nickList[nickList.length - 1]
+          if (last) {
+            findSize = last.length
+            findText = findText.slice(0, last.length)
+          }
+        }
 
         const stem: Leaf = {
           band: {
@@ -243,6 +266,12 @@ export default function makeTextList(
 
         textLine = textLine.slice(findSize)
         mark += findSize
+
+        if (form === LeafName.RiseNick) {
+          nickList.push(findText)
+        } else if (form === LeafName.FallNick) {
+          nickList.pop()
+        }
 
         switch (form) {
           case LeafName.SlotLine: {
