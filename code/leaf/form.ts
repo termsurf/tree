@@ -3,12 +3,10 @@ export enum LeafForm {
   Line = 'line',
   Text = 'text',
   Nick = 'nick',
-  Cull = 'cull',
   Term = 'term',
 }
 
 export enum LeafName {
-  FallCull = 'leaf-fall-cull',
   FallNick = 'leaf-fall-nick',
   FallHold = 'leaf-fall-hold',
   FallText = 'leaf-fall-text',
@@ -16,7 +14,6 @@ export enum LeafName {
   Note = 'leaf-note',
   Comb = 'leaf-comb',
   Code = 'leaf-code',
-  RiseCull = 'leaf-rise-cull',
   RiseNick = 'leaf-rise-nick',
   RiseHold = 'leaf-rise-hold',
   RiseText = 'leaf-rise-text',
@@ -35,10 +32,6 @@ export type LeafBandSlot = {
 export type LeafBand = {
   base: LeafBandSlot
   head: LeafBandSlot
-}
-
-export type LeafFallCull = LeafBase & {
-  form: LeafName.FallCull
 }
 
 export type LeafComb = LeafBase & {
@@ -75,10 +68,6 @@ export type LeafRiseNick = LeafBase & {
 
 export type LeafFallNick = LeafBase & {
   form: LeafName.FallNick
-}
-
-export type LeafRiseCull = LeafBase & {
-  form: LeafName.RiseCull
 }
 
 export type LeafLink = LeafBase & {
@@ -128,7 +117,6 @@ export type LeafCallCast = LeafCallLink & {
 }
 
 export type Leaf =
-  | LeafFallCull
   | LeafFallNick
   | LeafFallHold
   | LeafFallText
@@ -136,7 +124,6 @@ export type Leaf =
   | LeafNote
   | LeafComb
   | LeafCode
-  | LeafRiseCull
   | LeafRiseNick
   | LeafRiseHold
   | LeafRiseText

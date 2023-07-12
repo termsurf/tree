@@ -16,7 +16,6 @@ export enum LinkHint {
 export enum LinkName {
   Comb = 'link-comb',
   Code = 'link-code',
-  Cull = 'link-cull',
   Knit = 'link-knit',
   Nick = 'link-nick',
   Text = 'link-text',
@@ -29,7 +28,6 @@ export enum LinkName {
 export type LinkHash = {
   'link-comb': LinkComb
   'link-code': LinkCode
-  'link-cull': LinkCull
   'link-knit': LinkKnit
   'link-nick': LinkNick
   'link-cord': LinkCord
@@ -42,7 +40,6 @@ export type LinkHash = {
 export const LINK_TYPE = [
   LinkName.Comb,
   LinkName.Code,
-  LinkName.Cull,
   LinkName.Knit,
   LinkName.Nick,
   LinkName.Text,
@@ -75,40 +72,32 @@ export type LinkFork = {
     | LinkText
     | LinkCord
     | LinkNick
-    | LinkCull
     | LinkComb
     | LinkCode
     | LinkKnit
   >
-  base?: LinkFork | LinkNick | LinkCull
+  base?: LinkFork | LinkNick
   form: LinkName.Fork
 }
 
 export type LinkComb = {
   form: LinkName.Comb
   bond: number
-  base?: LinkCull | LinkFork
+  base?: LinkFork
   leaf: Leaf
 }
 
 export type LinkCode = {
   bond: number
   mold: string
-  base?: LinkCull | LinkFork
+  base?: LinkFork
   form: LinkName.Code
   leaf: Leaf
 }
 
-export type LinkCull = {
-  nest?: LinkFork | LinkSize | LinkKnit
-  base?: LinkKnit
-  form: LinkName.Cull
-  fold?: LinkFold
-}
-
 export type LinkKnit = {
   base?: LinkFork
-  nest: Array<LinkCull | LinkNick | LinkCord>
+  nest: Array<LinkNick | LinkCord>
   form: LinkName.Knit
   fold?: LinkFold
 }
@@ -135,21 +124,20 @@ export type LinkCord = {
 export type LinkText = {
   nest: Array<LinkCord | LinkNick>
   form: LinkName.Text
-  base?: LinkCull | LinkFork
+  base?: LinkFork
   fold?: LinkFold
 }
 
 export type LinkSize = {
   form: LinkName.Size
   bond: number
-  base?: LinkCull | LinkFork
+  base?: LinkFork
   leaf: Leaf
 }
 
 export type Link =
   | LinkComb
   | LinkCode
-  | LinkCull
   | LinkKnit
   | LinkNick
   | LinkCord

@@ -13,7 +13,6 @@ import {
 export const LINE_TEST_LIST: Array<LeafName> = [LeafName.RiseNick]
 
 export const NICK_TEST_LIST: Array<LeafName> = [
-  LeafName.FallCull,
   LeafName.FallNick,
   LeafName.FallHold,
   LeafName.FallText,
@@ -22,7 +21,6 @@ export const NICK_TEST_LIST: Array<LeafName> = [
   LeafName.Comb,
   LeafName.Code,
   LeafName.SlotLine,
-  LeafName.RiseCull,
   LeafName.RiseNick,
   LeafName.RiseHold,
   LeafName.RiseText,
@@ -39,31 +37,10 @@ export const TEXT_TEST_LIST: Array<LeafName> = [
 
 export const KNIT_TEST_LIST: Array<LeafName> = [
   LeafName.RiseNick,
-  LeafName.RiseCull,
-  LeafName.Knit,
-]
-
-export const CULL_TEST_LIST: Array<LeafName> = [
-  LeafName.FallCull,
-  LeafName.FallNick,
-  LeafName.FallHold,
-  LeafName.FallText,
-  LeafName.Link,
-  LeafName.Note,
-  LeafName.Comb,
-  LeafName.Code,
-  LeafName.SlotLine,
-  LeafName.RiseCull,
-  LeafName.RiseNick,
-  LeafName.RiseHold,
-  LeafName.RiseText,
-  LeafName.Size,
-  LeafName.Slot,
   LeafName.Knit,
 ]
 
 export const NAME: Array<LeafName> = [
-  LeafName.FallCull,
   LeafName.FallNick,
   LeafName.FallHold,
   LeafName.FallText,
@@ -72,7 +49,6 @@ export const NAME: Array<LeafName> = [
   LeafName.Comb,
   LeafName.Code,
   LeafName.SlotLine,
-  LeafName.RiseCull,
   LeafName.RiseNick,
   LeafName.RiseHold,
   LeafName.RiseText,
@@ -82,7 +58,6 @@ export const NAME: Array<LeafName> = [
 ]
 
 export const BASE_TEST_LIST: Array<LeafName> = [
-  LeafName.FallCull,
   LeafName.FallNick,
   LeafName.FallHold,
   LeafName.FallText,
@@ -91,7 +66,6 @@ export const BASE_TEST_LIST: Array<LeafName> = [
   LeafName.Comb,
   LeafName.Code,
   LeafName.SlotLine,
-  LeafName.RiseCull,
   LeafName.RiseNick,
   LeafName.RiseHold,
   LeafName.RiseText,
@@ -104,7 +78,6 @@ export const FORM: Record<LeafForm, Array<LeafName>> = {
   [LeafForm.Line]: LINE_TEST_LIST,
   [LeafForm.Text]: TEXT_TEST_LIST,
   [LeafForm.Nick]: NICK_TEST_LIST,
-  [LeafForm.Cull]: CULL_TEST_LIST,
   [LeafForm.Term]: KNIT_TEST_LIST,
   [LeafForm.Base]: BASE_TEST_LIST,
 }
@@ -117,9 +90,6 @@ export const FORM: Record<LeafForm, Array<LeafName>> = {
  */
 
 const TEST: Record<LeafName, LeafSeed> = {
-  [LeafName.FallCull]: {
-    test: /^\]/,
-  },
   [LeafName.FallNick]: {
     test: /^\}+/,
   },
@@ -143,9 +113,6 @@ const TEST: Record<LeafName, LeafSeed> = {
   },
   [LeafName.SlotLine]: {
     test: /^\n/,
-  },
-  [LeafName.RiseCull]: {
-    test: /^\[/,
   },
   [LeafName.RiseNick]: {
     test: /^\{+/,
@@ -276,14 +243,6 @@ export default function makeTextList(
             break
           }
           case LeafName.FallNick: {
-            formList.pop()
-            break
-          }
-          case LeafName.RiseCull: {
-            formList.push(LeafForm.Cull)
-            break
-          }
-          case LeafName.FallCull: {
             formList.pop()
             break
           }

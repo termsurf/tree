@@ -4,20 +4,17 @@ import type {
   LeafCallCast,
   LeafCode,
   LeafComb,
-  LeafFallCull,
   LeafFallHold,
   LeafFallNick,
   LeafFallText,
   Leaf,
   LeafKnit,
-  LeafLine,
   LeafLink,
   LeafRiseNick,
   LeafCord,
   LeafRiseText,
   LeafSlot,
   LeafSize,
-  LeafRiseCull,
   LeafRiseHold,
 } from '../leaf/form.js'
 import { LeafName } from '../leaf/form.js'
@@ -34,7 +31,6 @@ enum Form {
   Knit = 'knit',
   Text = 'text',
   Nick = 'nick',
-  Cull = 'cull',
   Line = 'line',
   Fork = 'fork',
   Nest = 'nest',
@@ -136,12 +132,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       // console.log(leaf.form, leaf.text)
 
       switch (leaf.form) {
-        case LeafName.RiseCull:
-          castRiseCull(leaf)
-          break
-        case LeafName.FallCull:
-          castFallCull(leaf)
-          break
         case LeafName.RiseNick:
           castRiseNick(leaf)
           break
@@ -265,15 +255,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     // siftList.push({
     //   form: SiftName.RiseNest,
     // })
-  }
-
-  function castRiseCull(seed: LeafRiseCull) {
-    siftList.push({
-      form: SiftName.RiseCull,
-      leaf: seed,
-    })
-    saveHead(makeHead(Form.Cull, leaf))
-    saveReadNote(1)
   }
 
   function castSlot(seed: LeafSlot) {
@@ -453,43 +434,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     })
   }
 
-  /**
-   * Close the cull form.
-   */
-
-  function castFallCull(seed: LeafFallCull) {
-    walk: while (true) {
-      const head = readHead()
-      // console.log('fall cull', head)
-      switch (head?.form) {
-        case Form.Knit:
-          siftList.push({
-            form: SiftName.FallKnit,
-          })
-          tossHead()
-          break
-        case Form.Nest:
-          siftList.push({ form: SiftName.FallNest })
-          tossHead()
-          break
-        case Form.Fork:
-          siftList.push({ form: SiftName.FallFork })
-          tossHead()
-          break
-        case Form.Cull:
-          siftList.push({
-            leaf: seed,
-            form: SiftName.FallCull,
-          })
-          tossHead()
-          break
-        default:
-          break walk
-      }
-    }
-    tossReadNote()
-  }
-
   function readCode(mold: string, bond: string) {
     switch (mold) {
       case 'b':
@@ -571,7 +515,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
     switch (last?.form) {
       case LeafName.SlotLine:
       case LeafName.Link:
-      case LeafName.RiseCull:
       case LeafName.RiseNick:
       case LeafName.RiseHold:
       case LeafName.Slot:
@@ -590,7 +533,6 @@ export default function makeSiftList(link: SiftCallLink): SiftCallCast {
       case LeafName.Slot:
       case LeafName.SlotLine:
       case LeafName.Link:
-      case LeafName.RiseCull:
       case LeafName.RiseNick:
       case LeafName.RiseHold:
       case undefined: {

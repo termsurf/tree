@@ -8,8 +8,7 @@ call some{separator}path
       and interpolation{
         here <and {{
           test
-            there[pretty much{really}]
-            basic and there
+            there/{pretty much{really}}
         }} and there!>
       }
     }}
@@ -23,4 +22,4 @@ save
     </>
 call
   some{separator}path
-  <some text{{and(interpolation{here(<and {{test(there[pretty(much{really})](basic(and(there))))}} and there!>)})}}>
+  <some text{{and(interpolation{here(<and {{test(there/{pretty(much{really})})}} and there!>)})}}>

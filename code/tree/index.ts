@@ -10,14 +10,12 @@ import {
   LinkCallCast,
   LinkCord,
   LinkTree,
-  LinkCull,
   LinkHint,
   LinkKnit,
   LinkName,
   LinkNick,
   LinkFork,
   haveLink,
-  haveLinkForm,
   LinkText,
   LinkSize,
   LinkComb,
@@ -123,20 +121,6 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
           seed,
         })
         break
-      case SiftName.RiseCull:
-        readRiseCull({
-          ...link,
-          wall,
-          seed,
-        })
-        break
-      case SiftName.FallCull:
-        readFallCull({
-          ...link,
-          wall,
-          seed,
-        })
-        break
       case SiftName.Size:
         readSize({
           ...link,
@@ -207,10 +191,6 @@ function readSiftTree(link: SiftCallCast): LinkCallCast {
     ...link,
     tree,
   }
-}
-
-function readFallCull(link: LinkCallLink<SiftName.FallCull>): void {
-  link.wall.pop()
 }
 
 function readRiseNest(link: LinkCallLink<SiftName.RiseNest>): void {
@@ -351,46 +331,6 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
       linkBase(fork, base)
 
       takeSlab(slab, fork)
-      break
-    }
-    case LinkName.Cull: {
-      const fork: LinkFork = {
-        nest: [],
-        form: LinkName.Fork,
-      }
-
-      base.nest = fork
-      slab.line.push(fork)
-      // makeSlab(wall, fork)
-
-      linkBase(fork, base)
-
-      takeSlab(slab, fork)
-      break
-    }
-    default:
-      haveLink(base, 'base')
-      throw kink('not_implemented', {
-        form: base.form,
-        file: link.file,
-      })
-  }
-}
-
-function readRiseCull(link: LinkCallLink<SiftName.RiseCull>): void {
-  const { base, slab, wall } = readBase(link)
-
-  switch (base.form) {
-    case LinkName.Knit: {
-      const cull: LinkCull = {
-        form: LinkName.Cull,
-      }
-
-      linkBase(cull, base)
-
-      base.nest.push(cull)
-
-      makeSlab(wall, cull)
       break
     }
     default:

@@ -111,21 +111,6 @@ function showLinkTreeBase(
       }
       break
     }
-    case LinkName.Cull: {
-      const slot: Array<string> = []
-      if (seed.nest) {
-        showLinkTreeBase(seed.nest, true, nestSize + 1).forEach(
-          line => {
-            slot.push(`${line}`)
-          },
-        )
-      }
-      const text = slot.join('')
-      if (text) {
-        list.push('[' + text + ']')
-      }
-      break
-    }
     case LinkName.Comb: {
       list.push(`${seed.bond}`)
       break
@@ -150,26 +135,6 @@ function showLinkTreeBase(
       break
     }
     case LinkName.Knit: {
-      const line: Array<string> = []
-      seed.nest.forEach((seg, i) => {
-        showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
-          if (
-            i > 0 &&
-            seg.form !== LinkName.Cull &&
-            seg.form !== LinkName.Nick
-          ) {
-            line.push('')
-          }
-          line.push(l)
-        })
-      })
-      const text = line.join('')
-      if (text) {
-        list.push(text)
-      }
-      break
-    }
-    case LinkName.Line: {
       const line: Array<string> = []
       seed.nest.forEach((seg, i) => {
         showLinkTreeBase(seg, true, nestSize + 1).forEach(l => {
