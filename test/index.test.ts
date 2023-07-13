@@ -70,6 +70,7 @@ async function start() {
 
   for (const path of kinkFixtures) {
     const localPath = path.replace(`${__dirname}/`, '')
+    console.log(localPath)
     const content = await fs.readFile(path, 'utf-8')
     const [provided, expected] = content
       .split(/\n---\n/)

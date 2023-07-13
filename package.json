@@ -1,9 +1,9 @@
 {
   "name": "@tunebond/link",
   "type": "module",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "license": "MIT",
-  "main": "./host/code/index.js",
+  "main": "./make/code/index.js",
   "scripts": {
     "make": "tsc && tsc-alias",
     "scan": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",

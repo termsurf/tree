@@ -287,15 +287,33 @@ export default function makeSiftList(
       let tick = Math.floor(seed.text.length / 2)
 
       if (seed.text.length % 2 !== 0) {
-        haltList.push(new Error('Invalid indentation'))
+        kinkList.push(
+          kink('invalid_nesting', {
+            band: seed.band,
+            text: link.lineText,
+            file: link.file,
+          }),
+        )
         // try fixing the code and seeing what happens
         tick = readNote.tick + 1
       } else if (tick > lastTick + 1) {
-        haltList.push(new Error('Invalid indentation'))
+        // kinkList.push(
+        //   kink('invalid_nesting', {
+        //     band: seed.band,
+        //     text: link.lineText,
+        //     file: link.file,
+        //   }),
+        // )
         // try fixing the code and seeing what happens
         tick = lastTick + 1
       } else if (tick < readNote.tick) {
-        haltList.push(new Error('Invalid indentation'))
+        // kinkList.push(
+        //   kink('invalid_nesting', {
+        //     band: seed.band,
+        //     text: link.lineText,
+        //     file: link.file,
+        //   }),
+        // )
         // try fixing the code and seeing what happens
         tick = readNote.tick + 1
       }
@@ -511,11 +529,11 @@ export default function makeSiftList(
   function castKnit(seed: LeafKnit) {
     castRiseKnit(seed)
 
-    if (seed.text.match(/\/{2,}/)) {
-      haltList.push(new Error('Invalid knit'))
-    } else if (!seed.text.match(/^[0-9a-z-\/]+$/)) {
-      haltList.push(new Error('Invalid knit'))
-    }
+    // if (seed.text.match(/\/{2,}/)) {
+    //   haltList.push(new Error('Invalid knit'))
+    // } else if (!seed.text.match(/^[0-9a-z-\/]+$/)) {
+    //   haltList.push(new Error('Invalid knit'))
+    // }
 
     siftList.push({
       form: SiftName.Cord,

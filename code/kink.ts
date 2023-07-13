@@ -47,6 +47,22 @@ type Base = {
       text: string
     }
   }
+  invalid_indentation: {
+    take: {
+      file: string
+      text: Array<string>
+      band: LeafBand
+      hint?: string
+    }
+    base: {
+      file: string
+      band: LeafBand
+      hint?: string
+    }
+    fill: {
+      text: string
+    }
+  }
 }
 
 type Name = keyof Base
@@ -79,7 +95,7 @@ Kink.fill(
     file: `${base.file}:${base.band.base.line + 1}:${
       base.band.base.mark + 1
     }`,
-    text: generateHighlightedErrorText(take.text, take.band),
+    text: makeShowText(take.text, take.band),
   }),
 )
 
@@ -87,7 +103,7 @@ Kink.base(
   host,
   'invalid_nesting',
   (take: Base['invalid_nesting']['take']) => ({
-    code: 1,
+    code: 2,
     note: 'The Link Tree has invalid nesting',
   }),
 )
@@ -112,7 +128,41 @@ Kink.fill(
     file: `${base.file}:${base.band.base.line + 1}:${
       base.band.base.mark + 1
     }`,
-    text: generateHighlightedErrorText(take.text, take.band),
+    text: makeShowText(take.text, take.band),
+    hint: take.hint,
+  }),
+)
+
+Kink.base(
+  host,
+  'invalid_indentation',
+  (take: Base['invalid_indentation']['take']) => ({
+    code: 3,
+    note: 'The Link Tree has invalid indentation',
+  }),
+)
+
+Kink.load(
+  host,
+  'invalid_indentation',
+  (take: Base['invalid_indentation']['take']) => ({
+    file: take.file,
+    band: take.band,
+    hint: take.hint,
+  }),
+)
+
+Kink.fill(
+  host,
+  'invalid_indentation',
+  (
+    take: Base['invalid_indentation']['take'],
+    base: Base['invalid_indentation']['base'],
+  ) => ({
+    file: `${base.file}:${base.band.base.line + 1}:${
+      base.band.base.mark + 1
+    }`,
+    text: makeShowText(take.text, take.band),
     hint: take.hint,
   }),
 )
@@ -149,11 +199,11 @@ export function makeFill<N extends Name>(
 
 export { makeKinkText }
 
-export function generateHighlightedErrorText(
+export function makeShowText(
   lineText: Array<string>,
   band: LeafBand,
 ): string {
-  const headLine = Math.min(band.base.line + 2, lineText.length - 1)
+  const headLine = Math.min(band.base.line + 4, lineText.length - 1)
   const headLineString = lineText[headLine]
   haveText(headLineString, `text[${headLine}]`)
 
@@ -165,7 +215,7 @@ export function generateHighlightedErrorText(
     },
     base: {
       mark: 0,
-      line: Math.max(0, band.base.line - 2),
+      line: Math.max(0, band.base.line - 4),
     },
   }
 
@@ -193,8 +243,7 @@ export function makeBandText(
     let line = lineText[i]
     haveText(line, 'line')
     const x = i + 1
-    let z =
-      i < line.length ? x.toString().padStart(pad, ' ') : defaultIndent
+    let z = x.toString().padStart(pad, ' ')
 
     if (band.base.line === i) {
       let size = z.length + 3 + line.length
