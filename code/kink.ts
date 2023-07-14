@@ -72,7 +72,7 @@ Kink.base(
   'syntax_error',
   (take: Base['syntax_error']['take']) => ({
     code: 1,
-    note: 'Error in the structure of the Link Text Tree',
+    note: 'Error in the structure of the LinkText Tree',
   }),
 )
 
