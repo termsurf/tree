@@ -1,5 +1,5 @@
-import Kink from '@tunebond/kink'
-import { haveMesh } from '@tunebond/have'
+import Kink from '@nerdbond/kink'
+import { haveMesh } from '@nerdbond/have'
 import kink from '../kink.js'
 import {
   LeafForm,

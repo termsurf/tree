@@ -21,7 +21,7 @@ import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
 import show from './show.js'
-import Kink from '@tunebond/kink'
+import Kink from '@nerdbond/kink'
 import kink from '../kink.js'
 
 export * from './form.js'

@@ -22,8 +22,8 @@ import {
   LinkCode,
 } from './form.js'
 import kink from '../kink.js'
-import { haveMesh } from '@tunebond/have'
-import Kink from '@tunebond/kink'
+import { haveMesh } from '@nerdbond/have'
+import Kink from '@nerdbond/kink'
 
 export * from '../sift/index.js'
 export * from '../leaf/index.js'

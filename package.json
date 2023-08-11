@@ -1,5 +1,5 @@
 {
-  "name": "@tunebond/link",
+  "name": "@nerdbond/link",
   "type": "module",
   "version": "0.2.0",
   "license": "MIT",
@@ -38,10 +38,10 @@
   },
   "dependencies": {
     "@lancejpollard/configured-quadratic-residue-prng.js": "^1.0.0",
-    "@tunebond/have": "^0.x.x",
-    "@tunebond/kink": "^0.x.x",
-    "@tunebond/kink-text": "^0.x.x",
-    "@tunebond/tint-text": "^0.x.x",
+    "@nerdbond/have": "^0.x.x",
+    "@nerdbond/kink": "^0.x.x",
+    "@nerdbond/kink-text": "^0.x.x",
+    "@nerdbond/tint-text": "^0.x.x",
     "browser-or-node": "^2.1.1"
   }
 }
