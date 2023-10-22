@@ -1,5 +1,5 @@
 {
-  "name": "@nerdbond/link",
+  "name": "@wavebond/link",
   "type": "module",
   "version": "0.2.0",
   "license": "MIT",
@@ -7,7 +7,7 @@
   "scripts": {
     "make": "tsc && tsc-alias",
     "scan": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
-    "test": "npx tsx test/index.test.ts",
+    "test": "tsx test/index.test.ts",
     "host": "pnpm make && npm publish --access=public"
   },
   "devDependencies": {
@@ -38,10 +38,10 @@
   },
   "dependencies": {
     "@lancejpollard/configured-quadratic-residue-prng.js": "^1.0.0",
-    "@nerdbond/have": "^0.x.x",
-    "@nerdbond/kink": "^0.x.x",
-    "@nerdbond/kink-text": "^0.x.x",
-    "@nerdbond/tint-text": "^0.x.x",
+    "@wavebond/have": "^0.2.0",
+    "@wavebond/kink": "^0.x.x",
+    "@wavebond/kink-text": "^0.x.x",
+    "@wavebond/tint-text": "^0.x.x",
     "browser-or-node": "^2.1.1"
   }
 }

@@ -1,10 +1,10 @@
 
-deck <@nerdbond/wolf>
+deck <@wavebond/wolf>
   bear ./code
   test ./test
   mark <0.0.1>
 
-deck @nerdbond/wolf
+deck @wavebond/wolf
   bear ./code
   mark <0.0.1>
   test ./test{{{another 12}}}two/one
@@ -12,7 +12,7 @@ deck @nerdbond/wolf
 ---
 
 deck
-  <@nerdbond/wolf>
+  <@wavebond/wolf>
   bear
     ./code
   test
@@ -20,7 +20,7 @@ deck
   mark
     <0.0.1>
 deck
-  @nerdbond/wolf
+  @wavebond/wolf
   bear
     ./code
   mark

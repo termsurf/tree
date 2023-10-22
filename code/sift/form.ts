@@ -12,7 +12,7 @@ import type {
   LeafSlot,
   LeafSlotLine,
 } from '../leaf/form.js'
-import haveHalt from '@nerdbond/have/halt.js'
+import haveHalt from '@nerdbond/have/make/halt.js'
 
 export enum SiftName {
   FallNest = 'sift-fall-nest',
