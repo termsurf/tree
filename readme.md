@@ -51,7 +51,7 @@ limitations under the License.
 
 This is being developed by the folks at [WaveBond](https://wave.bond), a
 California-based project for helping humanity master information and
-computation. Find us on [Twitter](https://twitter.com/wavebond),
+computation. Find us on [Twitter](https://twitter.com/_wavebond),
 [LinkedIn](https://www.linkedin.com/company/wavebond), and
 [Facebook](https://www.facebook.com/wavebond). Check out our other
 [GitHub projects](https://github.com/wavebond) as well!
