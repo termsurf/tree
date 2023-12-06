@@ -1,7 +1,7 @@
 
-deck @wavebond/wolf
+deck @textsurf/wolf
 
 ---
 
 deck
-  @wavebond/wolf
+  @textsurf/wolf

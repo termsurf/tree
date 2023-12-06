@@ -1,5 +1,5 @@
 {
-  "name": "@wavebond/link",
+  "name": "@textsurf/link",
   "type": "module",
   "version": "0.2.0",
   "license": "MIT",
@@ -38,10 +38,10 @@
   },
   "dependencies": {
     "@lancejpollard/configured-quadratic-residue-prng.js": "^1.0.0",
-    "@wavebond/have": "^0.2.0",
-    "@wavebond/kink": "^0.x.x",
-    "@wavebond/kink-text": "^0.x.x",
-    "@wavebond/tint-text": "^0.x.x",
+    "@textsurf/have": "^0.2.0",
+    "@textsurf/kink": "^0.x.x",
+    "@textsurf/kink-text": "^0.x.x",
+    "@textsurf/tint-text": "^0.x.x",
     "browser-or-node": "^2.1.1"
   }
 }
