@@ -29,7 +29,7 @@ means of capturing data down into structured form.
 
 Install the
 [syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
-VSCode extension and get to work!
+VSCode extension and get aworkin!
 
 Check out the [BaseNote Book](https://github.com/termsurf/base.link) for
 the most up-to-date info on the project! Specifically the pages on
