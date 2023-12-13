@@ -27,7 +27,7 @@ language. It is a way to model information and computation in an easy to
 read and write format, suitable for hierarchical note taking and other
 means of capturing data down into structured form.
 
-Check out the [BaseLink Book](https://github.com/termsurf/base.link) for
+Check out the [BaseNote Book](https://github.com/termsurf/base.link) for
 the most up-to-date info on the project! Specifically the pages on
 Syntax, for a detailed spec on NoteText.
 
