@@ -1,5 +1,5 @@
 import { Link, LinkName } from './form.js'
-import tint from '@nerdbond/tint-text'
+import tint from '@termsurf/tint-text'
 
 const G = { tone: 'green' }
 

@@ -1,5 +1,5 @@
-import Kink from '@nerdbond/kink'
-import { haveMesh } from '@nerdbond/have'
+import Kink from '@termsurf/kink'
+import { haveMesh } from '@termsurf/have'
 import kink from '../kink.js'
 import {
   LeafForm,

@@ -1,13 +1,13 @@
-import Kink from '@nerdbond/kink'
-import { makeKinkText } from '@nerdbond/kink-text'
-import tint from '@nerdbond/tint-text'
+import Kink from '@termsurf/kink'
+import { makeKinkText } from '@termsurf/kink-text'
+import tint from '@termsurf/tint-text'
 import { LeafBand } from './leaf/form.js'
-import { haveText } from '@nerdbond/have'
+import { haveText } from '@termsurf/have'
 import { isNode } from 'browser-or-node'
 
 const VIEW_SIZE = (isNode ? process.stdout.columns : 80) ?? 80
 
-const host = '@nerdbond/link'
+const host = '@termsurf/link'
 
 type Base = {
   syntax_error: {

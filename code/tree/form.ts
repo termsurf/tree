@@ -1,5 +1,5 @@
 import type { Leaf } from '../leaf/form.js'
-import haveHalt from '@nerdbond/have/make/halt.js'
+import haveHalt from '@termsurf/have/make/halt.js'
 
 export enum LinkHint {
   // Code = 'code',
