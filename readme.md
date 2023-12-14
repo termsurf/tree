@@ -31,9 +31,13 @@ Install the
 [syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
 VSCode extension and get aworkin!
 
-Check out the [BaseNote Book](https://github.com/termsurf/base.link) for
+Check out the [BaseNote Book](https://github.com/termsurf/base.note) for
 the most up-to-date info on the project! Specifically the pages on
 Syntax, for a detailed spec on NoteText.
+
+## State of Library
+
+Tests pass for positive cases (`pnpm test`), but fail on some crazy error cases it should handle nicely. So still have some work to do on making this robust, but it should parse the basic structures fine, just not commplicated interpolation styles with nesting.
 
 ## License
 

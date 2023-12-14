@@ -47,7 +47,7 @@ process.on('uncaughtException', kink => {
 
 async function start() {
   const fixtures = (await fs.readdir(`${__dirname}/file`))
-    .filter(x => x.endsWith('.link'))
+    .filter(x => x.endsWith('.note'))
     .map(x => `${__dirname}/file/${x}`)
     .filter(x => !FIND || x.match(FIND))
 
@@ -64,7 +64,7 @@ async function start() {
   }
 
   const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
-    .filter(x => x.endsWith('.link'))
+    .filter(x => x.endsWith('.note'))
     .map(x => `${__dirname}/file/kink/${x}`)
     .filter(x => !FIND || x.match(FIND))
 
