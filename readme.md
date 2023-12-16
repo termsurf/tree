@@ -21,11 +21,12 @@
 
 ## Welcome
 
-NoteText is a little more than a markup language, tending toward a
-programming language. In fact, it can be used for a programming
-language. It is a way to model information and computation in an easy to
-read and write format, suitable for hierarchical note taking and other
-means of capturing data down into structured form.
+NoteText (see the [website](https://note.surf)) is a little more than a
+markup language, tending toward a programming language. In fact, it can
+be used for a programming language. It is a way to model information and
+computation in an easy to read and write format, suitable for
+hierarchical note taking and other means of capturing data down into
+structured form.
 
 Install the
 [syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
@@ -37,7 +38,10 @@ Syntax, for a detailed spec on NoteText.
 
 ## State of Library
 
-Tests pass for positive cases (`pnpm test`), but fail on some crazy error cases it should handle nicely. So still have some work to do on making this robust, but it should parse the basic structures fine, just not commplicated interpolation styles with nesting.
+Tests pass for positive cases (`pnpm test`), but fail on some crazy
+error cases it should handle nicely. So still have some work to do on
+making this robust, but it should parse the basic structures fine, just
+not commplicated interpolation styles with nesting.
 
 ## License
 
