@@ -34,6 +34,7 @@ pnpm add @termsurf/leaf
 
 ```ts
 import leaf from '@termsurf/leaf'
+
 const file = './tree.leaf'
 const text = 'form call'
 const parse = leaf({ file, text })
