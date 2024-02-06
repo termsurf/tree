@@ -6,7 +6,8 @@ import { fileURLToPath } from 'url'
 import Kink, { KinkList } from '@termsurf/kink'
 import { makeBaseKinkText, makeKinkText } from '@termsurf/kink-text'
 
-import makeLinkTree, { showLinkTree } from '../code/tree/index.js'
+import leaf from '../code/index.js'
+import { showLinkTree } from '../code/tree/index.js'
 import show from 'code/sift/show.js'
 import makeSiftList, { SiftCallCast } from 'code/sift/index.js'
 import makeTextList from 'code/leaf/index.js'
@@ -47,7 +48,7 @@ process.on('uncaughtException', kink => {
 
 async function start() {
   const fixtures = (await fs.readdir(`${__dirname}/file`))
-    .filter(x => x.endsWith('.note'))
+    .filter(x => x.endsWith('.leaf'))
     .map(x => `${__dirname}/file/${x}`)
     .filter(x => !FIND || x.match(FIND))
 
@@ -64,7 +65,7 @@ async function start() {
   }
 
   const kinkFixtures = (await fs.readdir(`${__dirname}/file/kink`))
-    .filter(x => x.endsWith('.note'))
+    .filter(x => x.endsWith('.leaf'))
     .map(x => `${__dirname}/file/kink/${x}`)
     .filter(x => !FIND || x.match(FIND))
 
@@ -84,7 +85,7 @@ async function start() {
 start()
 
 function assertParse(file: string, provided: string, expected: string) {
-  const lead = makeLinkTree({ file, text: provided })
+  const lead = leaf({ file, text: provided })
 
   if (Array.isArray(lead)) {
     throw new KinkList(lead)
@@ -107,7 +108,7 @@ function assertParseKink(
   provided: string,
   expected: string,
 ) {
-  const lead = makeLinkTree({ file, text: provided })
+  const lead = leaf({ file, text: provided })
 
   if (Array.isArray(lead)) {
     const noteList = lead.map(x => x.note).join('\n')

@@ -28,8 +28,19 @@ computation in an easy to read and write format, suitable for
 hierarchical leaf taking and other means of capturing data down into
 structured form.
 
+```
+pnpm add @termsurf/leaf
+```
+
+```ts
+import leaf from '@termsurf/leaf'
+const file = './tree.leaf'
+const text = 'form call'
+const parse = leaf({ file, text })
+```
+
 Install the
-[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
+[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.leaf-text)
 VSCode extension and get aworkin!
 
 ## State of Library

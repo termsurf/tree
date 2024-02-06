@@ -1,14 +1,14 @@
 {
   "name": "@termsurf/leaf",
   "type": "module",
-  "version": "0.2.0",
+  "version": "1.0.1",
   "license": "MIT",
-  "main": "./make/code/index.js",
+  "main": "./host/code/index.js",
   "scripts": {
     "make": "tsc && tsc-alias",
     "scan": "concurrently --kill-others \"tsc -w\" \"tsc-alias -w\"",
     "test": "tsx test/index.test.ts",
-    "host": "pnpm make && npm publish --access=public"
+    "host": "rm -rf host && pnpm make && npm publish --access=public"
   },
   "devDependencies": {
     "@trivago/prettier-plugin-sort-imports": "^4.0.0",
