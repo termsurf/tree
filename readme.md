@@ -7,10 +7,10 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/leaf/blob/make/view/link.svg?raw=true' height='256'>
+  <img src='https://github.com/termsurf/note/blob/make/view/note.svg?raw=true' height='256'>
 </p>
 
-<h3 align='center'>leaf</h3>
+<h3 align='center'>note</h3>
 <p align='center'>
   A Data Modeling Language
 </p>
@@ -21,27 +21,27 @@
 
 ## Welcome
 
-LeafText (see the [website](https://leaf.surf)) is a little more than a
+NoteText (see the [website](https://note.surf)) is a little more than a
 markup language, tending toward a programming language. In fact, it can
 be used for a programming language. It is a way to model information and
 computation in an easy to read and write format, suitable for
-hierarchical leaf taking and other means of capturing data down into
+hierarchical note taking and other means of capturing data down into
 structured form.
 
 ```
-pnpm add @termsurf/leaf
+pnpm add @termsurf/note
 ```
 
 ```ts
-import leaf from '@termsurf/leaf'
+import note from '@termsurf/note'
 
-const file = './tree.leaf'
+const file = './tree.note'
 const text = 'form call'
-const parse = leaf({ file, text })
+const parse = note({ file, text })
 ```
 
 Install the
-[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.leaf-text)
+[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
 VSCode extension and get aworkin!
 
 ## State of Library
