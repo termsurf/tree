@@ -7,12 +7,12 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/note/blob/make/view/note.svg?raw=true' height='256'>
+  <img src='https://github.com/termsurf/tree/blob/make/view/note.svg?raw=true' height='256'>
 </p>
 
-<h3 align='center'>note</h3>
+<h3 align='center'>tree</h3>
 <p align='center'>
-  A Data Modeling Language
+  A Data Modeling Programming Language
 </p>
 
 <br/>
@@ -21,7 +21,7 @@
 
 ## Welcome
 
-NoteText (see the [website](https://note.surf)) is a little more than a
+TreeCode (see the [website](https://tree.surf)) is a little more than a
 markup language, tending toward a programming language. In fact, it can
 be used for a programming language. It is a way to model information and
 computation in an easy to read and write format, suitable for
@@ -29,13 +29,13 @@ hierarchical note taking and other means of capturing data down into
 structured form.
 
 ```
-pnpm add @termsurf/note
+pnpm add @termsurf/tree
 ```
 
 ```ts
-import note from '@termsurf/note'
+import tree from '@termsurf/tree'
 
-const file = './tree.note'
+const file = './base.tree'
 const text = 'form call'
 const parse = note({ file, text })
 ```
