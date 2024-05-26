@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/tree/blob/make/view/note.svg?raw=true' height='256'>
+  <img src='https://github.com/termsurf/tree/blob/make/view/tree.svg?raw=true' height='256'>
 </p>
 
 <h3 align='center'>tree</h3>
@@ -37,12 +37,16 @@ import tree from '@termsurf/tree'
 
 const file = './base.tree'
 const text = 'form call'
-const parse = note({ file, text })
+const parse = tree({ file, text })
 ```
 
 Install the
-[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.note-text)
+[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.tree-code)
 VSCode extension and get aworkin!
+
+<p align='center'>
+  <img src='https://github.com/termsurf/tree/blob/make/view/tree.png?raw=true' width='400'>
+</p>
 
 ## State of Library
 
