@@ -44,9 +44,7 @@ Install the
 [syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.tree-code)
 VSCode extension and get aworkin!
 
-<p align='center'>
-  <img src='https://github.com/termsurf/tree/blob/make/view/tree.png?raw=true' width='400'>
-</p>
+<img src='https://github.com/termsurf/tree/blob/make/view/tree.png?raw=true' />
 
 ## State of Library
 
