@@ -33,11 +33,11 @@ pnpm add @termsurf/tree
 ```
 
 ```ts
-import tree from '@termsurf/tree'
+import make from '@termsurf/tree'
 
 const file = './base.tree'
 const text = 'form call'
-const parse = tree({ file, text })
+const tree = make({ file, text })
 ```
 
 Install the
