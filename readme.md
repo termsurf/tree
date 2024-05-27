@@ -42,6 +42,11 @@ Upon parsing, we should be able to say whether or not the TreeCode
 passes the threshold for being called `TreeFlow`, otherwise it is by
 default considered `TreeMesh`.
 
+In principle, two separate parsers can be developed for these two forms,
+`TreeFlow` being optimized for not handling all the complex cases of
+circular reasoning and interpolation, just sticking to basic expanding
+data structures like JSON.
+
 ## Installation
 
 ```
