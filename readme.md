@@ -56,11 +56,14 @@ pnpm add @termsurf/tree
 ## Usage
 
 ```ts
-import make from '@termsurf/tree'
+import makeTree from '@termsurf/tree'
 
 const file = './base.tree'
-const text = 'form call'
-const tree = make({ file, text })
+const text = `deck <@termsurf/wolf>
+  bear ./code
+  test ./test
+  mark <0.0.1>`
+const tree = makeTree({ file, text })
 ```
 
 ## VSCode Integration
