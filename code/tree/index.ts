@@ -4,22 +4,22 @@ import makeSiftList, {
   SiftName,
 } from '../sift/index.js'
 import makeTextList from '../leaf/index.js'
-import { LeafCallLink } from '../leaf/form.js'
+import { LeafCallTree } from '../leaf/form.js'
 import {
-  Link,
-  LinkCallCast,
-  LinkCord,
-  LinkTree,
-  LinkHint,
-  LinkKnit,
-  LinkName,
-  LinkNick,
-  LinkFork,
-  haveLink,
-  LinkText,
-  LinkSize,
-  LinkComb,
-  LinkCode,
+  Tree,
+  TreeCallCast,
+  TreeCord,
+  TreeLine,
+  TreeHint,
+  TreeKnit,
+  TreeName,
+  TreeNick,
+  TreeFork,
+  haveTree,
+  TreeText,
+  TreeSize,
+  TreeComb,
+  TreeCode,
 } from './form.js'
 import kink from '../kink.js'
 import { haveMesh } from '@termsurf/have'
@@ -29,25 +29,25 @@ export * from '../sift/index.js'
 export * from '../leaf/index.js'
 export * from './form.js'
 
-type LinkCallLink<T extends SiftName> = SiftCallCast & {
+type TreeCallTree<T extends SiftName> = SiftCallCast & {
   wall: Array<Slab>
   seed: SiftHash[T]
   kinkList: Array<Kink>
 }
 
 type Slab = {
-  line: Array<Link>
-  nest: Array<Link>
+  line: Array<Tree>
+  nest: Array<Tree>
   slot: number
 }
 
-function readSiftTree(link: SiftCallCast): LinkCallCast | Array<Kink> {
-  const tree: LinkTree = {
-    form: LinkName.Tree,
+function readSiftTree(link: SiftCallCast): TreeCallCast | Array<Kink> {
+  const tree: TreeLine = {
+    form: TreeName.Line,
     nest: [],
   }
-  const line: Array<Link> = [tree]
-  const nest: Array<Link> = [tree]
+  const line: Array<Tree> = [tree]
+  const nest: Array<Tree> = [tree]
 
   const slab: Slab = {
     line,
@@ -197,55 +197,55 @@ function readSiftTree(link: SiftCallCast): LinkCallCast | Array<Kink> {
       }
 }
 
-function readRiseNest(link: LinkCallLink<SiftName.RiseNest>): void {
+function readRiseNest(link: TreeCallTree<SiftName.RiseNest>): void {
   const slab = link.wall[link.wall.length - 1]
   haveMesh(slab, 'slab')
   slab.slot++
-  const base = slab.nest[slab.slot] as Link
+  const base = slab.nest[slab.slot] as Tree
   slab.line = [base]
 }
 
-function readFallNest(link: LinkCallLink<SiftName.FallNest>): void {
+function readFallNest(link: TreeCallTree<SiftName.FallNest>): void {
   const slab = link.wall[link.wall.length - 1]
   haveMesh(slab, 'slab')
   slab.slot--
-  const base = slab.nest[slab.slot] as Link
+  const base = slab.nest[slab.slot] as Tree
   slab.line = [base]
 }
 
-function readFallNick(link: LinkCallLink<SiftName.FallNick>): void {
+function readFallNick(link: TreeCallTree<SiftName.FallNick>): void {
   link.wall.pop()
 }
 
-function readFallFork(link: LinkCallLink<SiftName.FallFork>): void {
+function readFallFork(link: TreeCallTree<SiftName.FallFork>): void {
   const slab = link.wall[link.wall.length - 1]
   slab?.line.pop()
 }
 
-function readFallKnit(link: LinkCallLink<SiftName.FallKnit>): void {
+function readFallKnit(link: TreeCallTree<SiftName.FallKnit>): void {
   const slab = link.wall[link.wall.length - 1]
   slab?.line.pop()
 }
 
-function readFallText(link: LinkCallLink<SiftName.FallText>): void {
+function readFallText(link: TreeCallTree<SiftName.FallText>): void {
   const slab = link.wall[link.wall.length - 1]
   slab?.line.pop()
 }
 
-function readBase(link: LinkCallLink<SiftName>) {
+function readBase(link: TreeCallTree<SiftName>) {
   const slab = link.wall[link.wall.length - 1]
   haveMesh(slab, 'slab')
-  const base = slab.line[slab.line.length - 1] as Link
+  const base = slab.line[slab.line.length - 1] as Tree
   return { slab, base, wall: link.wall }
 }
 
-function readComb(link: LinkCallLink<SiftName.Comb>): void {
+function readComb(link: TreeCallTree<SiftName.Comb>): void {
   const { base, slab } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Fork: {
-      const comb: LinkComb = {
-        form: LinkName.Comb,
+    case TreeName.Fork: {
+      const comb: TreeComb = {
+        form: TreeName.Comb,
         leaf: link.seed.leaf,
         bond: link.seed.bond,
       }
@@ -256,7 +256,7 @@ function readComb(link: LinkCallLink<SiftName.Comb>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -264,13 +264,13 @@ function readComb(link: LinkCallLink<SiftName.Comb>): void {
   }
 }
 
-function readCode(link: LinkCallLink<SiftName.Code>): void {
+function readCode(link: TreeCallTree<SiftName.Code>): void {
   const { base, slab } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Fork: {
-      const code: LinkCode = {
-        form: LinkName.Code,
+    case TreeName.Fork: {
+      const code: TreeCode = {
+        form: TreeName.Code,
         leaf: link.seed.leaf,
         bond: link.seed.bond,
         mold: link.seed.mold,
@@ -282,7 +282,7 @@ function readCode(link: LinkCallLink<SiftName.Code>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -290,14 +290,14 @@ function readCode(link: LinkCallLink<SiftName.Code>): void {
   }
 }
 
-function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
+function readRiseFork(link: TreeCallTree<SiftName.RiseFork>): void {
   const { base, slab, wall } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Tree: {
-      const fork: LinkFork = {
+    case TreeName.Tree: {
+      const fork: TreeFork = {
         nest: [],
-        form: LinkName.Fork,
+        form: TreeName.Fork,
       }
 
       base.nest.push(fork)
@@ -308,10 +308,10 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
       takeSlab(slab, fork)
       break
     }
-    case LinkName.Fork: {
-      const fork: LinkFork = {
+    case TreeName.Fork: {
+      const fork: TreeFork = {
         nest: [],
-        form: LinkName.Fork,
+        form: TreeName.Fork,
       }
 
       base.nest.push(fork)
@@ -322,10 +322,10 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
       takeSlab(slab, fork)
       break
     }
-    case LinkName.Nick: {
-      const fork: LinkFork = {
+    case TreeName.Nick: {
+      const fork: TreeFork = {
         nest: [],
-        form: LinkName.Fork,
+        form: TreeName.Fork,
       }
 
       base.nest = fork
@@ -337,7 +337,7 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -345,13 +345,13 @@ function readRiseFork(link: LinkCallLink<SiftName.RiseFork>): void {
   }
 }
 
-function readRiseNick(link: LinkCallLink<SiftName.RiseNick>): void {
+function readRiseNick(link: TreeCallTree<SiftName.RiseNick>): void {
   const { base, wall } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Knit: {
-      const nick: LinkNick = {
-        form: LinkName.Nick,
+    case TreeName.Knit: {
+      const nick: TreeNick = {
+        form: TreeName.Nick,
         size: link.seed.size,
         // fold: link.seed.leaf,
       }
@@ -363,9 +363,9 @@ function readRiseNick(link: LinkCallLink<SiftName.RiseNick>): void {
       linkBase(nick, base)
       break
     }
-    case LinkName.Text: {
-      const nick: LinkNick = {
-        form: LinkName.Nick,
+    case TreeName.Text: {
+      const nick: TreeNick = {
+        form: TreeName.Nick,
         size: link.seed.size,
         // fold: link.seed.leaf,
       }
@@ -386,13 +386,13 @@ function readRiseNick(link: LinkCallLink<SiftName.RiseNick>): void {
   }
 }
 
-function readRiseKnit(link: LinkCallLink<SiftName.RiseKnit>): void {
+function readRiseKnit(link: TreeCallTree<SiftName.RiseKnit>): void {
   const { base, slab } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Fork: {
-      const knit: LinkKnit = {
-        form: LinkName.Knit,
+    case TreeName.Fork: {
+      const knit: TreeKnit = {
+        form: TreeName.Knit,
         nest: [],
       }
 
@@ -405,7 +405,7 @@ function readRiseKnit(link: LinkCallLink<SiftName.RiseKnit>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -413,13 +413,13 @@ function readRiseKnit(link: LinkCallLink<SiftName.RiseKnit>): void {
   }
 }
 
-function readRiseText(link: LinkCallLink<SiftName.RiseText>): void {
+function readRiseText(link: TreeCallTree<SiftName.RiseText>): void {
   const { base, slab } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Fork: {
-      const text: LinkText = {
-        form: LinkName.Text,
+    case TreeName.Fork: {
+      const text: TreeText = {
+        form: TreeName.Text,
         nest: [],
       }
       base.nest.push(text)
@@ -427,7 +427,7 @@ function readRiseText(link: LinkCallLink<SiftName.RiseText>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -435,13 +435,13 @@ function readRiseText(link: LinkCallLink<SiftName.RiseText>): void {
   }
 }
 
-function readCord(link: LinkCallLink<SiftName.Cord>): void {
+function readCord(link: TreeCallTree<SiftName.Cord>): void {
   const { base } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Knit: {
-      const cord: LinkCord = {
-        form: LinkName.Cord,
+    case TreeName.Knit: {
+      const cord: TreeCord = {
+        form: TreeName.Cord,
         leaf: link.seed.leaf,
       }
 
@@ -450,9 +450,9 @@ function readCord(link: LinkCallLink<SiftName.Cord>): void {
       linkBase(cord, base)
       break
     }
-    case LinkName.Text: {
-      const cord: LinkCord = {
-        form: LinkName.Cord,
+    case TreeName.Text: {
+      const cord: TreeCord = {
+        form: TreeName.Cord,
         leaf: link.seed.leaf,
       }
 
@@ -462,7 +462,7 @@ function readCord(link: LinkCallLink<SiftName.Cord>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -470,13 +470,13 @@ function readCord(link: LinkCallLink<SiftName.Cord>): void {
   }
 }
 
-function readSize(link: LinkCallLink<SiftName.Size>): void {
+function readSize(link: TreeCallTree<SiftName.Size>): void {
   const { base } = readBase(link)
 
   switch (base.form) {
-    case LinkName.Fork: {
-      const size: LinkSize = {
-        form: LinkName.Size,
+    case TreeName.Fork: {
+      const size: TreeSize = {
+        form: TreeName.Size,
         leaf: link.seed.leaf,
         bond: link.seed.bond,
       }
@@ -486,7 +486,7 @@ function readSize(link: LinkCallLink<SiftName.Size>): void {
       linkBase(size, base)
       break
     }
-    case LinkName.Tree: {
+    case TreeName.Tree: {
       link.kinkList.push(
         kink('invalid_nesting', {
           file: link.file,
@@ -498,7 +498,7 @@ function readSize(link: LinkCallLink<SiftName.Size>): void {
       break
     }
     default:
-      haveLink(base, 'base')
+      haveTree(base, 'base')
       throw kink('not_implemented', {
         form: base.form,
         file: link.file,
@@ -506,17 +506,17 @@ function readSize(link: LinkCallLink<SiftName.Size>): void {
   }
 }
 
-export const LINK_HINT_TEXT: Record<LinkHint, string> = {
-  [LinkHint.NickText]: 'nick text',
-  [LinkHint.NickKnit]: 'nick line',
-  [LinkHint.Void]: 'void',
-  [LinkHint.Text]: 'text',
-  [LinkHint.Knit]: 'line',
+export const LINK_HINT_TEXT: Record<TreeHint, string> = {
+  [TreeHint.NickText]: 'nick text',
+  [TreeHint.NickKnit]: 'nick line',
+  [TreeHint.Void]: 'void',
+  [TreeHint.Text]: 'text',
+  [TreeHint.Knit]: 'line',
 }
 
-export default function makeLinkFork(
-  link: LeafCallLink,
-): LinkCallCast | Array<Kink> {
+export default function makeTreeFork(
+  link: LeafCallTree,
+): TreeCallCast | Array<Kink> {
   const lead = makeTextList(link)
 
   if (Array.isArray(lead)) {
@@ -532,7 +532,7 @@ export default function makeLinkFork(
 
 export * from './show.js'
 
-function linkBase(head: Link, base: Link) {
+function linkBase(head: Tree, base: Tree) {
   Object.defineProperty(head, 'base', {
     value: base,
     enumerable: false,
@@ -540,14 +540,14 @@ function linkBase(head: Link, base: Link) {
   })
 }
 
-function takeSlab(slab: Slab, head: Link) {
+function takeSlab(slab: Slab, head: Tree) {
   if (slab.line.length === 2) {
     slab.nest = slab.nest.slice(0, slab.slot + 1)
     slab.nest.push(head)
   }
 }
 
-function makeSlab(wall: Array<Slab>, head: Link) {
+function makeSlab(wall: Array<Slab>, head: Tree) {
   wall.push({
     line: [head],
     nest: [head],

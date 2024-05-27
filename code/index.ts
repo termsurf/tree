@@ -1,3 +1,3 @@
-import leaf from './tree/index.js'
+import make from './tree/index.js'
 
-export default leaf
+export default make

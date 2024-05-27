@@ -94,7 +94,7 @@ export type LeafKnit = LeafBase & {
   form: LeafName.Knit
 }
 
-export type LeafCallLink = {
+export type LeafCallTree = {
   file: string
   text: string
 }
@@ -111,7 +111,7 @@ export type LeafSeed = {
   test: RegExp
 }
 
-export type LeafCallCast = LeafCallLink & {
+export type LeafCallCast = LeafCallTree & {
   head?: Leaf
   lineText: Array<string>
 }

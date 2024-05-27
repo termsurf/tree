@@ -20,7 +20,6 @@ import type {
 import { LeafName } from '../leaf/form.js'
 import { SiftName } from './form.js'
 import type { SiftCallCast, Sift } from './form.js'
-import show from './show.js'
 import Kink from '@termsurf/kink'
 import kink from '../kink.js'
 

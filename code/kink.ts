@@ -7,7 +7,7 @@ import { isNode } from 'browser-or-node'
 
 const VIEW_SIZE = (isNode ? process.stdout.columns : 80) ?? 80
 
-const host = '@termsurf/link'
+const host = '@termsurf/tree'
 
 type Base = {
   syntax_error: {
@@ -72,7 +72,7 @@ Kink.base(
   'syntax_error',
   (take: Base['syntax_error']['take']) => ({
     code: 1,
-    note: 'Error in the structure of the LinkText Tree',
+    note: 'Error in the structure of the TreeCode Tree',
   }),
 )
 
