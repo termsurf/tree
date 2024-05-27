@@ -21,12 +21,11 @@
 
 ## Welcome
 
-TreeCode (see [`tree.surf`](https://tree.surf)) is a little more than a
-markup language, tending toward a programming language. In fact, it can
-be used for a programming language. It is a way to model information and
-computation in an easy to read and write format, suitable for
-hierarchical note taking and other means of capturing data down into
-structured form.
+[TreeCode](https://tree.surf) is a little more than a markup language,
+tending toward a programming language. In fact, it can be used for a
+programming language. It is a way to model information and computation
+in an easy to read and write format, suitable for hierarchical note
+taking and other means of capturing data down into structured form.
 
 ## Theory
 
