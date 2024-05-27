@@ -294,7 +294,7 @@ function readRiseFork(link: TreeCallTree<SiftName.RiseFork>): void {
   const { base, slab, wall } = readBase(link)
 
   switch (base.form) {
-    case TreeName.Tree: {
+    case TreeName.Line: {
       const fork: TreeFork = {
         nest: [],
         form: TreeName.Fork,
@@ -486,7 +486,7 @@ function readSize(link: TreeCallTree<SiftName.Size>): void {
       linkBase(size, base)
       break
     }
-    case TreeName.Tree: {
+    case TreeName.Line: {
       link.kinkList.push(
         kink('invalid_nesting', {
           file: link.file,

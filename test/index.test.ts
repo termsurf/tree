@@ -7,7 +7,7 @@ import Kink, { KinkList } from '@termsurf/kink'
 import { makeBaseKinkText, makeKinkText } from '@termsurf/kink-text'
 
 import leaf from '../code/index.js'
-import { showLinkTree } from '../code/tree/index.js'
+import { showTreeLine } from '../code/tree/index.js'
 import show from 'code/sift/show.js'
 import makeSiftList, { SiftCallCast } from 'code/sift/index.js'
 import makeTextList from 'code/leaf/index.js'
@@ -91,7 +91,7 @@ function assertParse(file: string, provided: string, expected: string) {
     throw new KinkList(lead)
   }
 
-  const output = showLinkTree(lead.tree)
+  const output = showTreeLine(lead.tree)
 
   const a = String(stripAnsi(output)).trim()
   const b = String(stripAnsi(expected)).trim()

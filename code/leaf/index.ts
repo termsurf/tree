@@ -5,7 +5,7 @@ import {
   LeafForm,
   Leaf,
   LeafCallCast,
-  LeafCallLink,
+  LeafCallTree,
   LeafName,
   LeafSeed,
 } from './form.js'
@@ -143,7 +143,7 @@ const TEST: Record<LeafName, LeafSeed> = {
  */
 
 export default function makeTextList(
-  link: LeafCallLink,
+  link: LeafCallTree,
 ): LeafCallCast | Array<Kink> {
   const cast: LeafCallCast = {
     ...link,
