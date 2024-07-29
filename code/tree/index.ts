@@ -23,11 +23,13 @@ import {
 } from './form.js'
 import kink from '../kink.js'
 import { haveMesh } from '@termsurf/have'
-import Kink from '@termsurf/kink'
+import Kink, { KinkList } from '@termsurf/kink'
 
 export * from '../sift/index.js'
 export * from '../leaf/index.js'
 export * from './form.js'
+
+export * from './show.js'
 
 type TreeCallTree<T extends SiftName> = SiftCallCast & {
   wall: Array<Slab>
@@ -41,7 +43,7 @@ type Slab = {
   slot: number
 }
 
-function readSiftTree(link: SiftCallCast): TreeCallCast | Array<Kink> {
+function readSiftTree(link: SiftCallCast): TreeCallCast | KinkList {
   const tree: TreeLine = {
     form: TreeName.Line,
     nest: [],
@@ -190,7 +192,7 @@ function readSiftTree(link: SiftCallCast): TreeCallCast | Array<Kink> {
   }
 
   return kinkList.length
-    ? kinkList
+    ? new KinkList(kinkList)
     : {
         ...link,
         tree,
@@ -516,21 +518,19 @@ export const LINK_HINT_TEXT: Record<TreeHint, string> = {
 
 export default function makeTreeFork(
   link: LeafCallTree,
-): TreeCallCast | Array<Kink> {
+): TreeCallCast | KinkList {
   const lead = makeTextList(link)
 
   if (Array.isArray(lead)) {
-    return lead
+    return new KinkList(lead)
   } else {
     const siftLead = makeSiftList(lead)
     if (Array.isArray(siftLead)) {
-      return siftLead
+      return new KinkList(siftLead)
     }
     return readSiftTree(siftLead)
   }
 }
-
-export * from './show.js'
 
 function linkBase(head: Tree, base: Tree) {
   Object.defineProperty(head, 'base', {

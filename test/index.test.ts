@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url'
 import Kink, { KinkList } from '@termsurf/kink'
 import { makeBaseKinkText, makeKinkText } from '@termsurf/kink-text'
 
-import leaf from '../code/index.js'
+import makeTree from '../code/index.js'
 import { showTreeLine } from '../code/tree/index.js'
 import show from 'code/sift/show.js'
 import makeSiftList, { SiftCallCast } from 'code/sift/index.js'
@@ -85,10 +85,10 @@ async function start() {
 start()
 
 function assertParse(file: string, provided: string, expected: string) {
-  const lead = leaf({ file, text: provided })
+  const lead = makeTree({ file, text: provided })
 
-  if (Array.isArray(lead)) {
-    throw new KinkList(lead)
+  if (lead instanceof KinkList) {
+    throw lead
   }
 
   const output = showTreeLine(lead.tree)
@@ -108,10 +108,10 @@ function assertParseKink(
   provided: string,
   expected: string,
 ) {
-  const lead = leaf({ file, text: provided })
+  const lead = makeTree({ file, text: provided })
 
-  if (Array.isArray(lead)) {
-    const noteList = lead.map(x => x.note).join('\n')
+  if (lead instanceof KinkList) {
+    const noteList = lead.list.map(x => x.note).join('\n')
 
     if (expected !== noteList) {
       // console.log(a)
