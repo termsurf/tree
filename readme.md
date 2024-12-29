@@ -7,7 +7,7 @@
 <br/>
 
 <p align='center'>
-  <img src='https://github.com/termsurf/tree/blob/make/view/tree.svg?raw=true' height='256'>
+  <img src='https://github.com/cluesurf/tree/blob/make/view/tree.svg?raw=true' height='256'>
 </p>
 
 <h3 align='center'>tree</h3>
@@ -50,16 +50,16 @@ data structures like JSON.
 ## Installation
 
 ```
-pnpm add @termsurf/tree
+pnpm add @cluesurf/tree
 ```
 
 ## Usage
 
 ```ts
-import makeTree from '@termsurf/tree'
+import makeTree from '@cluesurf/tree'
 
 const file = './base.tree'
-const text = `deck <@termsurf/wolf>
+const text = `deck <@cluesurf/wolf>
   bear ./code
   test ./test
   mark <0.0.1>`
@@ -69,10 +69,10 @@ const tree = makeTree({ file, text })
 ## VSCode Integration
 
 Install the
-[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=termsurf.tree-code)
+[syntax highlighter](https://marketplace.visualstudio.com/items?itemName=cluesurf.tree-code)
 VSCode extension and get aworkin!
 
-<img src='https://github.com/termsurf/tree/blob/make/view/tree.png?raw=true' />
+<img src='https://github.com/cluesurf/tree/blob/make/view/tree.png?raw=true' />
 
 ## State of Library
 
@@ -85,11 +85,11 @@ not commplicated interpolation styles with nesting.
 
 MIT
 
-## TermSurf
+## ClueSurf
 
-This is being developed by the folks at [TermSurf](https://term.surf), a
+This is being developed by the folks at [ClueSurf](https://clue.surf), a
 California-based project for helping humanity master information and
-computation. Find us on [X](https://twitter.com/termsurf),
-[LinkedIn](https://www.linkedin.com/company/termsurf), and
-[Facebook](https://www.facebook.com/termsurf). Check out our other
-[GitHub projects](https://github.com/termsurf) as well!
+computation. Find us on [X](https://twitter.com/cluesurf),
+[LinkedIn](https://www.linkedin.com/company/cluesurf), and
+[Facebook](https://www.facebook.com/cluesurf). Check out our other
+[GitHub projects](https://github.com/cluesurf) as well!
